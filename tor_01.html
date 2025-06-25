@@ -34,7 +34,7 @@
         <!-- Header outside the card -->
         <div class="mb-6">
             <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">ข้อกำหนด(TOR) ทั้งหมดใน | คุณสมบัติทั่วไปของระบบ</h1>
-            <p class="mt-2 text-sm text-gray-500">ข้อมูลอัพเดท วันที่ : 18 มิถุนายน 2568</p>
+            <p class="mt-2 text-sm text-gray-500">ข้อมูลอัพเดท วันที่ : 25 มิถุนายน 2568</p>
         </div>
 
         <!-- Card/Listbox Container -->
@@ -50,7 +50,7 @@
                             <th scope="col" class="w-48 px-6 py-4 text-left text-base font-bold text-gray-600 tracking-wider">
                                 สถานะ
                             </th>
-                            <th scope="col" class="w-48 px-6 py-4 text-left text-base font-bold text-gray-600 tracking-wider">
+                            <th scope="col" class="w-56 px-6 py-4 text-left text-base font-bold text-gray-600 tracking-wider">
                                 การแก้ไข
                             </th>
                         </tr>
@@ -83,13 +83,13 @@
             { 
                 tor: "1.6  มีระบบการแจ้งเตือนต่าง ๆ (Notification) ที่เกี่ยวข้องกับผู้ใช้งาน", 
                 status: "ไม่ผ่าน", 
-                fix: "แก้ไขแล้ว",
+                fix: "แก้ไขแล้ว รอการพิจารณา",
                 stdFunc: "Y", 
                 devMore: "", 
                 refDoc: '<a href="https://drive.google.com/file/d/1SF63jBqjwINJTnhY6m5mKvVQw_d_fZ8w/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 12</a>', 
                 docBook: "DD.07", 
                 topic: '2.1.2 <a href="https://docs.google.com/document/d/1ZI7sy61RQb6Tti6GQHG_-nOl9u8PAxU-/edit#bookmark=id.2tj2x5acnzcw" target="_blank" class="text-blue-600 hover:underline">Connectivity</a>', 
-                prototype: '<a href="https://pcs.softyourstyle.com/?id=p85l17&p=pi-00-20-010_00_connectivitycrud&sc=3" target="_blank" class="text-blue-600 hover:underline">PI-00-20-010/00</a>', 
+                prototype: '<a href="https://pcs.softyourstyle.com/?id=p85l17&p=pi-00-20-010_00_connectivitycrud&sc=3" target="_blank" class="text-blue-600 hover:underline">2.1.2 PI-00-20-010/00</a>', 
                 suggestion1: "ระบบควรมีความสามารถการ เพิ่ม email และ SMS ของผู้ที่ต้องได้รับ notification ที่ screen set up email and SMS ได้", 
                 date1: "09 เมษายน 2568", 
                 suggestion2: "คณะกรรมการขอเพิ่มเติม : System Notification", 
@@ -102,7 +102,7 @@
             { 
                 tor: "1.7  มีหน้า Dashboard สรุปรายงานภาพรวมผลการดำเนินงานต่าง ๆ สำหรับผู้บริหาร และผู้ปฏิบัติงาน", 
                 status: "ไม่ผ่าน",
-                fix: "แก้ไขแล้ว",
+                fix: "แก้ไขแล้ว รอการพิจารณา",
                 stdFunc: "Y", 
                 devMore: "", 
                 refDoc: "", 
@@ -142,7 +142,7 @@
             { 
                 tor: "1.11  มีระบบบริหารและจัดเก็บสถิติการเข้าใช้งาน โดยผู้ดูแลระบบสามารถเรียกดูข้อมูล ของผู้ที่เข้ามาใช้งานระบบ โดยระบบเก็บหมายเลข IP Address ชื่อผู้ใช้ วันเวลาที่ใช้งาน และรายละเอียดที่เข้ามาใช้งานระบบของผู้ที่เข้ามาใช้งานระบบได้", 
                 status: "ไม่ผ่าน", 
-                fix: "แก้ไขแล้ว",
+                fix: "แก้ไขแล้ว รอการพิจารณา",
                 stdFunc: "Y", 
                 devMore: "", 
                 refDoc: '<a href="https://drive.google.com/file/d/1SF63jBqjwINJTnhY6m5mKvVQw_d_fZ8w/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 12</a>', 
@@ -186,7 +186,8 @@
                     ? 'bg-green-100 text-green-800' 
                     : 'bg-red-100 text-red-800';
                 
-                const fixText = item.fix || '';
+                const fixText = item.fix || (item.status === 'ไม่ผ่าน' ? 'แก้ไขแล้ว รอการพิจารณา' : '');
+
 
                 row.innerHTML = `
                     <td class="px-6 py-4 whitespace-normal text-base text-gray-700">
