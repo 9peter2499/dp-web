@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype: Setup & Utility</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter for modern look, and Sarabun for Thai text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Sarabun font to the body for better Thai character rendering */
+        body {
+            font-family: 'Sarabun', 'Inter', sans-serif;
+        }
+        /* Custom style for the details row animation */
+        .details-row {
+            display: none; /* Hidden by default */
+        }
+        .details-row.open {
+            display: table-row; /* Display as a table row when open */
+        }
+        /* Style for the link to make it look like a link and color all child elements */
+        .tor-link {
+            color: #3b82f6; /* blue-500 */
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .tor-link:hover {
+            text-decoration: underline;
+        }
+        /* Ensure all nested elements within the link inherit the color */
+        .tor-link * {
+            color: inherit;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="w-full p-4 sm:p-6 lg:p-8">
+        <!-- Header Section -->
+        <div class="mb-6">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">
+                ข้อกำหนด(TOR) ทั้งหมดใน | ระบบสำหรับการกำหนดตั้งค่าระบบ และเครื่องมือที่ช่วยในการทำงาน (Setup & Utility)
+            </h1>
+            <p class="text-sm text-gray-500 mt-2">
+                ข้อมูลอัพเดท วันที่ : 18 มิถุนายน 2568
+            </p>
+        </div>
+
+        <!-- Content Box / Table Section -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-base">
+                    <!-- Table Header -->
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="px-6 py-4 text-base font-bold text-gray-600 uppercase tracking-wider w-2/3">ข้อกำหนด(TOR)</th>
+                            <th class="px-6 py-4 text-base font-bold text-gray-600 uppercase tracking-wider">สถานะ</th>
+                            <th class="px-6 py-4 text-base font-bold text-gray-600 uppercase tracking-wider">การแก้ไข</th>
+                        </tr>
+                    </thead>
+                    <!-- Table Body -->
+                    <tbody class="divide-y divide-gray-200">
+                        <!-- Main Data Row 1 -->
+                        <tr id="tor-row-1">
+                            <td class="px-6 py-4 align-top">
+                                <a href="javascript:void(0)" class="tor-link" onclick="toggleDetails('details-row-1')">
+                                    <span class="font-bold">10.1</span> มีเครื่องมือสำหรับตั้งค่าการแจ้งเตือน (Notification) ในรูปแบบต่าง ๆ ได้แก่
+                                    <ul class="list-disc list-inside ml-4 mt-2">
+                                        <li>แจ้งเตือนทาง Email</li>
+                                        <li>แจ้งเตือนโดยส่งข้อความผ่าน Instant Message</li>
+                                    </ul>
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 align-top">
+                                <span class="px-3 py-1 inline-flex text-base font-semibold rounded-full bg-green-100 text-green-800">
+                                    ผ่าน
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 align-top">
+                                <!-- Empty cell for "การแก้ไข" -->
+                            </td>
+                        </tr>
+
+                        <!-- Hidden Details Row 1 -->
+                        <tr id="details-row-1" class="details-row">
+                            <td colspan="3" class="p-0 bg-yellow-50 border-l-4 border-yellow-400">
+                                <div class="p-6 space-y-4">
+                                    <!-- Row 1: ทำได้ & เอกสารอ้างอิง -->
+                                    <div class="w-full border-b border-yellow-200 pb-4">
+                                        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0">
+                                            <div class="w-full sm:w-1/2 pr-0 sm:pr-4">
+                                                <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br>ฟังก์ชันมาตรฐาน</p>
+                                            </div>
+                                            <div class="w-full sm:w-1/2 pl-0 sm:pl-4 sm:border-l sm:border-yellow-200">
+                                                <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><a href="https://drive.google.com/file/d/1DeOZCJaG4UuM4_sPAJSRLITyXuAUyi6q/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 8</a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Row 2: เล่มเอกสาร & หัวข้อที่นำเสนอ -->
+                                    <div class="w-full border-b border-yellow-200 pb-4">
+                                       <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0">
+                                            <div class="w-full sm:w-1/2 pr-0 sm:pr-4">
+                                                <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br>DD.07 PCS Intelligence_Setup and Utility</p>
+                                            </div>
+                                            <div class="w-full sm:w-1/2 pl-0 sm:pl-4 sm:border-l sm:border-yellow-200">
+                                                <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>2.1.2 <a href="https://docs.google.com/document/d/1ZI7sy61RQb6Tti6GQHG_-nOl9u8PAxU-/edit#bookmark=id.2tj2x5acnzcw" target="_blank" class="text-blue-600 hover:underline">Connectivity</a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Row 3: Prototype -->
+                                    <div class="w-full border-b border-yellow-200 pb-4">
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br><a href="https://pcs.softyourstyle.com/?id=p85l17&p=pi-00-20-010_00_connectivitycrud&sc=3" target="_blank" class="text-blue-600 hover:underline">2.1.2 PI-00-20-010/00</a></p>
+                                    </div>
+                                    <!-- Row 4: ข้อเสนอแนะคณะกรรมการ -->
+                                    <div class="w-full">
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> ไม่มีข้อมูล</p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Main Data Row 2 -->
+                        <tr id="tor-row-2">
+                            <td class="px-6 py-4 align-top">
+                                <a href="javascript:void(0)" class="tor-link" onclick="toggleDetails('details-row-2')">
+                                    <span class="font-bold">10.2</span> มีเครื่องมือสำหรับจัดการตั้งค่า และกำหนดรูปแบบการแลกเปลี่ยนข้อมูลกับระบบอื่น ๆ ภายนอก โดยในเบื้องต้นระบบ PCS แบ่งกลุ่มของระบบที่จะเชื่อมต่อได้ ดังนี้
+                                    <ul class="list-disc list-inside ml-4 mt-2">
+                                        <li>National Platform: ระบบหรือ Platform หลักของประเทศทั้งภาครัฐและเอกชน ได้แก่</li>
+                                        <li>PAT Application: ระบบ Software ของการท่าเรือแห่งประเทศไทย ได้แก่</li>
+                                        <li>Business Application: ระบบ Software ต่าง ๆ ทางภาคธุรกิจ</li>
+                                        <li>B2B Platform: ระบบหรือ Platform ที่มีการเชื่อมโยงข้อมูลระหว่างประเทศ</li>
+                                        <li>EDI/API: ข้อกำหนดการเชื่อมต่อมาตรฐานอื่นๆในรูปแบบ EDI และ API</li>
+                                    </ul>
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 align-top">
+                                <span class="px-3 py-1 inline-flex text-base font-semibold rounded-full bg-green-100 text-green-800">
+                                    ผ่าน
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 align-top">
+                                <!-- Empty cell for "การแก้ไข" -->
+                            </td>
+                        </tr>
+
+                        <!-- Hidden Details Row 2 -->
+                        <tr id="details-row-2" class="details-row">
+                            <td colspan="3" class="p-0 bg-yellow-50 border-l-4 border-yellow-400">
+                                <div class="p-6 space-y-4">
+                                    <!-- Row 1: ทำได้ & เอกสารอ้างอิง -->
+                                    <div class="w-full border-b border-yellow-200 pb-4">
+                                        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0">
+                                            <div class="w-full sm:w-1/2 pr-0 sm:pr-4">
+                                                <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br>พัฒนาเพิ่มเติม</p>
+                                            </div>
+                                            <div class="w-full sm:w-1/2 pl-0 sm:pl-4 sm:border-l sm:border-yellow-200">
+                                                <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br>
+                                                    <a href="https://drive.google.com/file/d/1DeOZCJaG4UuM4_sPAJSRLITyXuAUyi6q/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 8</a><br>
+                                                    <a href="https://drive.google.com/file/d/1QKuD9VDljUooxHK-RlRXQeksw46RtaHP/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 41</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Row 2: เล่มเอกสาร & หัวข้อที่นำเสนอ -->
+                                    <div class="w-full border-b border-yellow-200 pb-4">
+                                       <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0">
+                                            <div class="w-full sm:w-1/2 pr-0 sm:pr-4">
+                                                <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br>DD.07 PCS Intelligence_Setup and Utility</p>
+                                            </div>
+                                            <div class="w-full sm:w-1/2 pl-0 sm:pl-4 sm:border-l sm:border-yellow-200">
+                                                <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>2.1.2 <a href="https://docs.google.com/document/d/1ZI7sy61RQb6Tti6GQHG_-nOl9u8PAxU-/edit#bookmark=id.2tj2x5acnzcw" target="_blank" class="text-blue-600 hover:underline">Connectivity</a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Row 3: Prototype -->
+                                    <div class="w-full border-b border-yellow-200 pb-4">
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br><a href="https://pcs.softyourstyle.com/?id=p85l17&p=pi-00-20-010_00_connectivitycrud&sc=3" target="_blank" class="text-blue-600 hover:underline">2.1.2 PI-00-20-010/00</a></p>
+                                    </div>
+                                    <!-- Row 4: ข้อเสนอแนะคณะกรรมการ -->
+                                    <div class="w-full">
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong><br>หมายเหตุ : มีประเด็นการตีความเพิ่มเติมในหัวข้อนี้โดย TOR กำหนดไม่ชัดเจน ว่า National Platform, PAT Application, Business Application และ B2B Platform มีอะไรบ้าง และมีมาตรฐานอย่างไร</p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript function to toggle details visibility and row styling
+        function toggleDetails(detailsRowId) {
+            const detailsRow = document.getElementById(detailsRowId);
+            if (!detailsRow) return;
+
+            // Derive main row ID from details row ID (e.g., 'details-row-1' -> 'tor-row-1')
+            const mainRowId = detailsRowId.replace('details-', 'tor-');
+            const mainRow = document.getElementById(mainRowId);
+
+            // Toggle visibility of the details row
+            const isOpen = detailsRow.classList.toggle('open');
+
+            // Toggle bold font weight on the main row based on the open state
+            if (mainRow) {
+                if(isOpen) {
+                    mainRow.classList.add('font-bold');
+                } else {
+                    mainRow.classList.remove('font-bold');
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

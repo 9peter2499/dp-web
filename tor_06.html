@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype: ระบบสำหรับกิจกรรมทางด้านตู้และสินค้า</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Sarabun -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom style for base font and for the active row */
+        body {
+            font-family: 'Sarabun', sans-serif;
+        }
+
+        /* 5. Row Interaction: Style for the active (clicked) row */
+        .row-active {
+            font-weight: 700; /* font-bold */
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- 1. New Page Header Section (Outside the main box) -->
+    <div class="p-6 sm:px-8">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">
+            ข้อกำหนด(TOR) ทั้งหมดใน | ระบบสำหรับกิจกรรมทางด้านตู้และสินค้า (Container and Cargo)
+        </h1>
+        <p class="mt-2 text-sm text-gray-500">
+            ข้อมูลอัพเดท วันที่ : 18 มิถุนายน 2568
+        </p>
+    </div>
+
+    <!-- Main Content Box (Listbox) -->
+    <div class="mx-4 sm:mx-8 mb-8">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <!-- 3. Main Table -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr>
+                            <!-- Column Header: "ข้อกำหนด(TOR)" - Updated Style & Font Size -->
+                            <th class="p-4 text-left text-base font-bold text-gray-500 uppercase tracking-wider bg-gray-100 border-t border-b border-gray-200">ข้อกำหนด(TOR)</th>
+                            <!-- Column Header: "สถานะ" - Updated Style & Font Size -->
+                            <th class="p-4 text-left text-base font-bold text-gray-500 uppercase tracking-wider bg-gray-100 border-t border-b border-gray-200 w-40">สถานะ</th>
+                            <!-- Column Header: "การแก้ไข" - Updated Style & Font Size -->
+                            <th class="p-4 text-left text-base font-bold text-gray-500 uppercase tracking-wider bg-gray-100 border-t border-b border-gray-200 w-40">การแก้ไข</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-700">
+
+                        <!-- Item 1 -->
+                        <tr class="main-row">
+                            <td class="p-4 border-b border-gray-200">
+                                <a class="tor-link text-blue-600 hover:underline cursor-pointer">6.1 มีระบบสำหรับกำหนดค่าข้อมูลสถานที่ (Facility) ในพื้นที่หลังท่า ที่เกี่ยวข้องใช้ในการติดตามตู้สินค้า และสินค้า</a>
+                            </td>
+                            <td class="p-4 border-b border-gray-200">
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">ผ่าน</span>
+                            </td>
+                            <td class="p-4 border-b border-gray-200 text-gray-500"></td>
+                        </tr>
+                        <tr class="details-row hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">ทำได้ :</b><br>
+                                            ฟังก์ชันมาตรฐาน
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">เอกสารอ้างอิง :</b><br>
+                                            <a href="https://drive.google.com/file/d/1AKqKNXcQMiyW6dck_eAjZFRbvAVF2fes/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 29</a>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">เล่มเอกสาร :</b><br>
+                                            DD.02 Process Document_Import
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">หัวข้อที่นำเสนอ :</b><br>
+                                            2.1.2 <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.vmpqq6i4rp15" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Facility Configuration</a>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800">
+                                        <b class="font-bold">Prototype :</b><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=f11wg6&p=hl-90-70-010_00-facility_setup" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">2.1.2 HL-90-70-010/00</a>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800"><b class="font-bold">ข้อเสนอแนะคณะกรรมการ :</b> ไม่มีข้อมูล</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Item 2 -->
+                        <tr class="main-row">
+                            <td class="p-4 border-b border-gray-200">
+                                <a class="tor-link text-blue-600 hover:underline cursor-pointer">6.2 มีระบบจัดการข้อมูลการประกาศแจ้งตู้เข้า Container Announcement และแจ้งการปล่อยตู้ (Container Release) ในรูปแบบ EDI (COPARN)</a>
+                            </td>
+                            <td class="p-4 border-b border-gray-200">
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">ผ่าน</span>
+                            </td>
+                            <td class="p-4 border-b border-gray-200 text-gray-500">แก้ไขแล้ว</td>
+                        </tr>
+                        <tr class="details-row hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">ทำได้ :</b><br>
+                                            ฟังก์ชันมาตรฐาน
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">เอกสารอ้างอิง :</b><br>
+                                            <a href="https://drive.google.com/file/d/1_Gt7XNopp5Us5ALFjsZ_IPotksrSSjnE/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 11</a>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">เล่มเอกสาร :</b><br>
+                                            DD.02 Process Document_Import
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">หัวข้อที่นำเสนอ :</b><br>
+                                            1.3.2 <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.kp98r4dmtpce" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Request to Terminal – UN/EDI Fact</a>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="text-gray-800">
+                                        <b class="font-bold">Prototype :</b><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=kiioi0&p=vs-60-10-010_00-send_file_search" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">1.3.2 VS-60-10-010/00</a>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="text-gray-800">
+                                        <b class="font-bold">ข้อเสนอแนะคณะกรรมการ :</b>
+                                        <p class="mt-1">คณะกรรมการเห็นควรให้มีการระบุข้อมูลเวอร์ชันที่ระบบรองรับอย่างชัดเจน พร้อมทั้งยืนยันสถานะว่าการทำงานของระบบเป็นไปตามมาตรฐานสากลของเวอร์ชันนั้นๆ หรือไม่ เพื่อสร้างความมั่นใจและความชัดเจนให้กับผู้ที่เกี่ยวข้อง</p>
+                                        <p class="text-sm text-gray-600 mt-2">วันที่ : 23 เมษายน 2568</p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <!-- New Section for Correction Details -->
+                                    <div class="text-gray-800">
+                                        <b class="font-bold">รายละเอียดการแก้ไข:</b>
+                                        <p class="mt-1">ตาราง Version สำหรับการรับ-ส่งข้อมูล ปัจจุบัน</p>
+                                        <div class="mt-2 overflow-x-auto">
+                                            <table class="min-w-full bg-white border border-gray-300 text-sm">
+                                                <thead class="bg-gray-200">
+                                                    <tr>
+                                                        <th class="p-2 border-b">Id</th>
+                                                        <th class="p-2 border-b">Class</th>
+                                                        <th class="p-2 border-b">Standard</th>
+                                                        <th class="p-2 border-b">Version</th>
+                                                        <th class="p-2 border-b">Release Number</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr><td class="p-2 border-b">BAPLIE</td><td class="p-2 border-b">STOWPLAN</td><td class="p-2 border-b">EDIFACT</td><td class="p-2 border-b">D</td><td class="p-2 border-b">95B</td></tr>
+                                                    <tr><td class="p-2 border-b">BAPLIE</td><td class="p-2 border-b">STOWPLAN</td><td class="p-2 border-b">EDIFACT</td><td class="p-2 border-b">15</td><td class="p-2 border-b">95B</td></tr>
+                                                    <tr><td class="p-2 border-b">BAPLIE</td><td class="p-2 border-b">STOWPLAN</td><td class="p-2 border-b">EDIFACT</td><td class="p-2 border-b">15</td><td class="p-2 border-b">911</td></tr>
+                                                    <tr><td class="p-2 border-b">BAPLIE</td><td class="p-2 border-b">STOWPLAN</td><td class="p-2 border-b">EDIFACT</td><td class="p-2 border-b">20</td><td class="p-2 border-b">95B</td></tr>
+                                                    <tr><td class="p-2 border-b">COARRI</td><td class="p-2 border-b">ACTIVITY</td><td class="p-2 border-b">EDIFACT</td><td class="p-2 border-b">D</td><td class="p-2 border-b">95B</td></tr>
+                                                    <tr><td class="p-2 border-b">CODECO</td><td class="p-2 border-b">ACTIVITY</td><td class="p-2 border-b">EDIFACT</td><td class="p-2 border-b">D</td><td class="p-2 border-b">95B</td></tr>
+                                                    <tr><td class="p-2 border-b">COPARN</td><td class="p-2 border-b">BOOKING</td><td class="p-2 border-b">EDIFACT</td><td class="p-2 border-b">D</td><td class="p-2 border-b">00B</td></tr>
+                                                    <tr><td class="p-2 border-b">COPARN</td><td class="p-2 border-b">BOOKING</td><td class="p-2 border-b">EDIFACT</td><td class="p-2 border-b">D</td><td class="p-2 border-b">95B</td></tr>
+                                                    <tr><td class="p-2 border-b">COPINO</td><td class="p-2 border-b">PREADVISE</td><td class="p-2 border-b">EDIFACT</td><td class="p-2 border-b">D</td><td class="p-2 border-b">95B</td></tr>
+                                                    <tr><td class="p-2 border-b">COPINO</td><td class="p-2 border-b">APPOINTMENT</td><td class="p-2 border-b">EDIFACT</td><td class="p-2 border-b">D</td><td class="p-2 border-b">95A</td></tr>
+                                                    <tr><td class="p-2 border-b">COPRAR</td><td class="p-2 border-b">LOADLIST</td><td class="p-2 border-b">EDIFACT</td><td class="p-2 border-b">D</td><td class="p-2 border-b">95B</td></tr>
+                                                    <tr><td class="p-2 border-b">COPRAR</td><td class="p-2 border-b">DISCHLIST</td><td class="p-2 border-b">EDIFACT</td><td class="p-2 border-b">D</td><td class="p-2 border-b">95A</td></tr>
+                                                    <tr><td class="p-2 border-b">CUSCAR</td><td class="p-2 border-b">MANIFEST</td><td class="p-2 border-b">EDIFACT</td><td class="p-2 border-b">D</td><td class="p-2 border-b">95B</td></tr>
+                                                    <tr><td class="p-2 border-b">CUSRES</td><td class="p-2 border-b">RELEASE</td><td class="p-2 border-b">EDIFACT</td><td class="p-2 border-b">D</td><td class="p-2 border-b">96B</td></tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-2">วันที่ : 25 เมษายน 2568</p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Item 6.2.1 -->
+                        <tr class="main-row">
+                            <td class="p-4 border-b border-gray-200">
+                                <a class="tor-link text-blue-600 hover:underline cursor-pointer">6.2.1 มีระบบหน้าจอสำหรับสายเรือ/ตัวแทนสายเรือ/เจ้าของตู้สินค้าในการประกาศข้อมูล Container Announcement ในรูปแบบ EDI (COPARN) ให้กับผู้ประกอบการท่าเทียบเรือ (Terminal Operator) หรือผู้เกี่ยวข้องอื่น ๆ ในระบบ PCS (ในกรณีที่สายเรือไม่มีระบบการส่งข้อมูล EDI COPARN)</a>
+                            </td>
+                            <td class="p-4 border-b border-gray-200">
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">ผ่าน</span>
+                            </td>
+                            <td class="p-4 border-b border-gray-200 text-gray-500"></td>
+                        </tr>
+                        <tr class="details-row hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">ทำได้ :</b><br>
+                                            ฟังก์ชันมาตรฐาน
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">เอกสารอ้างอิง :</b><br>
+                                            <a href="https://drive.google.com/file/d/1_Gt7XNopp5Us5ALFjsZ_IPotksrSSjnE/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 11</a>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">เล่มเอกสาร :</b><br>
+                                            DD.02 Process Document_Import
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">หัวข้อที่นำเสนอ :</b><br>
+                                            1.3.2 <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.kp98r4dmtpce" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Request to Terminal – UN/EDI Fact</a>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800">
+                                        <b class="font-bold">Prototype :</b><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=kiioi0&p=vs-60-10-010_00-send_file_search" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">1.3.2 VS-60-10-010/00</a>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800"><b class="font-bold">ข้อเสนอแนะคณะกรรมการ :</b> ไม่มีข้อมูล</div>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Item 6.2.2 -->
+                        <tr class="main-row">
+                            <td class="p-4 border-b border-gray-200">
+                                <a class="tor-link text-blue-600 hover:underline cursor-pointer">6.2.2 มีระบบหน้าจอสำหรับสายเรือ/ตัวแทนสายเรือ/เจ้าของตู้สินค้าในการประกาศข้อมูล Container Release ในรูปแบบ EDI (COPARN) ให้กับผู้ประกอบการท่าเทียบเรือ (Terminal Operator) หรือผู้เกี่ยวข้องอื่น ๆ ในระบบ PCS (ในกรณีที่สายเรือไม่มีระบบการส่งข้อมูล EDI COPARN) เป็นระบบสำหรับผู้ประกอบการท่าเทียบเรือ (Terminal Operator) ในการรับข้อมูล Container Release จากสายเรือที่แจ้งการเข้ามายังท่าเรือผ่าน EDI (COPARN) ซึ่งสามารถส่งต่อไปยังระบบ TOS ของท่าได้</a>
+                            </td>
+                            <td class="p-4 border-b border-gray-200">
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">ผ่าน</span>
+                            </td>
+                            <td class="p-4 border-b border-gray-200 text-gray-500"></td>
+                        </tr>
+                        <tr class="details-row hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                         <div>
+                                            <b class="font-bold">ทำได้ :</b><br>
+                                            ฟังก์ชันมาตรฐาน
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">เอกสารอ้างอิง :</b><br>
+                                            <a href="https://drive.google.com/file/d/1_Gt7XNopp5Us5ALFjsZ_IPotksrSSjnE/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 11</a>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">เล่มเอกสาร :</b><br>
+                                            DD.02 Process Document_Import
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">หัวข้อที่นำเสนอ :</b><br>
+                                            1.3.2 <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.kp98r4dmtpce" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Request to Terminal – UN/EDI Fact</a>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800">
+                                         <b class="font-bold">Prototype :</b><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=kiioi0&p=vs-60-10-010_00-send_file_search" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">1.3.2 VS-60-10-010/00</a>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800"><b class="font-bold">ข้อเสนอแนะคณะกรรมการ :</b> ไม่มีข้อมูล</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Item 6.3 -->
+                        <tr class="main-row">
+                            <td class="p-4 border-b border-gray-200">
+                                <a class="tor-link text-blue-600 hover:underline cursor-pointer">6.3 มีระบบสำหรับบันทึกข้อมูลรถเข้า-ออกผ่านประตู/ช่องตรวจ (Gate) สำหรับผู้ประกอบการท่าเทียบเรือ (Terminal Operator)/ICD/ลานตู้เปล่า/โรงงาน หรือคลังสินค้า/CFS/SRTO/ท่าเรือชายฝั่ง โดยทั่วไปข้อมูลดังกล่าวสามารถเชื่อมต่อมาจากระบบ TOS, CTMS หรือแม้แต่ระบบ ERP หรือ TMS ของผู้ประกอบการได้ ระบบนี้จะใช้ในกรณีที่ผู้ประกอบการไม่มีระบบบันทึกหรือระบบไม่สามารถส่งข้อมูลให้กับระบบ PCS ได้</a>
+                            </td>
+                            <td class="p-4 border-b border-gray-200">
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">ผ่าน</span>
+                            </td>
+                            <td class="p-4 border-b border-gray-200 text-gray-500"></td>
+                        </tr>
+                        <tr class="details-row hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">ทำได้ :</b><br>
+                                            พัฒนาเพิ่มเติม
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">เอกสารอ้างอิง :</b><br>
+                                            <a href="https://drive.google.com/file/d/1AKqKNXcQMiyW6dck_eAjZFRbvAVF2fes/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 29</a><br>
+                                            <a href="https://drive.google.com/file/d/1LnIMkniyS3gUE5T0d0yhUci1E2hoFw-g/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 30</a><br>
+                                            การเชื่อมต่อกับระบบ TOS, CYMS, ERP และ TMS มีความหลากหลาย ต้องทำการกำหนด Format มาตรฐานในการเชื่อมต่อ
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">เล่มเอกสาร :</b><br>
+                                            DD.06_Hinterland - Truck
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">หัวข้อที่นำเสนอ :</b><br>
+                                            1.1.9 <a href="https://docs.google.com/document/d/1sgHEscE2W7-cA5Y5Wauv8Y94gIL7Dbr-/edit#bookmark=id.epvv1c5t464k" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Gate Entry</a>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800">
+                                        <b class="font-bold">Prototype :</b><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=6gtm70&p=hl-j0-10-010_00-gate_activity_search&sc=1" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">1.1.9 HL-J0-10-010/00</a>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800"><b class="font-bold">ข้อเสนอแนะคณะกรรมการ :</b> ไม่มีข้อมูล</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Item 6.4 -->
+                        <tr class="main-row">
+                            <td class="p-4 border-b border-gray-200">
+                                <a class="tor-link text-blue-600 hover:underline cursor-pointer">6.4 มีระบบสำหรับบันทึกข้อมูลกิจกรรมเกี่ยวกับตู้สินค้าที่เกิดขึ้นในเขตพื้นที่ โดยทั่วไปหมายถึงพื้นที่ของ Terminal แต่อาจใช้ใน ICD/ลานตู้เปล่า/CFS/SRTO/ท่าเรือชายฝั่ง ได้ด้วย โดยทั่วไปข้อมูลดังกล่าวสามารถเชื่อมต่อมาจากระบบ TOS, CYMS หรือแม้แต่ระบบ ERP หรือ TMS ของผู้ประกอบการได้ ระบบนี้จะใช้ในกรณีที่ผู้ประกอบการไม่มีระบบบันทึก หรือระบบไม่สามารถส่งข้อมูลให้กับระบบ PCS ได้</a>
+                            </td>
+                            <td class="p-4 border-b border-gray-200">
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">ผ่าน</span>
+                            </td>
+                            <td class="p-4 border-b border-gray-200 text-gray-500"></td>
+                        </tr>
+                        <tr class="details-row hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">ทำได้ :</b><br>
+                                            พัฒนาเพิ่มเติม
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">เอกสารอ้างอิง :</b><br>
+                                            การเชื่อมต่อกับระบบ TOS, CYMS, ERP และ TMS มีความหลากหลาย ต้องทำการกำหนด Format มาตรฐานใน 
+                                            การเชื่อมต่อ
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">เล่มเอกสาร :</b><br>
+                                            DD.02 Process Document_Import<br>
+                                            DD.06_Hinterland - Truck
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">หัวข้อที่นำเสนอ :</b><br>
+                                            2.3.4 <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.50oa1zj6fty3" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Damage Container Management</a><br>
+                                            1.1.9 <a href="https://docs.google.com/document/d/1sgHEscE2W7-cA5Y5Wauv8Y94gIL7Dbr-/edit#bookmark=id.epvv1c5t464k" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Gate Entry</a>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800">
+                                        <b class="font-bold">Prototype :</b><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=19o4vq&p=im-f0-10-010_00-container_damage_manage" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">2.3.4 IM-F0-10-010/00</a><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=6gtm70&p=hl-j0-10-010_00-gate_activity_search&sc=1" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">1.1.9 HL-J0-10-010/00</a>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800"><b class="font-bold">ข้อเสนอแนะคณะกรรมการ :</b> ไม่มีข้อมูล</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Item 6.4.1 -->
+                        <tr class="main-row">
+                            <td class="p-4 border-b border-gray-200">
+                                <a class="tor-link text-blue-600 hover:underline cursor-pointer">6.4.1 สามารถบันทึกข้อมูลกิจกรรมการ Load/Discharge ตู้ขึ้น-ลงเรือ/เรือชายฝั่ง/รถไฟ หรือรถขนส่ง และรองรับการนำเข้าข้อมูลกิจกรรมการ Load/Discharge เป็นชุดเข้าระบบ PCS ในรูปแบบ Excel</a>
+                            </td>
+                            <td class="p-4 border-b border-gray-200">
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">ผ่าน</span>
+                            </td>
+                            <td class="p-4 border-b border-gray-200 text-gray-500"></td>
+                        </tr>
+                        <tr class="details-row hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">ทำได้ :</b><br>
+                                            พัฒนาเพิ่มเติม
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">เอกสารอ้างอิง :</b><br>
+                                            การเชื่อมต่อกับระบบ TOS, CYMS, ERP และ TMS มีความหลากหลาย ต้องทำการกำหนด Format มาตรฐานใน  
+                                            การเชื่อมต่อ
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">เล่มเอกสาร :</b><br>
+                                            DD.02 Process Document_Import
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">หัวข้อที่นำเสนอ :</b><br>
+                                            2.2.1 <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.bf40a08kc271" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Check to Load/Discharge Container & Cargo</a>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800">
+                                        <b class="font-bold">Prototype :</b><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=90yzsc&p=hl-b4-10-020_00-send_file_create-edit&sc=1" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">2.2.1 HL-B4-10-020/00</a>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800"><b class="font-bold">ข้อเสนอแนะคณะกรรมการ :</b> ไม่มีข้อมูล</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Item 6.4.2 -->
+                        <tr class="main-row">
+                            <td class="p-4 border-b border-gray-200">
+                                <a class="tor-link text-blue-600 hover:underline cursor-pointer">6.4.2 สามารถบันทึกข้อมูลกิจกรรมการบรรจุตู้/นำสินค้าออกจากตู้สินค้า</a>
+                            </td>
+                            <td class="p-4 border-b border-gray-200">
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">ผ่าน</span>
+                            </td>
+                            <td class="p-4 border-b border-gray-200 text-gray-500"></td>
+                        </tr>
+                        <tr class="details-row hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">ทำได้ :</b><br>
+                                            พัฒนาเพิ่มเติม
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">เอกสารอ้างอิง :</b><br>
+                                            การเชื่อมต่อกับระบบ TOS, CYMS, ERP และ TMS มีความหลากหลาย ต้องทำการกำหนด Format มาตรฐานใน   
+                                            การเชื่อมต่อ
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">เล่มเอกสาร :</b><br>
+                                            DD.02 Process Document_Import<br>
+                                            DD.03 Process Document_Export<br>
+                                            DD.06_Hinterland - Truck
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">หัวข้อที่นำเสนอ :</b><br>
+                                            2.2.3 <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.soeykxj6ufmn" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Send Data Activity</a><br>
+                                            1.6.1 <a href="https://docs.google.com/document/d/1pSrLfg292NiOQO7K48kYXz9CeRhy-enp/edit#bookmark=id.207gndo6zss2" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Container & Cargo Activity (Stuff / Gate In)</a><br>
+                                            1.1.9 <a href="https://docs.google.com/document/d/1sgHEscE2W7-cA5Y5Wauv8Y94gIL7Dbr-/edit#bookmark=id.epvv1c5t464k" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Gate Entry</a>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800">
+                                        <b class="font-bold">Prototype :</b><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=cynna1&p=im-40-20-010_00-send_data_plug_i_o-vgm-gate" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">2.2.3 IM-40-20-010/00</a><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=1ck39u&p=db-50-10-010_00-gate_in-out" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">1.6.1 DB-50-10-010/00</a><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=6gtm70&p=hl-j0-10-010_00-gate_activity_search&sc=1" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">1.1.9 HL-J0-10-010/00</a>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800"><b class="font-bold">ข้อเสนอแนะคณะกรรมการ :</b> ไม่มีข้อมูล</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Item 6.4.3 -->
+                        <tr class="main-row">
+                            <td class="p-4 border-b border-gray-200">
+                                <a class="tor-link text-blue-600 hover:underline cursor-pointer">6.4.3 สามารถบันทึกข้อมูลกิจกรรมการ Plug In/Out ของตู้เย็น</a>
+                            </td>
+                            <td class="p-4 border-b border-gray-200">
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">ผ่าน</span>
+                            </td>
+                            <td class="p-4 border-b border-gray-200 text-gray-500">แก้ไขแล้ว</td>
+                        </tr>
+                        <tr class="details-row hidden">
+                            <td colspan="3" class="p-0">
+                                 <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">ทำได้ :</b><br>
+                                            พัฒนาเพิ่มเติม
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">เอกสารอ้างอิง :</b><br>
+                                            การเชื่อมต่อกับระบบ TOS, CYMS, ERP และ TMS มีความหลากหลาย ต้องทำการกำหนด Format มาตรฐานใน   
+                                            การเชื่อมต่อ
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">เล่มเอกสาร :</b><br>
+                                            DD.02 Process Document_Import
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">หัวข้อที่นำเสนอ :</b><br>
+                                            2.2.3 <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.soeykxj6ufmn" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Send Data Activity</a>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="text-gray-800">
+                                        <b class="font-bold">Prototype :</b><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=cynna1&p=im-40-20-010_00-send_data_plug_i_o-vgm-gate" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">2.2.3 IM-40-20-010/00</a>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="text-gray-800">
+                                        <b class="font-bold">ข้อเสนอแนะคณะกรรมการ :</b>
+                                        <p class="mt-1">คณะกรรมการเสนอให้เพิ่ม "แสดงตัวอย่างไฟล์" และลักษณะ "Download CSV Template" ควรมีหน้าต่างหรือส่วนแสดงผลที่อธิบายรูปแบบและโครงสร้างของไฟล์ให้คณะกรรมการเห็นเพื่อพิจารณาด้วย</p>
+                                        <p class="text-sm text-gray-600 mt-2">วันที่ : 23 เมษายน 2568</p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="text-gray-800">
+                                         <b class="font-bold">รายละเอียดการแก้ไข:</b>
+                                         <p class="mt-1">ปรับให้ Prototype สามารถที่จะ Download Template ในระบบงานหัวข้อ 2.2.3 Send Data Activity ออกเป็น Format CSV File สามารถตรวจสอบตามภาพตัวอย่างนี้ <a href="https://drive.google.com/file/d/1SH18vnLZVAlGSmfkLkiQ8wkvoB4KlVI8/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">ภาพตัวอย่างการ Download เป็น CSV File</a> หรือเข้าไปใน Prototype ดังกล่าวด้านแล้วทดลองกดปุ่ม Download ได้</p>
+                                         <p class="text-sm text-gray-600 mt-2">วันที่ : 25 เมษายน 2568</p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Item 6.4.4 -->
+                        <tr class="main-row">
+                            <td class="p-4 border-b border-gray-200">
+                                <a class="tor-link text-blue-600 hover:underline cursor-pointer">6.4.4 มีระบบตรวจสอบ และบันทึกข้อมูลน้ำหนัก VGM สำหรับตู้สินค้าส่งออกที่จะขึ้นเรือ</a>
+                            </td>
+                            <td class="p-4 border-b border-gray-200">
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">ผ่าน</span>
+                            </td>
+                            <td class="p-4 border-b border-gray-200 text-gray-500"></td>
+                        </tr>
+                        <tr class="details-row hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">ทำได้ :</b><br>
+                                            พัฒนาเพิ่มเติม
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">เอกสารอ้างอิง :</b><br>
+                                            การเชื่อมต่อกับระบบ TOS, CYMS, ERP และ TMS มีความหลากหลาย ต้องทำการกำหนด Format มาตรฐานใน 
+                                            การเชื่อมต่อ
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">เล่มเอกสาร :</b><br>
+                                            DD.06_Hinterland - Truck
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">หัวข้อที่นำเสนอ :</b><br>
+                                            1.1.9 <a href="https://docs.google.com/document/d/1sgHEscE2W7-cA5Y5Wauv8Y94gIL7Dbr-/edit#bookmark=id.epvv1c5t464k" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Gate Entry</a>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800">
+                                        <b class="font-bold">Prototype :</b><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=6gtm70&p=hl-j0-10-010_00-gate_activity_search&sc=1" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">1.1.9 HL-J0-10-010/00</a>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800"><b class="font-bold">ข้อเสนอแนะคณะกรรมการ :</b> ไม่มีข้อมูล</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Item 6.5 -->
+                        <tr class="main-row">
+                            <td class="p-4 border-b border-gray-200">
+                                <a class="tor-link text-blue-600 hover:underline cursor-pointer">6.5 มีระบบสำหรับบบริหารจัดการสินค้าอันตราย เน้นในส่วนการขออนุญาตผ่านระบบและการติดตามสินค้าอันตรายภายในพื้นที่ท่าเรือ</a>
+                            </td>
+                            <td class="p-4 border-b border-gray-200">
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">ผ่าน</span>
+                            </td>
+                            <td class="p-4 border-b border-gray-200 text-gray-500"></td>
+                        </tr>
+                        <tr class="details-row hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">ทำได้ :</b><br>
+                                            ฟังก์ชันมาตรฐาน
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">เอกสารอ้างอิง :</b><br>
+                                            <a href="https://drive.google.com/file/d/1xqFgXLZDkT3VnyG8Yh9KTAr1aDFEhpBh/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 27</a>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">เล่มเอกสาร :</b><br>
+                                            DD.01 Process Document_Vessel<br>
+                                            DD.02 Process Document_Import
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">หัวข้อที่นำเสนอ :</b><br>
+                                            2.3.2 <a href="https://docs.google.com/document/d/1m3Ghe-gjvDm4r-gin9df8JckCn2U9vJC/edit#bookmark=id.e700h111cemr" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Dangerous Goods Declaration</a><br>
+                                            2.2.1 <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.bf40a08kc271" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Check to Load/Discharge Container & Cargo</a>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800">
+                                        <b class="font-bold">Prototype :</b><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=7cqr2k&p=10_1_search_dg_declaration_search&sc=1" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">2.3.1 SPL-DGDEC-001</a><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=90yzsc&p=hl-b4-10-020_00-send_file_create-edit&sc=1" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">2.2.1 HL-B4-10-020/00</a>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800"><b class="font-bold">ข้อเสนอแนะคณะกรรมการ :</b> ไม่มีข้อมูล</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Item 6.5.1 -->
+                        <tr class="main-row">
+                            <td class="p-4 border-b border-gray-200">
+                                <a class="tor-link text-blue-600 hover:underline cursor-pointer">6.5.1 ฐานข้อมูลสินค้าอันตรายตามมาตรฐาน International Maritime Dangerous Goods Code หรือ IMDG-Code</a>
+                            </td>
+                            <td class="p-4 border-b border-gray-200">
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">ผ่าน</span>
+                            </td>
+                            <td class="p-4 border-b border-gray-200 text-gray-500"></td>
+                        </tr>
+                        <tr class="details-row hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">ทำได้ :</b><br>
+                                            ฟังก์ชันมาตรฐาน
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">เอกสารอ้างอิง :</b><br>
+                                            <a href="https://drive.google.com/file/d/1xqFgXLZDkT3VnyG8Yh9KTAr1aDFEhpBh/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 27</a>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                         <div>
+                                            <b class="font-bold">เล่มเอกสาร :</b><br>
+                                            DD.01 Process Document_Vessel
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">หัวข้อที่นำเสนอ :</b><br>
+                                            2.3.2 <a href="https://docs.google.com/document/d/1m3Ghe-gjvDm4r-gin9df8JckCn2U9vJC/edit#bookmark=id.e700h111cemr" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Dangerous Goods Declaration</a>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800">
+                                         <b class="font-bold">Prototype :</b><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=7cqr2k&p=10_1_search_dg_declaration_search&sc=1" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">2.3.1 SPL-DGDEC-001</a>
+                                    </div>
+                                    <hr class="my-4 border-yellow-200">
+                                    <div class="text-gray-800"><b class="font-bold">ข้อเสนอแนะคณะกรรมการ :</b> ไม่มีข้อมูล</div>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Item 6.6 -->
+                        <tr class="main-row">
+                            <td class="p-4 border-b border-gray-200">
+                                <a class="tor-link text-blue-600 hover:underline cursor-pointer">6.6 มีรายงานติดตาม (Tracking) ทั้งแบบตู้สินค้ารายตู้ หรือเป็นกลุ่มที่สนใจหรือเป็นราย BL ในรูปแบบรายงานที่สามารถคันหา กรองรายการ และเรียงลำดับการแสดงผลได้ สามารถกดเพื่อรายละเอียดของตู้ได้</a>
+                            </td>
+                            <td class="p-4 border-b border-gray-200">
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">ผ่าน</span>
+                            </td>
+                            <td class="p-4 border-b border-gray-200 text-gray-500">แก้ไขแล้ว</td>
+                        </tr>
+                        <tr class="details-row hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">ทำได้ :</b><br>
+                                            ฟังก์ชันมาตรฐาน
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">เอกสารอ้างอิง :</b><br>
+                                            <a href="https://drive.google.com/file/d/1SWSKcR0kQptiESvKRiSO8MA4NM9QNXrA/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 37</a>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">เล่มเอกสาร :</b><br>
+                                            DD.02 Process Document_Import
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">หัวข้อที่นำเสนอ :</b><br>
+                                            2.1.1 <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.mvx5uebsfh9q" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Container & Cargo Discharge</a>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="text-gray-800">
+                                        <b class="font-bold">Prototype :</b><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=mmp86m&p=cn-60-10-010_00_-_11_info_service_track___trace&sc=3" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">2.1.1 INFO-TRACKTRACE-002</a>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="text-gray-800">
+                                        <b class="font-bold">ข้อเสนอแนะคณะกรรมการ :</b>
+                                        <p class="mt-1">คณะกรรมการมีข้อเสนอแนะให้ปรับปรุงการแสดงผลการค้นหา โดยให้เพิ่มการแสดงข้อมูล "หมายเลขตู้คอนเทนเนอร์" (Container No.) และ "หมายเลขใบตราส่งสินค้า" (BL No.) ในตารางผลลัพธ์ด้วย เพื่อให้ผู้ใช้งานสามารถเห็นข้อมูลสำคัญได้ทันที</p>
+                                        <p class="text-sm text-gray-600 mt-2">วันที่ : 23 เมษายน 2568</p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="text-gray-800">
+                                         <b class="font-bold">รายละเอียดการแก้ไข:</b>
+                                         <p class="mt-1">ปรับปรุง Prototype ให้เป็นไปตามคำแนะนำของคณะกรรมการ สามารถตรวจสอบจุดที่ปรับเปลี่ยนได้จาก <a href="https://drive.google.com/file/d/16Xk75p-OkqIh4qTl_yqDfJXiZO_IhhHb/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">ภาพตัวอย่างจุดที่มีการปรับแก้ไข Prototype</a> หรือ เข้าดู Prototype ด้าน</p>
+                                         <p class="text-sm text-gray-600 mt-2">วันที่ : 25 เมษายน 2568</p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Item 6.7 -->
+                        <tr class="main-row">
+                            <td class="p-4 border-b border-gray-200">
+                                <a class="tor-link text-blue-600 hover:underline cursor-pointer">6.7 มีหน้าจอ Dashboard แสดงสถิติของกิจกรรมการผ่านเข้า-ออกของ Gate ในสถานที่ต่าง ๆ ตั้งแต่ Terminal, CFS, ICD, ลานตู้ รวมถึง SRTO และท่าเรือชายฝั่ง หรือลานตู้เปล่าและท่าเรือ</a>
+                            </td>
+                            <td class="p-4 border-b border-gray-200">
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">ผ่าน</span>
+                            </td>
+                            <td class="p-4 border-b border-gray-200 text-gray-500">แก้ไขแล้ว</td>
+                        </tr>
+                        <tr class="details-row hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">ทำได้ :</b><br>
+                                            ฟังก์ชันมาตรฐาน
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">เอกสารอ้างอิง :</b><br>
+                                            <a href="https://drive.google.com/file/d/1LnIMkniyS3gUE5T0d0yhUci1E2hoFw-g/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 30</a>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">เล่มเอกสาร :</b><br>
+                                            DD.03 Process Document_Export
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">หัวข้อที่นำเสนอ :</b><br>
+                                            1.6.1 <a href="https://docs.google.com/document/d/1pSrLfg292NiOQO7K48kYXz9CeRhy-enp/edit#bookmark=id.207gndo6zss2" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Container & Cargo Activity (Stuff / Gate In)</a>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="text-gray-800">
+                                        <b class="font-bold">Prototype :</b><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=1ck39u&p=db-50-10-010_00-gate_in-out" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">1.6.1 DB-50-10-010/00</a>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="text-gray-800">
+                                        <b class="font-bold">ข้อเสนอแนะคณะกรรมการ :</b>
+                                        <p class="mt-1">คณะกรรมการมีข้อเสนอแนะหลายประการ คือ: ให้แก้ไขช่องค้นหา Facility ให้แสดงเป็นชื่อแทนรหัส, ปรับแก้ Dropdown "Facility Type" เป็น "Type" และเพิ่ม/แก้ไขตัวเลือกเป็น Port/Terminal, Warehouse, Cargo, และเปลี่ยนฟิลด์ Before-After ให้เป็นช่วงวันที่-เวลาที่ชัดเจน นอกจากนี้ ต้องแก้ไขข้อมูลในตารางและกราฟให้สัมพันธ์กันเสมอ และสำหรับฟังก์ชันแสดงผลตาม Gate ควรทำให้สามารถคลิกเพื่อดึงข้อมูลของแต่ละประตูได้ เพื่อวิเคราะห์ความหนาแน่น โดยควรยกตัวอย่างจากประตูที่มีทั้ง IN และ OUT</p>
+                                        <p class="text-sm text-gray-600 mt-2">วันที่ : 23 เมษายน 2568</p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="text-gray-800">
+                                         <b class="font-bold">รายละเอียดการแก้ไข:</b>
+                                         <p class="mt-1">ปรับปรุง Prototype ให้เป็นไปตามคำแนะนำของคณะกรรมการ เข้าดู Prototype ด้านที่มีการปรับเปลี่ยนได้</p>
+                                         <p class="text-sm text-gray-600 mt-2">วันที่ : 25 เมษายน 2568</p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Item 6.8 -->
+                        <tr class="main-row">
+                            <td class="p-4 border-b border-gray-200">
+                                <a class="tor-link text-blue-600 hover:underline cursor-pointer">6.8 มีหน้าจอ Dashboard แสดงข้อมูลสถิติของ Inventory ตู้สินค้าที่อยู่ในสถานที่ต่าง ๆ ตั้งแต่ Terminal, CFS, ICD, ลานตู้ รวมถึง SRTO และท่าเรือชายฝั่ง หรือข้อมูลสถิติของ Inventory ตู้สินค้าที่อยู่ในสถานที่ต่าง ๆ ตั้งแต่ Terminal, CFS, ICD, ลานตู้, ลานตู้เปล่าและท่าเรือ</a>
+                            </td>
+                            <td class="p-4 border-b border-gray-200">
+                                 <span class="px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800">ไม่ผ่าน</span>
+                            </td>
+                            <td class="p-4 border-b border-gray-200 text-gray-500">แก้ไขแล้ว</td>
+                        </tr>
+                        <tr class="details-row hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">ทำได้ :</b><br>
+                                            ฟังก์ชันมาตรฐาน
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">เอกสารอ้างอิง :</b><br>
+                                            <a href="https://drive.google.com/file/d/1vwQFYIJ6UZeqibnR1_viaxDmksL6fUz4/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 38</a>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-800">
+                                        <div>
+                                            <b class="font-bold">เล่มเอกสาร :</b><br>
+                                            DD.02 Process Document_Import
+                                        </div>
+                                        <div>
+                                            <b class="font-bold">หัวข้อที่นำเสนอ :</b><br>
+                                            1.5.11 Dashboard Terminal Container Inventory
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="text-gray-800">
+                                        <b class="font-bold">Prototype :</b><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=7t31db&p=db-80-20-010_00_db-terminal_container_inventory&sc=3" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">1.5.11 DB-80-10-010/00</a>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="text-gray-800">
+                                        <b class="font-bold">ข้อเสนอแนะคณะกรรมการ :</b>
+                                        <p class="mt-1">คณะกรรมการมีมติให้ดำเนินการออกแบบและพัฒนาหน้าจอนี้ใหม่ทั้งหมด โดยมีข้อกำหนดดังนี้<br>
+                                        <b>การออกแบบ (Design Reference):</b> ให้ยึดรูปแบบการออกแบบและส่วนประกอบต่างๆ ตามหน้าตัวอย่าง "Catalogue - Container Inventory" เป็นต้นแบบหลัก<br>
+                                        <b>ฟังก์ชันการทำงาน (Interactive Functionality):</b> ต้องเพิ่มความสามารถในการโต้ตอบกับกราฟ (Interactive Graph) โดยเมื่อผู้ใช้งานคลิกที่แท่งกราฟแต่ละแท่ง ระบบจะต้องสามารถแสดงรายละเอียดของข้อมูลสินค้าคงคลัง (Inventory) ที่เป็นองค์ประกอบของข้อมูลในแท่งกราฟนั้นๆ ได้ (Drill-Down Feature)</p>
+                                        <p class="text-sm text-gray-600 mt-2">วันที่ : 23 เมษายน 2568</p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="text-gray-800">
+                                         <b class="font-bold">รายละเอียดการแก้ไข:</b>
+                                         <p class="mt-1">ปรับปรุง Prototype ให้เป็นไปตามคำแนะนำของคณะกรรมการ เข้าดู Prototype ด้านที่มีการปรับเปลี่ยนได้ สามารถตรวจสอบจากภาพตัวอย่าง <a href="https://drive.google.com/file/d/1VNfTCkVzQ612RsyLXenSJ0-1wnRu6K_7/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">ภาพตัวอย่างก่อน-หลังปรับแก้ไข</a> ที่มีการปรับเปลี่ยน</p>
+                                         <p class="text-sm text-gray-600 mt-2">วันที่ : 23 เมษายน 2568</p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // This script is for the row expansion functionality.
+            const allMainRows = document.querySelectorAll('.main-row');
+
+            allMainRows.forEach(row => {
+                const clickableLink = row.querySelector('.tor-link');
+                const detailsRow = row.nextElementSibling;
+
+                clickableLink.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    
+                    const isAlreadyOpen = row.classList.contains('row-active');
+
+                    // Close all other open rows
+                    document.querySelectorAll('.main-row.row-active').forEach(activeRow => {
+                        if (activeRow !== row) {
+                            activeRow.classList.remove('row-active');
+                            activeRow.nextElementSibling.classList.add('hidden');
+                        }
+                    });
+
+                    // Toggle the current row
+                    if (isAlreadyOpen) {
+                        row.classList.remove('row-active');
+                        detailsRow.classList.add('hidden');
+                    } else {
+                        row.classList.add('row-active');
+                        detailsRow.classList.remove('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype: Vessel Activity System</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Sarabun -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Using Sarabun font for Thai language for better readability */
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f3f4f6; /* bg-gray-100 */
+        }
+
+        /* Style for making the row bold when active/expanded */
+        .tor-row.row-active > td {
+            font-weight: 700; /* font-bold */
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8">
+
+    <!-- Header is now outside the white container -->
+    <div class="mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">ข้อกำหนด(TOR) ทั้งหมดใน | ระบบสำหรับกิจกรรมเรือ (Vessel)</h1>
+        <p class="mt-2 text-sm text-gray-500">ข้อมูลอัพเดท วันที่ : 18 มิถุนายน 2568</p>
+    </div>
+
+    <!-- Full width container -->
+    <div class="w-full bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="p-0">
+            <!-- Table Section -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <!-- Table Header -->
+                    <!-- UPDATED: Changed background color to bg-gray-200 for a darker shade -->
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th scope="col" class="px-6 py-4 text-left text-base font-bold text-gray-600 uppercase tracking-wider">
+                                ข้อกำหนด(TOR)
+                            </th>
+                            <th scope="col" class="w-48 px-6 py-4 text-left text-base font-bold text-gray-600 uppercase tracking-wider">
+                                สถานะ
+                            </th>
+                            <th scope="col" class="w-48 px-6 py-4 text-left text-base font-bold text-gray-600 uppercase tracking-wider">
+                                การแก้ไข
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="tor-table-body">
+                        <!-- Row 1: Main Data (2.1)-->
+                        <tr class="tor-row">
+                            <td class="px-6 py-4 whitespace-normal text-base font-medium">
+                                <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline flex items-start expandable-toggle">
+                                    <span>2.1 สามารถตั้งค่า Service Route หรือเส้นทางแผนการเดินเรือที่จะผ่านมายัง Port หรือ Terminal ในประเทศไทย โดยเป็นการกำหนดครั้งเดียวตั้งต้นระบบจนกว่าจะมีการเปลี่ยนแปลงเส้นทางของสายเรือ</span>
+                                 </a>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base">
+                                <span class="px-3 py-1 inline-flex text-base leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    ผ่าน
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base text-gray-500">
+                            </td>
+                        </tr>
+                        <!-- Row 1: Hidden Details (2.1) -->
+                        <tr class="detail-row hidden">
+                            <td colspan="3" class="p-0">
+                               <div class="bg-yellow-50 p-6 border-t border-gray-200">
+                                    <div class="space-y-4 text-gray-800">
+                                        <div class="flex flex-col md:flex-row gap-6">
+                                            <div class="w-full md:w-1/2">
+                                                <p><strong class="font-bold">ทำได้ :</strong><br>ฟังก์ชันมาตรฐาน</p>
+                                            </div>
+                                            <div class="w-full md:w-1/2 md:border-l md:pl-6 border-gray-300">
+                                                <p><strong class="font-bold">เอกสารอ้างอิง :</strong><br>
+                                                    <a href="https://drive.google.com/file/d/1XZrDrFkjhjo5xVbVqB2rGAcIdnvfJvRS/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 15</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div class="flex flex-col md:flex-row gap-6">
+                                            <div class="w-full md:w-1/2">
+                                                <p><strong class="font-bold">เล่มเอกสาร :</strong><br>DD.01 By Process Document_Vessel</p>
+                                            </div>
+                                            <div class="w-full md:w-1/2 md:border-l md:pl-6 border-gray-300">
+                                                <p><strong class="font-bold">หัวข้อที่นำเสนอ :</strong><br>1.1.3 <a href="https://docs.google.com/document/d/1gs4qu3KgJ-CUrCTSmVfsLUuBgijOSnFD/edit#bookmark=id.nbe2gcojd9c" target="_blank" class="text-blue-600 hover:underline">Service Route</a></p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">Prototype :</strong><br><a href="https://pcs.softyourstyle.com/?id=vwlg9i&p=vs-05-10-010_00-service_route_enquire&sc=1" target="_blank" class="text-blue-600 hover:underline">1.1.3 VSL-SRS-001</a></p>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">ข้อเสนอแนะคณะกรรมการ :</strong> ไม่มีข้อมูล</p>
+                                        </div>
+                                    </div>
+                               </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 2: Main Data (2.2) -->
+                        <tr class="tor-row">
+                            <td class="px-6 py-4 whitespace-normal text-base font-medium">
+                                <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline flex items-start expandable-toggle">
+                                    <span>2.2 สามารถแจ้งข้อมูลเรือใหม่ที่ยังไม่เคยผ่านเข้ามายัง Port หรือ Terminal ในประเทศไทยมาก่อน โดยเป็นใส่ข้อมูลครั้งเดียวสำหรับเรือใหม่เท่านั้น</span>
+                                 </a>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base">
+                                <span class="px-3 py-1 inline-flex text-base leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    ผ่าน
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base text-gray-500">
+                            </td>
+                        </tr>
+                        <!-- Row 2: Hidden Details (2.2) -->
+                        <tr class="detail-row hidden">
+                            <td colspan="3" class="p-0">
+                               <div class="bg-yellow-50 p-6 border-t border-gray-200">
+                                    <div class="space-y-4 text-gray-800">
+                                       <div class="flex flex-col md:flex-row gap-6">
+                                            <div class="w-full md:w-1/2">
+                                                <p><strong class="font-bold">ทำได้ :</strong><br>ฟังก์ชันมาตรฐาน</p>
+                                            </div>
+                                            <div class="w-full md:w-1/2 md:border-l md:pl-6 border-gray-300">
+                                                <p><strong class="font-bold">เอกสารอ้างอิง :</strong><br>
+                                                    <a href="https://drive.google.com/file/d/1XZrDrFkjhjo5xVbVqB2rGAcIdnvfJvRS/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 15</a><br>
+                                                    <a href="https://drive.google.com/file/d/1XAUL9-hNu_-oBbqgITmAlj5_NXP-MM0F/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 16</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                       <div class="flex flex-col md:flex-row gap-6">
+                                            <div class="w-full md:w-1/2">
+                                                <p><strong class="font-bold">เล่มเอกสาร :</strong><br>DD.01 By Process Document_Vessel</p>
+                                            </div>
+                                            <div class="w-full md:w-1/2 md:border-l md:pl-6 border-gray-300">
+                                                <p><strong class="font-bold">หัวข้อที่นำเสนอ :</strong><br>1.1.4 <a href="https://docs.google.com/document/d/1gs4qu3KgJ-CUrCTSmVfsLUuBgijOSnFD/edit#bookmark=id.ck545095nytr" target="_blank" class="text-blue-600 hover:underline">Marine Department</a><br>1.1.5 <a href="https://docs.google.com/document/d/1gs4qu3KgJ-CUrCTSmVfsLUuBgijOSnFD/edit#bookmark=id.nfgqu91cyd0n" target="_blank" class="text-blue-600 hover:underline">Vessel Particular</a></p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">Prototype :</strong><br><a href="https://pcs.softyourstyle.com/?id=mcivmp&p=swmd-2_03_1-vessel_registration&sc=1" target="_blank" class="text-blue-600 hover:underline">1.1.4 Marine Department</a><br><a href="https://pcs.softyourstyle.com/?id=2x25jv&p=vs-10-16-010_00-vessel_particulars_enquire&sc=3" target="_blank" class="text-blue-600 hover:underline">1.1.5 VSL-VPL-001</a></p>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">ข้อเสนอแนะคณะกรรมการ :</strong> ไม่มีข้อมูล</p>
+                                        </div>
+                                    </div>
+                               </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Row 3: Main Data (2.3) -->
+                        <tr class="tor-row">
+                            <td class="px-6 py-4 whitespace-normal text-base font-medium">
+                                <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline flex items-start expandable-toggle">
+                                    <span>2.3 สามารถจัดการตารางเรือ online โดยสายเรือ/ตัวแทนสายเรือส่งข้อมูลดังกล่าวเข้าระบบ PCS โดยสามารถทำได้ในหลายรูปแบบ (EDI, Upload, VSED จากระบบ NSW หรือบันทึกผ่านหน้าจอ หรือ Interface ข้อมูล) ข้อมูลดังกล่าวจะถูกส่งต่อไปยังหน่วยงานรัฐหรือผู้เกี่ยวข้องที่ต้องการใช้งานข้อมูล ต่อไป อนึ่ง ระบบ PCS ยังสามารถเชื่อมต่อกับระบบ NSW ซึ่งสามารถรับข้อมูลตารางเรือ (VSED) จากระบบ NSW ได้อีกทางหนึ่ง ซึ่งหากระบบ PCS ได้รับข้อมูลจากหลายแหล่ง ระบบจะทำการเปรียบเทียบและแสดงผลข้อมูลที่ล่าสุดให้</span>
+                                 </a>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base">
+                                <span class="px-3 py-1 inline-flex text-base leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    ผ่าน
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base text-gray-500">
+                            </td>
+                        </tr>
+                        <!-- Row 3: Hidden Details (2.3) -->
+                        <tr class="detail-row hidden">
+                            <td colspan="3" class="p-0">
+                               <div class="bg-yellow-50 p-6 border-t border-gray-200">
+                                    <div class="space-y-4 text-gray-800">
+                                       <div class="flex flex-col md:flex-row gap-6">
+                                            <div class="w-full md:w-1/2">
+                                                <p><strong class="font-bold">ทำได้ :</strong><br>พัฒนาเพิ่มเติม</p>
+                                            </div>
+                                            <div class="w-full md:w-1/2 md:border-l md:pl-6 border-gray-300">
+                                                <p><strong class="font-bold">เอกสารอ้างอิง :</strong><br>
+                                                    <a href="https://drive.google.com/file/d/1XZrDrFkjhjo5xVbVqB2rGAcIdnvfJvRS/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 15</a><br>
+                                                    <a href="https://drive.google.com/file/d/1XAUL9-hNu_-oBbqgITmAlj5_NXP-MM0F/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 16</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                       <div class="flex flex-col md:flex-row gap-6">
+                                            <div class="w-full md:w-1/2">
+                                                <p><strong class="font-bold">เล่มเอกสาร :</strong><br>DD.01 By Process Document_Vessel<br>DD.02 Process Document_Import</p>
+                                            </div>
+                                            <div class="w-full md:w-1/2 md:border-l md:pl-6 border-gray-300">
+                                                <p><strong class="font-bold">หัวข้อที่นำเสนอ :</strong><br>4.1.1 <a href="https://docs.google.com/document/d/1gs4qu3KgJ-CUrCTSmVfsLUuBgijOSnFD/edit#bookmark=id.qz7oakcr605d" target="_blank" class="text-blue-600 hover:underline">Vessel Schedule</a><br>1.3.1 <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.vvoxoaydxghi" target="_blank" class="text-blue-600 hover:underline">e-Manifest</a></p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">Prototype :</strong><br><a href="https://pcs.softyourstyle.com/?id=2xjezy&p=vs-90-10-010_00-vessel_schdule_search&sc=3" target="_blank" class="text-blue-600 hover:underline">4.1.1 REPORT-BASS-001</a><br><a href="https://pcs.softyourstyle.com/?id=gtzkx7&p=vs-70-10-010_00-e-manifest_search&sc=3" target="_blank" class="text-blue-600 hover:underline">1.3.1 VS-70-10-010/00</a></p>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">ข้อเสนอแนะคณะกรรมการ :</strong> ไม่มีข้อมูล</p>
+                                        </div>
+                                    </div>
+                               </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 4: Main Data (2.4) -->
+                        <tr class="tor-row">
+                            <td class="px-6 py-4 whitespace-normal text-base font-medium">
+                                <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline flex items-start expandable-toggle">
+                                    <span>2.4 มีระบบสำหรับสายเรือ/ตัวแทนในการแจ้งขอนำเรือเข้าเทียบท่า และขอใช้บริการต่าง ๆ จากการท่าเรือ และ/หรือหน่วยงานอื่น ๆ ที่เกี่ยวข้อง เช่น กรมเจ้าท่า, กรมศุลกากร, Terminal ที่เกี่ยวข้อง เป็นต้น</span>
+                                 </a>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base">
+                                <span class="px-3 py-1 inline-flex text-base leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                    ไม่ผ่าน
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base text-gray-500">
+                                แก้ไขแล้ว
+                            </td>
+                        </tr>
+                        <!-- Row 4: Hidden Details (2.4) -->
+                        <tr class="detail-row hidden">
+                            <td colspan="3" class="p-0">
+                               <div class="bg-yellow-50 p-6 border-t border-gray-200">
+                                    <div class="space-y-4 text-gray-800">
+                                       <div class="flex flex-col md:flex-row gap-6">
+                                            <div class="w-full md:w-1/2">
+                                                <p><strong class="font-bold">ทำได้ :</strong><br>พัฒนาเพิ่มเติม</p>
+                                            </div>
+                                            <div class="w-full md:w-1/2 md:border-l md:pl-6 border-gray-300">
+                                                <p><strong class="font-bold">เอกสารอ้างอิง :</strong><br>
+                                                    <a href="https://drive.google.com/file/d/1XZrDrFkjhjo5xVbVqB2rGAcIdnvfJvRS/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 15</a><br>
+                                                    <a href="https://drive.google.com/file/d/1XAUL9-hNu_-oBbqgITmAlj5_NXP-MM0F/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 16</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                       <div class="flex flex-col md:flex-row gap-6">
+                                            <div class="w-full md:w-1/2">
+                                                <p><strong class="font-bold">เล่มเอกสาร :</strong><br>DD.01 By Process Document_Vessel</p>
+                                            </div>
+                                            <div class="w-full md:w-1/2 md:border-l md:pl-6 border-gray-300">
+                                                <p><strong class="font-bold">หัวข้อที่นำเสนอ :</strong><br>2.1.1 <a href="https://docs.google.com/document/d/1gs4qu3KgJ-CUrCTSmVfsLUuBgijOSnFD/edit#bookmark=id.gztiubr9ilhb" target="_blank" class="text-blue-600 hover:underline">Berth Application</a><br>3.1.1 <a href="https://docs.google.com/document/d/1gs4qu3KgJ-CUrCTSmVfsLUuBgijOSnFD/edit#bookmark=id.hfri7ketcop6" target="_blank" class="text-blue-600 hover:underline">Vessel Movement - Pilot Tracking, Tugboat Tracking and Schedule Update (Actual)</a></p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">Prototype :</strong><br><a href="https://pcs.softyourstyle.com/?id=lgj9tz&p=vs-50-20-020_00-berth_application-enquire&sc=3" target="_blank" class="text-blue-600 hover:underline">2.1.1 VS-50-20-020/00</a><br><a href="https://pcs.softyourstyle.com/?id=rrhrxq&p=vs-b0-10-010_00-vessel_movement_search&sc=3" target="_blank" class="text-blue-600 hover:underline">3.1.1 VS-B0-10-010/00</a></p>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">ข้อเสนอแนะคณะกรรมการ :</strong></p>
+                                            <div class="mt-2">
+                                                <p>คณะกรรมการมีข้อเสนอแนะให้เพิ่มเติมความสามารถของระบบ 2 ส่วนดังนี้:<br>
+                                                การติดตามตำแหน่งเรือ (Vessel Tracking): เพิ่มระบบติดตามการเคลื่อนที่ของเรือในปัจจุบัน<br>
+                                                ประวัติคำขอเทียบท่า (Berth Application History): พัฒนาให้ระบบสามารถตรวจสอบประวัติการยื่นคำขอเข้าเทียบท่าได้<br>
+                                                ทั้งนี้ เพื่อให้สามารถรองรับกรณีที่มีการยื่นคำร้องขอเปลี่ยนแปลงท่าจอดเรือ หลังจากที่ได้ส่งคำขอเข้าเทียบท่าในครั้งแรกไปแล้ว</p>
+                                                <p class="mt-1 text-sm text-gray-500">วันที่ : 09 เมษายน 2568</p>
+                                            </div>
+                                            <div class="mt-3">
+                                                <p>คณะกรรมการแนะนำให้เพิ่มสถานที่จอดเรือ ซึ่งจะมีการใช้งานละเอียดมากกว่า Terminal / Port เช่น ทุ่นกลางน้ำ หลักที่เท่าไหร่ ต้องรอ Demo จาก GPN</p>
+                                                <p class="mt-1 text-sm text-gray-500">วันที่ : 11 มิถุนายน 2568</p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">รายละเอียดการแก้ไข:</strong></p>
+                                            <div class="mt-2">
+                                                <p>ประเด็นดังกล่าวให้ GPN เข้าอธิบายรายละเอียดใน Standard ของโปรแกรม และการ Customize เพิ่มเติมสำหรับ Version ที่จะใช้งานในประเทศไทย</p>
+                                                <p class="mt-1 text-sm text-gray-500">วันที่ : 18 มิถุนายน 2568</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                               </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 5: Main Data (2.5) -->
+                        <tr class="tor-row">
+                            <td class="px-6 py-4 whitespace-normal text-base font-medium">
+                                <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline flex items-start expandable-toggle">
+                                    <div class="leading-relaxed">2.5 มีระบบสำหรับสายเรือ/ตัวแทนในตรวจสอบคำขอ (Permit) ต่าง ๆ ที่ต้องขอกับกรมเจ้าท่า ได้แก่
+                                        <ul class="list-disc list-inside mt-2">
+                                            <li>การขอนำเรือเทียบท่า: การขอใช้ผู้นำร่อง</li>
+                                            <li>การขอนำเรือเทียบท่า: กรณีขนถ่ายสินค้าที่อาจทำให้เกิดอันตราย</li>
+                                            <li>การขอนำเรือเทียบท่า: กรณีขออนุญาตจอดเรือนอกเขตท่า การท่าเรือแห่งประเทศไทย</li>
+                                            <li>การขอนำเรือเทียบท่า: กรณีคำขออนุญาตให้เคลื่อนย้ายเรือ</li>
+                                            <li>การขอนำเรือออกจากท่าเทียบ: การขอใช้ผู้นำร่อง</li>
+                                            <li>การขอนำเรือออกจากท่าเทียบ: การขออนุญาตนำเรือออกจากท่า (Port Clearance)</li>
+                                        </ul>
+                                        <span class="mt-2 block">โดยระบบจะเชื่อมต่อข้อมูลคำขอ (Permit) และสถานะต่าง ๆ จากระบบ SW@MD ของกรมเจ้าท่าเพื่อแสดงผลให้</span>
+                                    </div>
+                                 </a>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base">
+                                <span class="px-3 py-1 inline-flex text-base leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    ผ่าน
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base text-gray-500">
+                            </td>
+                        </tr>
+                        <!-- Row 5: Hidden Details (2.5) -->
+                        <tr class="detail-row hidden">
+                            <td colspan="3" class="p-0">
+                               <div class="bg-yellow-50 p-6 border-t border-gray-200">
+                                    <div class="space-y-4 text-gray-800">
+                                       <div class="flex flex-col md:flex-row gap-6">
+                                            <div class="w-full md:w-1/2">
+                                                <p><strong class="font-bold">ทำได้ :</strong><br>พัฒนาเพิ่มเติม</p>
+                                            </div>
+                                            <div class="w-full md:w-1/2 md:border-l md:pl-6 border-gray-300">
+                                                <p><strong class="font-bold">เอกสารอ้างอิง :</strong><br>
+                                                    <a href="https://drive.google.com/file/d/1XZrDrFkjhjo5xVbVqB2rGAcIdnvfJvRS/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 15</a><br>
+                                                    หมายเหตุ : การ Interface กับระบบ SW@MD ของกรมเจ้าท่า เป็นรูปแบบเฉพาะประเทศไทย ระบบ PCS ต่างประเทศต้องปรับปรุงให้เข้ากับข้อกำหนดของ กรมเจ้าท่า
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                       <div class="flex flex-col md:flex-row gap-6">
+                                            <div class="w-full md:w-1/2">
+                                                <p><strong class="font-bold">เล่มเอกสาร :</strong><br>DD.01 By Process Document_Vessel</p>
+                                            </div>
+                                            <div class="w-full md:w-1/2 md:border-l md:pl-6 border-gray-300">
+                                                <p><strong class="font-bold">หัวข้อที่นำเสนอ :</strong><br>
+                                                    1.1.4 <a href="https://docs.google.com/document/d/1gs4qu3KgJ-CUrCTSmVfsLUuBgijOSnFD/edit#bookmark=id.ck545095nytr" target="_blank" class="text-blue-600 hover:underline">Marine Department - กรมเจ้าท่า</a><br>
+                                                    2.1.2 <a href="https://docs.google.com/document/d/1gs4qu3KgJ-CUrCTSmVfsLUuBgijOSnFD/edit#bookmark=id.zbq3stbamsbh" target="_blank" class="text-blue-600 hover:underline">Pilot</a><br>
+                                                    3.1.1 <a href="https://docs.google.com/document/d/1gs4qu3KgJ-CUrCTSmVfsLUuBgijOSnFD/edit#bookmark=id.hfri7ketcop6" target="_blank" class="text-blue-600 hover:underline">Vessel Movement - Pilot Tracking, Tugboat Tracking and Schedule Update (Actual)</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">Prototype :</strong><br>
+                                                <a href="https://pcs.softyourstyle.com/?id=t1yqi6&p=vs-30-80-010_00-inquiries_status&sc=3" target="_blank" class="text-blue-600 hover:underline">1.1.4 VS-30-80-010/00</a><br>
+                                                <a href="https://pcs.softyourstyle.com/?id=k72paf&p=swmd-2_03_6-pilotage&sc=3" target="_blank" class="text-blue-600 hover:underline">2.1.1 Pilotage</a><br>
+                                                <a href="https://pcs.softyourstyle.com/?id=rrhrxq&p=vs-b0-10-010_00-vessel_movement_search&sc=3" target="_blank" class="text-blue-600 hover:underline">3.1.1 VS-B0-10-010/00</a>
+                                            </p>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">ข้อเสนอแนะคณะกรรมการ :</strong> ไม่มีข้อมูล</p>
+                                        </div>
+                                    </div>
+                               </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Row 6: Main Data (2.6) -->
+                        <tr class="tor-row">
+                            <td class="px-6 py-4 whitespace-normal text-base font-medium">
+                                <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline flex items-start expandable-toggle">
+                                    <span>2.6 มีหน้าจอ Dashboard แสดงภาพรวมของกิจกรรมต่าง ๆ ของท่าเทียบเรือ รวมทั้งตำแหน่งของเรือ เวลา ETA/ATA/ETD/ATD และสถานะการทำงาน Load หรือ Discharge ตู้ประเภทต่าง ๆ โดยรวม หรือสามารถแสดงสถานะของเรือทุกลำตามที่ระบบ berthing สามารถส่งข้อมูลมาให้ PCS</span>
+                                 </a>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base">
+                                <span class="px-3 py-1 inline-flex text-base leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                    ไม่ผ่าน
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base font-semibold text-yellow-600">
+                                กำลังดำเนินการ
+                            </td>
+                        </tr>
+                        <!-- Row 6: Hidden Details (2.6) -->
+                        <tr class="detail-row hidden">
+                            <td colspan="3" class="p-0">
+                               <div class="bg-yellow-50 p-6 border-t border-gray-200">
+                                    <div class="space-y-4 text-gray-800">
+                                       <div class="flex flex-col md:flex-row gap-6">
+                                            <div class="w-full md:w-1/2">
+                                                <p><strong class="font-bold">ทำได้ :</strong><br>ฟังก์ชันมาตรฐาน</p>
+                                            </div>
+                                            <div class="w-full md:w-1/2 md:border-l md:pl-6 border-gray-300">
+                                                <p><strong class="font-bold">เอกสารอ้างอิง :</strong><br>
+                                                    <a href="https://drive.google.com/file/d/1vnF-Qy1htR3m372-AfDZPAg8SuqcgKou/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 17</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                       <div class="flex flex-col md:flex-row gap-6">
+                                            <div class="w-full md:w-1/2">
+                                                <p><strong class="font-bold">เล่มเอกสาร :</strong><br>DD.01 By Process Document_Vessel</p>
+                                            </div>
+                                            <div class="w-full md:w-1/2 md:border-l md:pl-6 border-gray-300">
+                                                <p><strong class="font-bold">หัวข้อที่นำเสนอ :</strong><br>4.1.1 <a href="https://docs.google.com/document/d/1gs4qu3KgJ-CUrCTSmVfsLUuBgijOSnFD/edit#bookmark=id.qz7oakcr605d" target="_blank" class="text-blue-600 hover:underline">Vessel Schedule</a></p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">Prototype :</strong><br><a href="https://pcs.softyourstyle.com/?id=2xjezy&p=vs-90-10-010_00-vessel_schdule_search&sc=3" target="_blank" class="text-blue-600 hover:underline">4.1.1 REPORT-BASS-001</a></p>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">ข้อเสนอแนะคณะกรรมการ :</strong></p>
+                                            <div class="mt-2">
+                                                <p>เพิ่มคำอธิบาย Plan/actual ของ discharge / loading (ในหน้า Dashboard) เพิ่ม estimate time (ETA) ในหน้า dashboard movement Berth and unberth สามารถ display มากกว่า 1 ค่า เช่นการ ิ้งสมอ ถอนสมอ เพราะบางท่าใช้ เพื่อคอนเฟิร์มว่าเรือถึงแล้ว (บางท่าไม่ใช้ ก็ให้เว้นว่างไว้)</p>
+                                                <p class="mt-1 text-sm text-gray-500">วันที่ : 09 เมษายน 2568</p>
+                                            </div>
+                                            <hr class="border-gray-300 my-2">
+                                            <div class="mt-3">
+                                                <p>คณะกรรมการเสนอแนะในหน้าภาพรวม (Dashboard) เสนอให้เพิ่มการแสดงข้อมูลเปรียบเทียบระหว่างแผนงาน (Plan) และผลการปฏิบัติงานจริง (Actual) ของการขนถ่ายสินค้า (Loading/Discharge) และเพิ่มข้อมูลเวลาที่เรือจะมาถึงโดยประมาณ (ETA) ในส่วนของการเคลื่อนที่ของเรือ<br>
+                                                นอกจากนี้ ในกระบวนการเทียบท่าและออกจากท่า (Berth/Unberth) ควรพัฒนาระบบให้สามารถบันทึกและแสดงสถานะได้หลายค่า (เช่น การทิ้งสมอ, การถอนสมอ) เพื่อยืนยันการมาถึงของเรือตามขั้นตอนของแต่ละท่าเรือ โดยหากท่าเรือใดไม่มีการใช้งานในส่วนนี้ ก็ให้แสดงเป็นค่าว่างได้</p>
+                                                <p class="mt-1 text-sm text-gray-500">วันที่ : 11 มิถุนายน 2568</p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">รายละเอียดการแก้ไข:</strong></p>
+                                            <div class="mt-2">
+                                                <p>อยู่ในระหว่างประสานกับคณะกรรมการ(คุณตี๋)ในการรวบรวมข้อมูลที่ทางคณะกรรมการสรุปความต้องการแล้วจัดส่งให้เพื่อดำเนินการเพิ่มใน Prototype ต่อไป</p>
+                                                <p class="mt-1 text-sm text-gray-500">วันที่ : 11 มิถุนายน 2568</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                               </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 7: Main Data (2.7) -->
+                        <tr class="tor-row">
+                            <td class="px-6 py-4 whitespace-normal text-base font-medium">
+                                <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline flex items-start expandable-toggle">
+                                    <span>2.7 มีหน้าจอ Dashboard แสดงสรุปตารางเรือที่เข้าเทียบท่า และออกจากท่าในช่วงเวลาหนึ่งๆ โดยเชื่อมข้อมูลมาจากระบบ Vessel Schedule และ Berth Plan</span>
+                                 </a>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base">
+                                <span class="px-3 py-1 inline-flex text-base leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                    ไม่ผ่าน
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base font-semibold text-yellow-600">
+                                กำลังดำเนินการ
+                            </td>
+                        </tr>
+                        <!-- Row 7: Hidden Details (2.7) -->
+                        <tr class="detail-row hidden">
+                            <td colspan="3" class="p-0">
+                               <div class="bg-yellow-50 p-6 border-t border-gray-200">
+                                    <div class="space-y-4 text-gray-800">
+                                       <div class="flex flex-col md:flex-row gap-6">
+                                            <div class="w-full md:w-1/2">
+                                                <p><strong class="font-bold">ทำได้ :</strong><br>ฟังก์ชันมาตรฐาน</p>
+                                            </div>
+                                            <div class="w-full md:w-1/2 md:border-l md:pl-6 border-gray-300">
+                                                <p><strong class="font-bold">เอกสารอ้างอิง :</strong><br>
+                                                    <a href="https://drive.google.com/file/d/1vnF-Qy1htR3m372-AfDZPAg8SuqcgKou/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 17</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                       <div class="flex flex-col md:flex-row gap-6">
+                                            <div class="w-full md:w-1/2">
+                                                <p><strong class="font-bold">เล่มเอกสาร :</strong><br>DD.01 By Process Document_Vessel</p>
+                                            </div>
+                                            <div class="w-full md:w-1/2 md:border-l md:pl-6 border-gray-300">
+                                                <p><strong class="font-bold">หัวข้อที่นำเสนอ :</strong><br>4.1.1 <a href="https://docs.google.com/document/d/1gs4qu3KgJ-CUrCTSmVfsLUuBgijOSnFD/edit#bookmark=id.qz7oakcr605d" target="_blank" class="text-blue-600 hover:underline">Vessel Schedule</a></p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">Prototype :</strong><br><a href="https://pcs.softyourstyle.com/?id=2xjezy&p=vs-90-10-010_00-vessel_schdule_search&sc=3" target="_blank" class="text-blue-600 hover:underline">4.1.1 REPORT-BASS-001</a></p>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">ข้อเสนอแนะคณะกรรมการ :</strong></p>
+                                            <div class="mt-2">
+                                                <p>คณะกรรมการอ้างอิง Product Catalouge มีรูป Dashboad ที่ดูแล้วเข้าใจมากกว่าที่ทีมนำเสนอ</p>
+                                                <p class="mt-1 text-sm text-gray-500">วันที่ : 09 เมษายน 2568</p>
+                                            </div>
+                                            <hr class="border-gray-300 my-2">
+                                            <div class="mt-3">
+                                                <p>คณะกรรมการเสนอแนะในหน้าภาพรวม (Dashboard) เสนอให้เพิ่มการแสดงข้อมูลเปรียบเทียบระหว่างแผนงาน (Plan) และผลการปฏิบัติงานจริง (Actual) ของการขนถ่ายสินค้า (Loading/Discharge) และเพิ่มข้อมูลเวลาที่เรือจะมาถึงโดยประมาณ (ETA) ในส่วนของการเคลื่อนที่ของเรือ<br>
+                                                นอกจากนี้ ในกระบวนการเทียบท่าและออกจากท่า (Berth/Unberth) ควรพัฒนาระบบให้สามารถบันทึกและแสดงสถานะได้หลายค่า (เช่น การทิ้งสมอ, การถอนสมอ) เพื่อยืนยันการมาถึงของเรือตามขั้นตอนของแต่ละท่าเรือ โดยหากท่าเรือใดไม่มีการใช้งานในส่วนนี้ ก็ให้แสดงเป็นค่าว่างได้</p>
+                                                <p class="mt-1 text-sm text-gray-500">วันที่ : 11 มิถุนายน 2568</p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">รายละเอียดการแก้ไข:</strong></p>
+                                            <div class="mt-2">
+                                                <p>อยู่ในระหว่างประสานกับคณะกรรมการ(คุณตี๋)ในการรวบรวมข้อมูลที่ทางคณะกรรมการสรุปความต้องการแล้วจัดส่งให้เพื่อดำเนินการเพิ่มใน Prototype ต่อไป</p>
+                                                <p class="mt-1 text-sm text-gray-500">วันที่ : 11 มิถุนายน 2568</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                               </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 8: Main Data (2.8) -->
+                        <tr class="tor-row">
+                            <td class="px-6 py-4 whitespace-normal text-base font-medium">
+                                <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline flex items-start expandable-toggle">
+                                    <span>2.8 มีหน้าจอรายงาน Tracking สำหรับดูสถานะเรือแต่ละลำ หรือเป็นกลุ่มที่สนใจในรูปแบบรายงานที่สามารถคันหา กรองรายการ และเรียงลำดับการแสดงผลได้ สามารถกดเพื่อรายละเอียดการ Load/Discharge Throughput ของตู้ในเรือลำดังกล่าว</span>
+                                 </a>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base">
+                                <span class="px-3 py-1 inline-flex text-base leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    ผ่าน
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base text-gray-500">
+                                 แก้ไขแล้ว
+                            </td>
+                        </tr>
+                        <!-- Row 8: Hidden Details (2.8) -->
+                        <tr class="detail-row hidden">
+                            <td colspan="3" class="p-0">
+                               <div class="bg-yellow-50 p-6 border-t border-gray-200">
+                                    <div class="space-y-4 text-gray-800">
+                                       <div class="flex flex-col md:flex-row gap-6">
+                                            <div class="w-full md:w-1/2">
+                                                <p><strong class="font-bold">ทำได้ :</strong><br>ฟังก์ชันมาตรฐาน</p>
+                                            </div>
+                                            <div class="w-full md:w-1/2 md:border-l md:pl-6 border-gray-300">
+                                                <p><strong class="font-bold">เอกสารอ้างอิง :</strong><br>
+                                                    <a href="https://drive.google.com/file/d/1SEcGpiCld3veGgRzBmzPrSzoDShrJnA5/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 40</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                       <div class="flex flex-col md:flex-row gap-6">
+                                            <div class="w-full md:w-1/2">
+                                                <p><strong class="font-bold">เล่มเอกสาร :</strong><br>DD.01 Process Document_Vessel<br>DD.02 Process Document_Import</p>
+                                            </div>
+                                            <div class="w-full md:w-1/2 md:border-l md:pl-6 border-gray-300">
+                                                <p><strong class="font-bold">หัวข้อที่นำเสนอ :</strong><br>2.3.2 <a href="https://docs.google.com/document/d/1m3Ghe-gjvDm4r-gin9df8JckCn2U9vJC/edit#bookmark=id.p9ywyg9vszmm" target="_blank" class="text-blue-600 hover:underline">Throughput List Report</a><br>2.3.3 <a href="https://docs.google.com/document/d/1m3Ghe-gjvDm4r-gin9df8JckCn2U9vJC/edit#bookmark=id.gh6xyd9hzrni" target="_blank" class="text-blue-600 hover:underline">Summary Container Throughput Report</a><br>1.5.2 <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.9olj1e8ftyge" target="_blank" class="text-blue-600 hover:underline">Discharge Container List (Before Working) Report</a></p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">Prototype :</strong><br><a href="https://pcs.softyourstyle.com/?id=v6kpzh&p=rp-10-60-010_00_rp-10-40-010_00_vessel_report_-_th&sc=3" target="_blank" class="text-blue-600 hover:underline">2.3.2 RP-10-60-010/00</a><br><a href="https://pcs.softyourstyle.com/?id=8zpq65&p=rp-10-90-010_00_rp-10-40-010_00_vessel_report_-_su&sc=3" target="_blank" class="text-blue-600 hover:underline">2.3.3 RP-10-90-010/00</a><br><a href="https://pcs.softyourstyle.com/?id=qp18y4&p=rp-10-10-010_00__vessel_report_-_discharge_contain" target="_blank" class="text-blue-600 hover:underline">1.5.2 RP-10-10-010/00</a></p>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">ข้อเสนอแนะคณะกรรมการ :</strong></p>
+                                            <div class="mt-2">
+                                                <p>คณะกรรมการมีข้อเสนอแนะให้ระบบสามารถส่งออกข้อมูล (Export) เป็นไฟล์ในรูปแบบ CSV (Comma-Separated Values) ได้</p>
+                                                <p class="mt-1 text-sm text-gray-500">วันที่ : 09 เมษายน 2568</p>
+                                            </div>
+                                        </div>
+                                        <hr class="border-yellow-200">
+                                        <div>
+                                            <p><strong class="font-bold">รายละเอียดการแก้ไข:</strong></p>
+                                            <div class="mt-2">
+                                                <p>เพิ่มให้ Prototype สามารถที่จะ Download เอกสารออกเป็นรูปแบบ CSV File ได้</p>
+                                                <p class="mt-1 text-sm text-gray-500">วันที่ : 12 เมษายน 2568</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                               </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript to handle the expand/collapse functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const tableBody = document.getElementById('tor-table-body');
+
+            tableBody.addEventListener('click', function(event) {
+                // Find the closest toggle link to the click target
+                const toggleLink = event.target.closest('.expandable-toggle');
+
+                if (toggleLink) {
+                    event.preventDefault(); // Prevent default link behavior
+
+                    // Find the main row (tr) and the detail row (tr)
+                    const mainRow = toggleLink.closest('.tor-row');
+                    const detailRow = mainRow.nextElementSibling;
+
+                    if (mainRow && detailRow && detailRow.classList.contains('detail-row')) {
+                        // Toggle the 'hidden' class to show/hide the detail row
+                        detailRow.classList.toggle('hidden');
+                        
+                        // UPDATED: Toggle a class on the main row to control font weight via CSS
+                        mainRow.classList.toggle('row-active');
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

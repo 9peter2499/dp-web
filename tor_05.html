@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype: ระบบสำหรับกิจกรรมส่งออก (Export)</title>
+    <!-- 1. Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 2. Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Define a custom font family using Sarabun */
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f8f9fa; /* A light gray background for the page */
+        }
+        /* Style for the active/clicked row */
+        .row-active {
+            font-weight: 700; /* font-bold */
+            background-color: #f9fafb; /* bg-gray-50 */
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <!-- Page Header (Moved Outside) -->
+    <header class="max-w-full mx-auto mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">
+            ข้อกำหนด(TOR) ทั้งหมดใน | ระบบสำหรับกิจกรรมส่งออก (Export)
+        </h1>
+        <p class="text-sm text-gray-500 mt-2">
+            ข้อมูลอัพเดท วันที่ : 18 มิถุนายน 2568
+        </p>
+    </header>
+
+    <!-- Main Content Container (UPDATED) -->
+    <main class="max-w-full mx-auto bg-white rounded-xl shadow-sm overflow-hidden">
+        
+        <!-- Column Headers (UPDATED) -->
+        <div class="flex items-center bg-gray-200 px-6 py-3 border-b border-gray-300">
+            <div class="flex-1 text-base font-bold text-gray-600 uppercase tracking-wider">ข้อกำหนด(TOR)</div>
+            <div class="w-40 text-center text-base font-bold text-gray-600 uppercase tracking-wider">สถานะ</div>
+            <div class="w-40 text-center text-base font-bold text-gray-600 uppercase tracking-wider">การแก้ไข</div>
+        </div>
+
+        <!-- List of TOR Items -->
+        <div id="tor-list-container">
+            <!-- Data will be populated by JavaScript -->
+        </div>
+
+    </main>
+
+    <script>
+        // --- DATA ---
+        // Default details now use arrays to support multiple lines
+        const defaultDetails = {
+            doable: 'ไม่มีข้อมูล',
+            refDoc: [{ text: 'ไม่มีข้อมูล' }],
+            docBook: ['ไม่มีข้อมูล'],
+            topic: [{ prefix: '', linkText: 'ไม่มีข้อมูล' }],
+            prototype: [{ text: 'ไม่มีข้อมูล' }],
+            feedback: ['ไม่มีข้อมูล'],
+            editDetails: null
+        };
+        
+        const torItemsData = [
+            { 
+                id: 1, 
+                number: '5.1', 
+                text: 'ระบบจัดการข้อมูลประเภทเอกสารที่ใช้ในระบบจัดการคำสั่ง และฐานข้อมูลเอกสาร (Document Repository)', 
+                status: 'ผ่าน', 
+                edit: '',
+                details: {
+                    doable: 'ฟังก์ชันมาตรฐาน',
+                    refDoc: [{ text: 'ภาคผนวก ค หน้า 24', url: 'https://drive.google.com/file/d/1IGSBsZO3wcc-muwa20Ygf22M8Ueps46W/view?usp=drive_link' }],
+                    docBook: ['DD.03 By Process Document_Export'],
+                    topic: [{ prefix: '1.3.1 ', linkText: 'Container Booking', url: 'https://docs.google.com/document/d/1pSrLfg292NiOQO7K48kYXz9CeRhy-enp/edit#bookmark=id.jv9n37xiezf0' }],
+                    prototype: [{ text: '1.3.1 Export-BKG-001', url: 'https://pcs.softyourstyle.com/?id=24d4tk&p=ex-d0-10-020_00_-_export-bkg-002_create_container_&sc=1' }],
+                    feedback: ['ไม่มีข้อมูล'],
+                    editDetails: null
+                }
+            },
+            {
+                id: 2, 
+                number: '5.2', 
+                text: 'มีระบบสำหรับผู้ส่งออก (Exporter) / ตัวแทน (Custom Broker) (หรือผู้ประกอบการรถบรรทุก) ในการบริหารจัดการสัญญา/ข้อกำหนดต่าง ๆ กับบริษัทขนส่ง เพื่อใช้อ้างอิงในการแจ้งขอใช้บริการขนส่ง (Truck Service Booking)', 
+                status: 'ผ่าน', 
+                edit: 'แก้ไขแล้ว', 
+                details: {
+                    doable: 'ฟังก์ชันมาตรฐาน',
+                    refDoc: [{ text: 'ภาคผนวก ค หน้า 32', url: 'https://drive.google.com/file/d/1CGbEwu6nvOJrTyBdtfodZ_D6h2BBLvt9/view?usp=drive_link' }],
+                    docBook: ['DD.06_Hinterland - Truck'],
+                    topic: [{ prefix: '1.1.1 ', linkText: 'Truck Contract', url: 'https://docs.google.com/document/d/1sgHEscE2W7-cA5Y5Wauv8Y94gIL7Dbr-/edit#bookmark=id.ymqau2pyy87q' }],
+                    prototype: [{ text: '1.1.1 HL-80-10-010/00', url: 'https://pcs.softyourstyle.com/?id=jgxu2s&p=hl-80-10-010_00-transportation_contract_-_employer' }],
+                    feedback: [
+                        'คณะกรรมการอนุมัติให้เพิ่มข้อมูลหลักด้านราคา (Pricing Master Data) ในหน้าจอสัญญาขนส่ง (Truck Contract) ตามคำแนะนำของทีมในเบื้องต้น ให้ปรับแก้ชื่อฟังก์ชันการอัปโหลดไฟล์ให้สื่อความหมายชัดเจนว่าสามารถใช้สำหรับ "อัปโหลดข้อมูลหลักด้านราคา" ได้',
+                        '<span class="text-sm text-gray-500">วันที่ : 21 เมษายน 2568</span>'
+                    ],
+                    editDetails: {
+                        prefix: 'ปรับเพิ่ม Prototype ให้มี Function ที่สามารถ Upload Master Pricing ได้ตาม ',
+                        linkText: 'ภาพตัวอย่างการปรับแก้ไขเพิ่มเติม',
+                        url: 'https://drive.google.com/file/d/1ffteax-SSqa_QgSvKD2AoLt8qrlll020/view?usp=drive_link',
+                        date: '<span class="text-sm text-gray-500">วันที่ : 25 เมษายน 2568</span>'
+                    }
+                }
+            },
+            { 
+                id: 3, 
+                number: '5.3', 
+                text: 'มีระบบตารางราคาค่าขนส่งสินค้าทางทะเล เพื่อใช้ในการจองระวางเรือ (Vessel Booking) ซึ่งเป็นข้อมูลที่ได้รับจากสายเรือ/ตัวแทนสายเรือ', 
+                status: 'ผ่าน', 
+                edit: '', 
+                details: {
+                    doable: 'พัฒนาเพิ่มเติม',
+                    refDoc: [{ text: 'ระบบตารางราคาเป็นระบบเฉพาะของแต่ละสายเรือ ต้องพัฒนาเพิ่มเติม' }],
+                    docBook: ['DD.03 By Process Document_Export'],
+                    topic: [{ prefix: '1.7.1 ', linkText: 'Freight Rate', url: 'https://docs.google.com/document/d/1pSrLfg292NiOQO7K48kYXz9CeRhy-enp/edit#bookmark=id.kv6jmtgqeq6l' }],
+                    prototype: [{ text: '1.7.1 EX-30-10-010/00', url: 'https://pcs.softyourstyle.com/?id=pzswi7&p=ex-30-10-010_00-freight_rate_search' }],
+                    feedback: ['ไม่มีข้อมูล'],
+                    editDetails: null
+                }
+            },
+            {
+                id: 4, 
+                number: '5.4', 
+                text: 'มีระบบจัดการคำสั่ง สินค้าส่งออกโดยผู้ส่งออก (Exporter) หรือตัวแทน (Customs Broker) หรือ Freight Forwarder ตั้งแต่ขั้นตอนการซื้อ-ขาย การจัดการเอกสาร Letter of credit การจองระวางเรือ รวมถึงระบบจัดการเอกสารสำคัญต่าง ๆ เช่น ระบบสำหรับบริหารจัดการเอกสาร Proforma Invoice, P/I (เอกสารการเสนอราคา และระบุเงื่อนไขในการจ่ายเงิน) สามารถส่ง P/I ไปให้คู่ค้าที่ต่างประเทศผ่านระบบ PCS ได้ทันที หรือสามารถแนบเอกสาร P/I ที่ออกจากระบบอื่น ๆ แทนก็ได้', 
+                status: 'ผ่าน', 
+                edit: '', 
+                details: {
+                    doable: 'พัฒนาเพิ่มเติม',
+                    refDoc: [
+                        { text: 'ภาคผนวก ค หน้า 24', url: 'https://drive.google.com/file/d/1IGSBsZO3wcc-muwa20Ygf22M8Ueps46W/view?usp=drive_link' },
+                        { text: 'ระบบ PCS มาตรฐานของต่างประเทศ จะไม่มีระบบเกี่ยวกับ Letter of Credit' }
+                    ],
+                    docBook: [
+                        'DD.02 Process Document_Import',
+                        'DD.03 By Process Document_Export'
+                    ],
+                    topic: [
+                        { prefix: '1.4.1 ', linkText: 'Shipping Instruction Management', url: 'https://docs.google.com/document/d/1pSrLfg292NiOQO7K48kYXz9CeRhy-enp/edit#bookmark=id.kv6jmtgqeq6l' },
+                        { prefix: '1.1.1 ', linkText: 'Letter of Credit', url: 'https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.89hjumuxseec' },
+                        { prefix: '1.3.1 ', linkText: 'Container Booking', url: 'https://docs.google.com/document/d/1pSrLfg292NiOQO7K48kYXz9CeRhy-enp/edit#bookmark=id.jv9n37xiezf0' }
+                    ],
+                    prototype: [
+                        { text: '1.4.1 EX-20-10-010/00', url: 'https://pcs.softyourstyle.com/?id=11e4d7&p=ex-20-10-010_00-shipping_instruction-send' },
+                        { text: '1.1.1 IM-G0-10-010/00', url: 'https://pcs.softyourstyle.com/?id=i9ok8y&p=im-g0-10-010_00-check_letter_of_credit&sc=1' },
+                        { text: '1.3.1 Export-BKG-001', url: 'https://pcs.softyourstyle.com/?id=wspvah&p=ex-d0-10-010_00_-_export-bkg-001_search_container_' }
+                    ],
+                    feedback: ['ไม่มีข้อมูล'],
+                    editDetails: null
+                }
+            },
+            { 
+                id: 5, 
+                number: '5.5', 
+                text: 'มีระบบบริหารจัดการเอกสารที่เกี่ยวข้องกับการนำเข้าต่าง ๆ ในรูปแบบของ E-Document เช่น Insurance Certificate, Certificate of Origin, Packing List จากคู่ค้า เป็นต้น', 
+                status: 'ผ่าน', 
+                edit: '', 
+                details: {
+                    doable: 'ฟังก์ชันมาตรฐาน',
+                    refDoc: [{ text: 'ภาคผนวก ค หน้า 24', url: 'https://drive.google.com/file/d/1IGSBsZO3wcc-muwa20Ygf22M8Ueps46W/view?usp=drive_link' }],
+                    docBook: ['DD.03 By Process Document_Export'],
+                    topic: [{ prefix: '1.3.1 ', linkText: 'Container Booking', url: 'https://docs.google.com/document/d/1pSrLfg292NiOQO7K48kYXz9CeRhy-enp/edit#bookmark=id.jv9n37xiezf0' }],
+                    prototype: [{ text: '1.3.1 Export-BKG-001', url: 'https://pcs.softyourstyle.com/?id=wspvah&p=ex-d0-10-010_00_-_export-bkg-001_search_container_' }],
+                    feedback: ['ไม่มีข้อมูล'],
+                    editDetails: null
+                }
+            },
+            {
+                id: 6, 
+                number: '5.6', 
+                text: 'มีระบบสำหรับบริหารจัดการเอกสาร Shipping Instruction (SI) ในระบบ', 
+                status: 'ผ่าน', 
+                edit: '', 
+                details: {
+                    doable: 'ฟังก์ชันมาตรฐาน',
+                    refDoc: [{ text: 'ภาคผนวก ค หน้า 9', url: 'https://drive.google.com/file/d/1QkOGmxaYUDBSK-f9BztOIRK8vRLIl_Ks/view?usp=drive_link' }],
+                    docBook: ['DD.03 By Process Document_Export'],
+                    topic: [{ prefix: '1.4.1 ', linkText: 'Shipping Instruction Management', url: 'https://docs.google.com/document/d/1pSrLfg292NiOQO7K48kYXz9CeRhy-enp/edit#bookmark=id.kv6jmtgqeq6l' }],
+                    prototype: [{ text: '1.4.1 EX-20-10-010/00', url: 'https://pcs.softyourstyle.com/?id=11e4d7&p=ex-20-10-010_00-shipping_instruction-send' }],
+                    feedback: ['ไม่มีข้อมูล'],
+                    editDetails: null
+                }
+            },
+            {
+                id: 7, 
+                number: '5.7', 
+                text: 'มีระบบสำหรับควบคุมจัดการเอกสาร B/L ได้รับจากสายเรือ/ตัวแทนสายเรือ/Freight Forwarder ผ่านระบบ PCS', 
+                status: 'ผ่าน', 
+                edit: '', 
+                details: {
+                    doable: 'ฟังก์ชันมาตรฐาน',
+                    refDoc: [{ text: 'ภาคผนวก ค หน้า 24', url: 'https://drive.google.com/file/d/1IGSBsZO3wcc-muwa20Ygf22M8Ueps46W/view?usp=drive_link' }],
+                    docBook: ['DD.02 Process Document_Import'],
+                    topic: [{ prefix: '1.2.3 ', linkText: 'Bill of Lading Management', url: 'https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.vqcyin309jdf' }],
+                    prototype: [{ text: '1.2.3 IMP-CGOMF-003', url: 'https://pcs.softyourstyle.com/?id=cnf4w5&p=im-e0-10-030_00_-_inward_cargo_manifest_search' }],
+                    feedback: ['ไม่มีข้อมูล'],
+                    editDetails: null
+                }
+            },
+            {
+                id: 8, 
+                number: '5.8', 
+                text: 'มีระบบสำหรับผู้ส่งออก/ตัวแทนในการจองรถขนส่ง เพื่อขอใช้บริการลากตู้ส่งออกไปยังบริษัทขนส่งที่ทำสัญญาไว้ผ่านระบบ PCS', 
+                status: 'ผ่าน', 
+                edit: '', 
+                details: {
+                    doable: 'ฟังก์ชันมาตรฐาน',
+                    refDoc: [{ text: 'ภาคผนวก ค หน้า 24', url: 'https://drive.google.com/file/d/1IGSBsZO3wcc-muwa20Ygf22M8Ueps46W/view?usp=drive_link' }],
+                    docBook: ['DD.06_Hinterland - Truck'],
+                    topic: [{ prefix: '11.1.1 ', linkText: 'Truck Contract', url: 'https://docs.google.com/document/d/1sgHEscE2W7-cA5Y5Wauv8Y94gIL7Dbr-/edit#bookmark=id.ymqau2pyy87q' }],
+                    prototype: [{ text: '1.1.1 HL-80-10-010/00', url: 'https://pcs.softyourstyle.com/?id=jgxu2s&p=hl-80-10-010_00-transportation_contract_-_employer' }],
+                    feedback: ['ไม่มีข้อมูล'],
+                    editDetails: null
+                }
+            },
+            {
+                id: 9, 
+                number: '5.9', 
+                text: 'มีระบบสำหรับผู้ส่งออก/ตัวแทนในการรถไฟเพื่อขนส่งตู้สินค้าระหว่าง ICD ลาดกระบังกับ SRTO ของท่าเรือแหลมฉบังผ่านระบบ PCS โดยเชื่อมต่อข้อมูลไปยังระบบบริหารจัดการของทั้ง 2 หน่วยงาน', 
+                status: 'ผ่าน', 
+                edit: '', 
+                details: {
+                    doable: 'พัฒนาเพิ่มเติม',
+                    refDoc: [{ text: 'การเชื่อมต่อระบบกับ SRTO ของท่าเรือแหลมฉบังเป็นระบบเฉพาะของหน่วยงาน' }],
+                    docBook: ['DD.05_Hinterland - Rail Export'],
+                    topic: [{ prefix: '1.2.2 ', linkText: 'Moving Container by Train', url: 'https://docs.google.com/document/d/1hxLsH1FxpzlLvvtuXiPr_uZSOj7xvVv5/edit#bookmark=id.r47ed1af1gok' }],
+                    prototype: [{ text: '1.2.2 HL-G0-10-010/00', url: 'https://pcs.softyourstyle.com/?id=r9fb0l&p=hl-g0-10-010_00-rail_track_container_check___send' }],
+                    feedback: ['ไม่มีข้อมูล'],
+                    editDetails: null
+                }
+            },
+            { 
+                id: 10, 
+                number: '5.10', 
+                text: 'มีหน้าจอ Dashboard แสดงกิจกรรมการส่งออกต่าง ๆ สำหรับผู้ส่งออก (Exporter) หรือตัวแทนผู้ส่งออก (Export Customs Broker) ในหน้าจอเดียว โดยสรุปข้อมูลสถานะต่าง ๆ ของ Order ในแต่ละขั้นตอนของการส่งออก', 
+                status: 'ไม่ผ่าน', 
+                edit: 'แก้ไขแล้ว',
+                details: {
+                    doable: 'พัฒนาเพิ่มเติม',
+                    refDoc: [{ text: 'ต้องรวมข้อมูลจากหลายโมดูล ได้แก่ Export, Hinterland, Container & Cargo เพื่อแสดง Dashboard ร่วมกัน' }],
+                    docBook: ['DD.03 By Process Document_Export'],
+                    topic: [{ prefix: '1.5.1 ', linkText: 'Export Declaration Tracking', url: 'https://docs.google.com/document/d/1pSrLfg292NiOQO7K48kYXz9CeRhy-enp/edit#bookmark=id.nqfplulccjhg' }],
+                    prototype: [{ text: '1.5.1 DB-30-10-010/00', url: 'https://pcs.softyourstyle.com/?id=6iu0mk&p=db-30-10-010_00-export_declaration_dashboard' }],
+                    feedback: [
+                        'คณะกรรมการมีข้อสังเกตว่า หน้าจอที่นำเสนอมีลักษณะเป็นเพียงรายการข้อมูลย้อนหลัง (History) และยังไม่ตรงตามวัตถุประสงค์ของหน้าภาพรวม (Dashboard) ทั้งนี้ คณะกรรมการเสนอว่า Dashboard ที่ดีควรจะสามารถสรุปสถานะปัจจุบันของข้อมูลทั้งหมดได้, แสดงความคืบหน้าของงาน (เช่น จำนวนตู้สินค้าที่ Load แล้ว/ยังไม่ Load) และนำเสนอข้อมูลเหล่านั้นในรูปแบบกราฟิกที่สวยงาม เช่น แผนภูมิวงกลมหรือกราฟแท่ง เพื่อให้ผู้ใช้งานเห็นภาพรวมและเข้าใจข้อมูลได้ง่ายขึ้น',
+                        '<span class="text-sm text-gray-500">วันที่ : 21 เมษายน 2568</span>'
+                    ],
+                    editDetails: {
+                        prefix: 'ปรับแก้ไข Prototype ตามคำแนะนำของคณะกรรมการ สามารถดูภาพการปรับแก้ไขตามลิงท์นี้ ',
+                        linkText: 'ภาพการปรับเนื้อหาใน Prototype',
+                        url: 'https://drive.google.com/file/d/1KNY-1W3no6cv5x6rlZzQ9yoyaVEjExct/view?usp=sharing',
+                        date: '<span class="text-sm text-gray-500">วันที่ : 23 เมษายน 2568</span>'
+                    }
+                }
+            },
+            {
+                id: 11, 
+                number: '5.11', 
+                text: 'มีหน้าจอรายงานเพื่อค้นหา และติดตามราย Order และสถานะของเอกสารที่เกี่ยวข้องทั้งหมด รวมไปถึงสถานะการตรวจปล่อยสินค้า/ตำแหน่งของสินค้า ตั้งแต่ต้นทางยันปลายทางในรูปแบบการขนส่งแบบ Multimodal', 
+                status: 'ผ่าน', 
+                edit: '', 
+                details: {
+                    doable: 'ฟังก์ชันมาตรฐาน',
+                    refDoc: [{ text: 'ภาคผนวก ค หน้า 25', url: 'https://drive.google.com/file/d/1aeP8CfO0oH6y-R5qcY74gGGkMcyvydyp/view?usp=drive_link' }],
+                    docBook: ['DD.02 Process Document_Import', 'DD.03 By Process Document_Export'],
+                    topic: [
+                        { prefix: '1.4.1 ', linkText: 'Release Warehouse', url: 'https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.to3qc91228wt' },
+                        { prefix: '2.2.1 ', linkText: 'Check to Load/Discharge Container & Cargo', url: 'https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.bf40a08kc271' },
+                        { prefix: '1.5.1 ', linkText: 'Export Declaration Tracking', url: 'https://docs.google.com/document/d/1pSrLfg292NiOQO7K48kYXz9CeRhy-enp/edit#bookmark=id.nqfplulccjhg' }
+                    ],
+                    prototype: [
+                        { text: '1.4.1 IM-A0-40-010/00', url: 'https://pcs.softyourstyle.com/?id=ijicon&p=im-a0-40-010_00-container_release_-_icd' },
+                        { text: '2.2.1 INFO-TRACKTRACE-001', url: 'https://pcs.softyourstyle.com/?id=mmp86m&p=cn-60-10-010_00_-_11_info_service_track___trace' },
+                        { text: '1.5.1 RP-30-10-010/00', url: 'https://pcs.softyourstyle.com/?id=y4jo26&p=rp-30-10-010_00_-_export_declaration_tracking_rpt' }
+                    ],
+                    feedback: ['ไม่มีข้อมูล'],
+                    editDetails: null
+                }
+            },
+            {
+                id: 12, 
+                number: '5.12', 
+                text: 'มีหน้าจอ Dashboard แสดงสถานะของกิจกรรมขนทั้งทางถนน และทางราง', 
+                status: 'ผ่าน', 
+                edit: 'แก้ไขแล้ว',
+                details: {
+                    doable: 'ฟังก์ชันมาตรฐาน',
+                    refDoc: [
+                        { text: 'ภาคผนวก ค หน้า 32', url: 'https://drive.google.com/file/d/1CGbEwu6nvOJrTyBdtfodZ_D6h2BBLvt9/view?usp=drive_link' },
+                        { text: 'ภาคผนวก ค หน้า 34', url: 'https://drive.google.com/file/d/1CDZlMiW9RHZ_b4LQSeiOwFGR3W2s_UqU/view?usp=drive_link' }
+                    ],
+                    docBook: ['DD.05_Hinterland - Rail Export'],
+                    topic: [{ prefix: '3.1.1 ', linkText: 'Actual Train Schedule', url: 'https://docs.google.com/document/d/1hxLsH1FxpzlLvvtuXiPr_uZSOj7xvVv5/edit#bookmark=id.srd82s4e0l5' }],
+                    prototype: [{ text: '3.1.1 DB-80-10-010/00', url: 'https://pcs.softyourstyle.com/?id=0x0qt7&p=db-80-10-010_00-transportactivities_board' }],
+                    feedback: [
+                        'คณะกรรมการแนะนำว่า ควรมีการแสดงข้อมูลใน 2 มุมมอง ทั้งในมุมของผู้บริหารและมุมมองของผู้ใช้งาน และสามารถเลือกวันที่เพื่อแสดงข้อมูลบน Dashboard ได้',
+                        '<span class="text-sm text-gray-500">วันที่ : 23 เมษายน 2568</span>'
+                    ],
+                    editDetails: {
+                        prefix: 'ทึมพัฒนา software รับกลับไป พิจราณาเพื่อที่จะดำเนินการแก้ไข และ วันที่ 18 มิถุนายน 2568 บริษัท GPN Demo ภาพรวม Dashboard ให้คณะกรรมการได้เห็นถึง Standard ของโปรแกรม การออกแบบโปรแกรม เรียบร้อย คณะกรรมการเข้าใจในภาพรวมแล้ว',
+                        linkText: '',
+                        url: null,
+                        date: '<span class="text-sm text-gray-500">วันที่ : 18 มิถุนายน 2568</span>'
+                    }
+                }
+            },
+        ];
+
+        // --- RENDER FUNCTION ---
+        function renderTorItems() {
+            const container = document.getElementById('tor-list-container');
+            let html = '';
+
+            torItemsData.forEach(item => {
+                const statusClass = item.status === 'ผ่าน' 
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-red-100 text-red-800';
+
+                const details = item.details || defaultDetails;
+                
+                const renderMultiLine = (data) => data.map(line => `<div>${line}</div>`).join('');
+                const renderLinkList = (data) => data.map(linkItem => {
+                    const content = linkItem.prefix ? `${linkItem.prefix}<a href="${linkItem.url}" target="_blank" class="text-blue-600 hover:underline">${linkItem.linkText}</a>`
+                                                   : `<a href="${linkItem.url}" target="_blank" class="text-blue-600 hover:underline">${linkItem.text}</a>`;
+                    return `<div>${linkItem.url ? content : linkItem.text}</div>`;
+                }).join('');
+
+                let editDetailsHtml = '';
+                if (details.editDetails) {
+                    let linkHtml = '';
+                    if (details.editDetails.linkText && details.editDetails.url) {
+                        linkHtml = `<a href="${details.editDetails.url}" target="_blank" class="text-blue-600 hover:underline">${details.editDetails.linkText}</a>`;
+                    }
+                    editDetailsHtml = `
+                    <hr class="border-yellow-200 my-4">
+                    <div class="text-gray-800">
+                        <strong class="font-bold">รายละเอียดการแก้ไข :</strong>
+                        <div class="mt-1">
+                            <div>
+                                ${details.editDetails.prefix}${linkHtml}
+                            </div>
+                            <div>${details.editDetails.date}</div>
+                        </div>
+                    </div>
+                    `;
+                }
+
+                html += `
+                <div class="tor-item group">
+                    <div class="tor-row flex items-center px-6 py-4 cursor-pointer hover:bg-gray-50 transition-colors duration-200" onclick="toggleDetails(this)">
+                        <div class="flex-1">
+                            <a href="#" onclick="event.preventDefault();" class="text-blue-600 hover:underline">
+                                <span class="font-bold">${item.number}</span> ${item.text}
+                            </a>
+                        </div>
+                        <div class="w-40 text-center">
+                            <span class="px-4 py-1 text-base font-bold rounded-full ${statusClass}">
+                                ${item.status}
+                            </span>
+                        </div>
+                        <div class="w-40 text-center text-base text-gray-600">
+                            ${item.edit}
+                        </div>
+                    </div>
+
+                    <div class="tor-details hidden bg-yellow-50 border-l-4 border-yellow-400 p-6 text-base text-gray-800">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                            <div>
+                                <strong class="font-bold">ทำได้ :</strong>
+                                <div class="mt-1">${details.doable}</div>
+                            </div>
+                            <div>
+                                <strong class="font-bold">เอกสารอ้างอิง :</strong>
+                                <div class="mt-1 space-y-1">${renderLinkList(details.refDoc)}</div>
+                            </div>
+                        </div>
+                        <hr class="border-yellow-200 my-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                            <div>
+                                <strong class="font-bold">เล่มเอกสาร :</strong>
+                                <div class="mt-1 space-y-1">${renderMultiLine(details.docBook)}</div>
+                            </div>
+                            <div>
+                                <strong class="font-bold">หัวข้อที่นำเสนอ :</strong>
+                                <div class="mt-1 space-y-1">${renderLinkList(details.topic)}</div>
+                            </div>
+                        </div>
+                        <hr class="border-yellow-200 my-4">
+                        <div>
+                            <strong class="font-bold">Prototype :</strong>
+                            <div class="mt-1 space-y-1">${renderLinkList(details.prototype)}</div>
+                        </div>
+                        <hr class="border-yellow-200 my-4">
+                        <div>
+                            <strong class="font-bold">ข้อเสนอแนะคณะกรรมการ :</strong>
+                            <div class="mt-1">${renderMultiLine(details.feedback)}</div>
+                        </div>
+                        ${editDetailsHtml} 
+                    </div>
+                </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            const items = container.querySelectorAll('.tor-item');
+            items.forEach((item, index) => {
+                if (index < items.length - 1) {
+                    item.classList.add('border-b', 'border-gray-200');
+                }
+            });
+        }
+
+        function toggleDetails(clickedRow) {
+            const detailsPanel = clickedRow.nextElementSibling;
+            const isAlreadyActive = clickedRow.classList.contains('row-active');
+
+            document.querySelectorAll('.tor-row').forEach(row => {
+                row.classList.remove('row-active');
+            });
+            document.querySelectorAll('.tor-details').forEach(panel => {
+                panel.classList.add('hidden');
+            });
+
+            if (!isAlreadyActive) {
+                clickedRow.classList.add('row-active');
+                if (detailsPanel) {
+                    detailsPanel.classList.remove('hidden');
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', renderTorItems);
+
+    </script>
+</body>
+</html>

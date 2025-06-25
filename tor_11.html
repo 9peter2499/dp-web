@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ต้นแบบระบบสำหรับผู้ดูแลระบบ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f7fafc;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            /* Removed specific font-size to inherit from parent */
+        }
+        /* Overriding default font-weight for the badge when the row is bold */
+        .font-bold .status-badge {
+             font-weight: 500;
+        }
+        .tor-link {
+            cursor: pointer;
+            color: #2563eb;
+            text-decoration: none;
+        }
+        .tor-link:hover {
+            text-decoration: underline;
+        }
+        .details-panel a {
+            color: #2563eb; /* text-blue-600 */
+        }
+        .details-panel a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 p-4 sm:p-6 md:p-8">
+
+    <div class="mx-auto">
+        <!-- Header Section (Moved outside the box) -->
+        <div class="mb-6">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">ข้อกำหนด(TOR) ทั้งหมดใน | ระบบสำหรับผู้ดูแลระบบในการจัดการผู้ใช้ และสิทธิ์การใช้งาน (Administration)</h1>
+            <p class="text-sm text-gray-500 mt-2">ข้อมูลอัพเดท วันที่ : 18 มิถุนายน 2568</p>
+        </div>
+
+        <!-- List Box -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <!-- Table Section -->
+            <div class="overflow-x-auto">
+                <div class="inline-block min-w-full align-middle">
+                    
+                    <!-- Table Header -->
+                    <div class="grid grid-cols-12 gap-4 px-4 sm:px-6 lg:px-8 bg-gray-200 py-3">
+                        <div class="col-span-8 text-left text-base font-bold text-gray-600">ข้อกำหนด(TOR)</div>
+                        <div class="col-span-2 text-left text-base font-bold text-gray-600">สถานะ</div>
+                        <div class="col-span-2 text-left text-base font-bold text-gray-600">การแก้ไข</div>
+                    </div>
+
+                    <!-- Table Body -->
+                    <div class="bg-white">
+                        <!-- Data Row 1 -->
+                        <div class="border-b border-gray-200">
+                            <div class="data-row-main grid grid-cols-12 gap-4 px-4 sm:px-6 lg:px-8 py-4 items-center text-base">
+                                <div class="col-span-8">
+                                    <a class="tor-link" data-target="details-1">11.1 ระบบสำหรับจัดการกลุ่มผู้ใช้งานในระบบ</a>
+                                </div>
+                                <div class="col-span-2">
+                                    <span class="status-badge bg-green-100 text-green-800 font-medium">ผ่าน</span>
+                                </div>
+                                <div class="col-span-2 text-gray-500"></div>
+                            </div>
+                            <!-- Collapsible Details for Row 1 -->
+                            <div id="details-1" class="details-panel hidden px-6 py-6 bg-yellow-50 border-l-4 border-yellow-400">
+                                <div class="space-y-4 text-base">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4 border-b border-yellow-200">
+                                        <div><span class="font-bold text-gray-800">ทำได้ :</span><br>ฟังก์ชันมาตรฐาน</div>
+                                        <div><span class="font-bold text-gray-800">เอกสารอ้างอิง :</span><br><a href="https://drive.google.com/file/d/1SF63jBqjwINJTnhY6m5mKvVQw_d_fZ8w/view?usp=drive_link" target="_blank">ภาคผนวก ค หน้า 12</a></div>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4 border-b border-yellow-200">
+                                        <div><span class="font-bold text-gray-800">เล่มเอกสาร :</span><br>DD.07 PCS Intelligence_Setup and Utility</div>
+                                        <div>
+                                            <span class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</span><br>
+                                            3.1.1 <a href="https://docs.google.com/document/d/1ZI7sy61RQb6Tti6GQHG_-nOl9u8PAxU-/edit#bookmark=id.r21un51jes" target="_blank">Company Group Management</a><br>
+                                            3.1.2 <a href="https://docs.google.com/document/d/1ZI7sy61RQb6Tti6GQHG_-nOl9u8PAxU-/edit#bookmark=id.y8on6cmwpad4" target="_blank">Company Management</a><br>
+                                            3.1.3 <a href="https://docs.google.com/document/d/1ZI7sy61RQb6Tti6GQHG_-nOl9u8PAxU-/edit#bookmark=id.1ic5l41pe88l" target="_blank">Department Management</a>
+                                        </div>
+                                    </div>
+                                    <div class="pb-4 border-b border-yellow-200">
+                                        <span class="font-bold text-gray-800">Prototype :</span><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=dv8goy&p=am-m0-10-010_company_group_management_search&sc=3" target="_blank">3.1.1 AM-M0-10-010/00</a><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=jeexs5&p=am-m0-20-010_company_management_search&sc=3" target="_blank">3.1.2 AM-M0-20-010/00</a><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=ba60ta&p=am-m0-30-010_00_department_management_search&sc=3" target="_blank">3.1.3 AM-M0-30-010/00</a>
+                                    </div>
+                                    <div class="pb-2">
+                                        <span class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</span> ไม่มีข้อมูล
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Data Row 2 -->
+                        <div class="border-b border-gray-200">
+                            <div class="data-row-main grid grid-cols-12 gap-4 px-4 sm:px-6 lg:px-8 py-4 items-center text-base">
+                                <div class="col-span-8">
+                                    <a class="tor-link" data-target="details-2">11.2 ระบบจัดการผู้ใช้งานในระบบ</a>
+                                </div>
+                                <div class="col-span-2">
+                                    <span class="status-badge bg-green-100 text-green-800 font-medium">ผ่าน</span>
+                                </div>
+                                <div class="col-span-2 text-gray-500">แก้ไขแล้ว</div>
+                            </div>
+                            <!-- Collapsible Details for Row 2 -->
+                            <div id="details-2" class="details-panel hidden px-6 py-6 bg-yellow-50 border-l-4 border-yellow-400">
+                                <div class="space-y-4 text-base">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4 border-b border-yellow-200">
+                                        <div><span class="font-bold text-gray-800">ทำได้ :</span><br>ฟังก์ชันมาตรฐาน</div>
+                                        <div><span class="font-bold text-gray-800">เอกสารอ้างอิง :</span><br><a href="https://drive.google.com/file/d/1SF63jBqjwINJTnhY6m5mKvVQw_d_fZ8w/view?usp=drive_link" target="_blank">ภาคผนวก ค หน้า 12</a></div>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4 border-b border-yellow-200">
+                                        <div><span class="font-bold text-gray-800">เล่มเอกสาร :</span><br>DD.07 PCS Intelligence_Setup and Utility</div>
+                                        <div><span class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</span><br>3.1.4 <a href="https://docs.google.com/document/d/1ZI7sy61RQb6Tti6GQHG_-nOl9u8PAxU-/edit#bookmark=id.i5udw0qx6rny" target="_blank">User Management</a></div>
+                                    </div>
+                                    <div class="pb-4 border-b border-yellow-200">
+                                        <span class="font-bold text-gray-800">Prototype :</span><br><a href="https://pcs.softyourstyle.com/?id=pnhs4x&p=am-m0-40-010_00_user_management_search&sc=3" target="_blank">3.1.4 AM-M0-40-010/00</a>
+                                    </div>
+                                    <div class="pb-4 border-b border-yellow-200">
+                                        <span class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</span><br>
+                                        คณะกรรมการเสนอให้มีหน้าจอสำหรับการใช้งานโดย Admin ของ PCS เพื่อแสดงให้เห็นสิทธิ์ของ PCS Admin ที่มีสถานะ Active / Inactive รวมถึงการกำหนด Super User PCS Admin ได้<br><br>
+                                        อ้างอิง PDPA ในหน้า Create User ให้ซ่อน และแสดงผลเป็น ******* หรือ xxxxxxx ข้อมูลส่วนบุคคล เช่น อีเมล์ เบอร์โทร เลขที่บัตรประชาชน ซึ่งผู้ที่จะเห็นข้อมูลนี้ ต้องเป็น Super User Admin เท่านั้น<br>
+                                        <span class="text-gray-500">วันที่ : 14 May 2025</span>
+                                    </div>
+                                    <div class="pb-2">
+                                        <span class="font-bold text-gray-800">รายละเอียดการแก้ไข :</span><br>
+                                        จากข้อเสนอแนะของคณะกรรมการในเรื่องดังกล่าวนี้ ทีมได้มีการเพิ่ม Function เข้าไปในระบบ Setup เพิ่มเพื่อให้<br>
+                                        1. กรณีผู้ที่ไม่มีสิทธิ์ในการเห็นข้อมูล ข้อมูลที่เป็นข้อมูลอ่อนไหว เช่น ชื่อ นามสกุล หมายเลขบัตรประชาชน เป็นต้นจะถูกเข้ารหัสไว้ ซึ่งการเข้ารหัสดังกล่าว สามารถที่จะกำหนดรูปแบบได้เอง โดยสามารถเข้าถึงข้อมูล Setup นี้ ตาม hyperlink <a href="https://pcs.softyourstyle.com/?id=knwjuy&p=pi-00-10-010_00_parametercrud&sc=3" target="_blank">"INTELLIGENCE PARAMETER-&gt;PDPA Configuration"</a><br>
+                                        2. การ Setup ดังกล่าวสามารถที่จะเปิด-ปิดการแสดงได้ตามนโยบายขององค์กรกำหนด<br>
+                                        <span class="text-gray-500">วันที่ : 18 มิถุนายน 2568</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Data Row 3 -->
+                        <div class="border-b-0">
+                           <div class="data-row-main grid grid-cols-12 gap-4 px-4 sm:px-6 lg:px-8 py-4 items-center text-base">
+                                <div class="col-span-8">
+                                    <a class="tor-link" data-target="details-3">11.3 ระบบสำหรับตรวจสอบข้อมูลเหตุการณ์ต่าง ๆ ที่เกิดขึ้นในระบบ</a>
+                                </div>
+                                <div class="col-span-2">
+                                    <span class="status-badge bg-green-100 text-green-800 font-medium">ผ่าน</span>
+                                </div>
+                                <div class="col-span-2 text-gray-500">แก้ไขแล้ว</div>
+                            </div>
+                            <!-- Collapsible Details for Row 3 -->
+                            <div id="details-3" class="details-panel hidden px-6 py-6 bg-yellow-50 border-l-4 border-yellow-400">
+                                <div class="space-y-4 text-base">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4 border-b border-yellow-200">
+                                        <div><span class="font-bold text-gray-800">ทำได้ :</span><br>ฟังก์ชันมาตรฐาน</div>
+                                        <div><span class="font-bold text-gray-800">เอกสารอ้างอิง :</span><br><a href="https://drive.google.com/file/d/1SF63jBqjwINJTnhY6m5mKvVQw_d_fZ8w/view?usp=drive_link" target="_blank">ภาคผนวก ค หน้า 12</a></div>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4 border-b border-yellow-200">
+                                        <div><span class="font-bold text-gray-800">เล่มเอกสาร :</span><br>DD.07 PCS Intelligence_Setup and Utility</div>
+                                        <div><span class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</span><br>
+                                            3.14.1 <a href="https://docs.google.com/document/d/1ZI7sy61RQb6Tti6GQHG_-nOl9u8PAxU-/edit#bookmark=id.ahn6yixkixse" target="_blank">Log Source View</a><br>
+                                            3.14.2 <a href="https://docs.google.com/document/d/1ZI7sy61RQb6Tti6GQHG_-nOl9u8PAxU-/edit#bookmark=id.bki0lhnky9im" target="_blank">Application Log</a>
+                                        </div>
+                                    </div>
+                                    <div class="pb-4 border-b border-yellow-200">
+                                        <span class="font-bold text-gray-800">Prototype :</span><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=v9hk0y&p=am-b0-10-010_00_log_source_view" target="_blank">3.14.1 AM-B0-10-010/00</a><br>
+                                        <a href="https://pcs.softyourstyle.com/?id=uv7btr&p=am-b0-10-020_00_application_log" target="_blank">Application Log</a>
+                                    </div>
+                                    <div class="pb-4 border-b border-yellow-200">
+                                        <span class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</span><br>
+                                        คณะกรรมการพิจารณาเห็นว่า การทำงานของ Prototype 3.14.2 Error และ 3.14.3 User มีขอบเขตจองข้อมูลที่ใกล้เคียงกัน และยังเป็นเรื่องที่เกิดขึ้นต่อเนื่องกัน หากจับแยกออกเป็นเรื่องๆ จะทำให้ผู้จัดการข้อมูลอาจไม่ได้รับความสะดวก จึงเสนอแนะให้บริษัทพิจารณานำข้อมูลของเมนูเข้ามารวมกันและมีการจัดการได้ง่าย<br>
+                                        <span class="text-gray-500">วันที่ : 14 พฤษภาคม 2568</span>
+                                    </div>
+                                    <div class="pb-2">
+                                        <span class="font-bold text-gray-800">รายละเอียดการแก้ไข :</span><br>
+                                        บริษัทได้ดำเนินการจับเรื่อง 3.14.2 Error และ 3.14.3 User เข้ามารวมกัยเป็นเรื่อง 3.14.2 ใหม่ชื่อเมนู Application Log โดยเมนูงานนี้มีวัตถุประสงค์เป็นไปตามคำแนะนำจองคณะกรรมการ<br>
+                                        <span class="text-gray-500">วันที่ : 18 มิถุนายน 2568</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const torLinks = document.querySelectorAll('.tor-link');
+            const mainRows = document.querySelectorAll('.data-row-main');
+            const detailPanels = document.querySelectorAll('.details-panel');
+
+            torLinks.forEach(link => {
+                link.addEventListener('click', function (event) {
+                    event.preventDefault();
+
+                    const targetId = this.getAttribute('data-target');
+                    const targetElement = document.getElementById(targetId);
+                    const parentRow = this.closest('.data-row-main');
+
+                    if (targetElement && parentRow) {
+                        const isAlreadyOpen = !targetElement.classList.contains('hidden');
+
+                        mainRows.forEach(row => {
+                            row.classList.remove('font-bold');
+                            row.classList.add('font-normal');
+                        });
+                        
+                        detailPanels.forEach(panel => {
+                            if (panel.id !== targetId) {
+                                panel.classList.add('hidden');
+                            }
+                        });
+
+                        if (isAlreadyOpen) {
+                            targetElement.classList.add('hidden');
+                            parentRow.classList.remove('font-bold');
+                            parentRow.classList.add('font-normal');
+                        } else {
+                            targetElement.classList.remove('hidden');
+                            parentRow.classList.remove('font-normal');
+                            parentRow.classList.add('font-bold');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype ระบบสำหรับกิจกรรมธนาคาร (Banking)</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Google Font 'Sarabun' for Thai text -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Sarabun font to the body */
+        body {
+            font-family: 'Sarabun', sans-serif;
+        }
+        /* Custom style for the expandable row for a smooth transition */
+        .expandable-content {
+            display: none;
+        }
+        /* Style for the active row */
+        .active-row {
+            font-weight: 700; /* font-bold */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="w-full p-4 sm:p-6 lg:p-8">
+        
+        <!-- Header Section -->
+        <header class="pb-4">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">ข้อกำหนด(TOR) ทั้งหมดใน | ระบบสำหรับกิจกรรมธนาคาร (Banking)</h1>
+            <p class="mt-2 text-sm text-gray-500">ข้อมูลอัพเดท วันที่ : 18 มิถุนายน 2568</p>
+        </header>
+
+        <!-- List Box / Table Section (Template Updated) -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full w-full text-left text-base">
+                    <!-- Table Header (Updated) -->
+                    <thead class="bg-gray-200 border-b border-gray-300">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-base font-bold text-gray-600 uppercase tracking-wider">ข้อกำหนด(TOR)</th>
+                            <th scope="col" class="px-6 py-3 text-base font-bold text-gray-600 uppercase tracking-wider w-40">สถานะ</th>
+                            <th scope="col" class="px-6 py-3 text-base font-bold text-gray-600 uppercase tracking-wider w-40">การแก้ไข</th>
+                        </tr>
+                    </thead>
+                    <!-- Table Body (Updated) -->
+                    <tbody class="divide-y divide-gray-300" id="tor-table-body">
+                        <!-- Table Row 1 -->
+                        <tr data-row-id="1">
+                            <td class="py-2.5 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline" onclick="toggleDetails(event, 'details-1')">
+                                    8.1 มีระบบบริหารจัดการเอกสารที่เกี่ยวข้องกับขั้นตอนการอนุมัติ L/C ต่าง ๆ ในรูปแบบของ E-Document
+                                </a>
+                            </td>
+                            <td class="py-2.5 px-6 text-base">
+                                <span class="bg-green-100 text-green-800 font-semibold mr-2 px-3 py-1 rounded-full">ผ่าน</span>
+                            </td>
+                            <td class="py-2.5 px-6 text-base text-gray-500">
+                                <!-- Empty for now -->
+                            </td>
+                        </tr>
+                        <!-- Hidden Expandable Content for Row 1 -->
+                        <tr id="details-1" class="expandable-content">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-800">พัฒนาเพิ่มเติม</span></p>
+                                        </div>
+                                        <div class="md:border-l md:pl-6 border-gray-300">
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><span class="text-gray-800">(ไม่มีข้อมูล)</span></p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-800">DD.02 Process Document_Import</span></p>
+                                        </div>
+                                        <div class="md:border-l md:pl-6 border-gray-300">
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br><span class="text-gray-800">1.1.1 <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.89hjumuxseec" target="_blank" class="text-blue-600 hover:underline">Letter of Credit</a></span></p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=i9ok8y&p=im-g0-10-010_00-check_letter_of_credit" target="_blank" class="text-blue-600 hover:underline">
+                                                1.1.1 IM-G0-10-010/00
+                                            </a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                     <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> <span class="text-gray-800">ไม่มีข้อมูล</span></p>
+                                     </div>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Updated JavaScript function to handle only one active row at a time.
+        function toggleDetails(event, detailId) {
+            event.preventDefault();
+            
+            const detailRow = document.getElementById(detailId);
+            const clickedRow = event.target.closest('tr');
+            
+            // Find the currently active row and its details, if any
+            const activeRow = document.querySelector('.active-row');
+            
+            // If there is an active row and it's not the one we just clicked
+            if (activeRow && activeRow !== clickedRow) {
+                activeRow.classList.remove('active-row');
+                const activeDetailId = `details-${activeRow.dataset.rowId}`;
+                const activeDetailRow = document.getElementById(activeDetailId);
+                if (activeDetailRow) {
+                    activeDetailRow.style.display = 'none';
+                }
+            }
+            
+            // Toggle the current row
+            clickedRow.classList.toggle('active-row');
+            if (clickedRow.classList.contains('active-row')) {
+                detailRow.style.display = 'table-row';
+            } else {
+                detailRow.style.display = 'none';
+            }
+        }
+    </script>
+
+</body>
+</html>

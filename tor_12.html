@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype: ระบบรายงาน (Report) PCS</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font 'Sarabun' for Thai text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Sarabun font to the body for consistent Thai typography */
+        body {
+            font-family: 'Sarabun', sans-serif;
+        }
+        /* The 'hidden' class from Tailwind CSS will now control visibility */
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="w-full p-4 sm:p-6 lg:p-8">
+        
+        <!-- Header Section -->
+        <header class="mb-6">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">ข้อกำหนด(TOR) ทั้งหมดใน | ระบบรายงาน (Reports)</h1>
+            <p class="mt-2 text-sm text-gray-500">ข้อมูลอัพเดท วันที่: 18 มิถุนายน 2568</p>
+        </header>
+
+        <!-- Main Content: Table Section -->
+        <div class="w-full bg-white rounded-xl shadow-md overflow-hidden border-t-2 border-gray-200">
+            <div class="overflow-x-auto">
+                <table class="min-w-full w-full bg-white">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="text-left py-3 px-6 text-gray-600 uppercase font-bold text-base tracking-wider">ข้อกำหนด (TOR)</th>
+                            <th class="text-left py-3 px-6 text-gray-600 uppercase font-bold text-base tracking-wider w-48">สถานะ</th>
+                            <th class="text-left py-3 px-6 text-gray-600 uppercase font-bold text-base tracking-wider w-48">การแก้ไข</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tor-table-body" class="divide-y divide-gray-200">
+                        
+                        <!-- Table Row 1 -->
+                        <tr class="data-row-main cursor-pointer hover:bg-gray-50 font-normal">
+                            <td class="py-4 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline tor-link" data-target="details-1">
+                                    12.1 รายงานสรุปรายการตู้ที่จะ Load ขึ้นเรือ แยกตามเที่ยวเรือ (Vessel Visit)
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 text-base">
+                                <span class="bg-green-100 text-green-800 font-semibold px-3 py-1 rounded-full text-base">ผ่าน</span>
+                            </td>
+                            <td class="py-4 px-6 text-base text-gray-500">
+                                <!-- ค่าว่าง -->
+                            </td>
+                        </tr>
+                        <!-- Hidden Details for Row 1 -->
+                        <tr id="details-1" class="details-panel hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-700">ฟังก์ชั่นพื้นฐาน</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><a href="https://drive.google.com/file/d/1SEcGpiCld3veGgRzBmzPrSzoDShrJnA5/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 40</a></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-700">DD.03 By Process Document_Export</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>
+                                                <a href="https://docs.google.com/document/d/1pSrLfg292NiOQO7K48kYXz9CeRhy-enp/edit#bookmark=id.d9287eo9518u" target="_blank" class="text-blue-600 hover:underline">1.8.1 Load Container List (Before Working) Report</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=pc69ak&p=rp-10-20-010_00_rp-10-20-010_00_vessel_report_-_lo" target="_blank" class="text-blue-600 hover:underline">1.8.1 RP-10-20-010/00</a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> <br>
+                                        <span class="text-gray-700">ไม่มีข้อมูล</span></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Table Row 2 -->
+                        <tr class="data-row-main cursor-pointer hover:bg-gray-50 font-normal">
+                            <td class="py-4 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline tor-link" data-target="details-2">
+                                    12.2 รายงานสรุปรายการตู้ที่จะ Discharge ลงจากเรือ แยกตามเที่ยวเรือ (Vessel Visit)
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 text-base">
+                                <span class="bg-green-100 text-green-800 font-semibold px-3 py-1 rounded-full text-base">ผ่าน</span>
+                            </td>
+                            <td class="py-4 px-6 text-base text-gray-500">
+                                แก้ไขแล้ว
+                            </td>
+                        </tr>
+                        <!-- Hidden Details for Row 2 -->
+                        <tr id="details-2" class="details-panel hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-700">ฟังก์ชั่นพื้นฐาน</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><a href="https://drive.google.com/file/d/1SEcGpiCld3veGgRzBmzPrSzoDShrJnA5/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 40</a></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-700">DD.02 By Process Document_Import</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>
+                                                <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.9olj1e8ftyge" target="_blank" class="text-blue-600 hover:underline">1.5.2 Discharge Container List (Before Working) Report</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=qp18y4&p=rp-10-10-010_00__vessel_report_-_discharge_contain" target="_blank" class="text-blue-600 hover:underline">1.5.2 RP-10-10-010/00</a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong><br>
+                                        <span class="text-gray-700">1. คณะกรรมการแนะนำให้แก้ไขการแสดงผลของรายงานให้เหมือนกันทั้ง Load และ Discharge<br>2. คณะกรรมการให้ชี้แจงเกี่ยวกับ Format ของวันที่</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 14 เมษายน 2568</span></p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">รายละเอียดการแก้ไข :</strong><br>
+                                        <span class="text-gray-700">1. ทีมพัฒนาระบบรับเรื่องเพื่อดำเนินการแก้ไข และดำเนินการแก้ไขเรียบร้อยแล้ว<br><br>2. ทีมพัฒนาระบบได้ชี้แจงเรียบร้อยแล้ว ยืนยันการใช้ Format : DD-MM-YYYY รับทราบและทำการปรับปรุงแก้ไข</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 15 เมษายน 2568</span></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Table Row 3 -->
+                        <tr class="data-row-main cursor-pointer hover:bg-gray-50 font-normal">
+                            <td class="py-4 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline tor-link" data-target="details-3">
+                                    12.3 รายงานสรุปรายการตู้ที่จะ Discharge ลงจากเรือ แยกตามเที่ยวเรือ (Vessel Visit)
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 text-base">
+                                <span class="bg-green-100 text-green-800 font-semibold px-3 py-1 rounded-full text-base">ผ่าน</span>
+                            </td>
+                            <td class="py-4 px-6 text-base text-gray-500">
+                                <!-- ค่าว่าง -->
+                            </td>
+                        </tr>
+                        <!-- Hidden Details for Row 3 -->
+                        <tr id="details-3" class="details-panel hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-700">ฟังก์ชั่นพื้นฐาน</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><a href="https://drive.google.com/file/d/1SWSKcR0kQptiESvKRiSO8MA4NM9QNXrA/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 37</a></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-700">DD.02 By Process Document_Import</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>
+                                                <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.uojekr49r6p5" target="_blank" class="text-blue-600 hover:underline">1.5.1 Container Detail by Vessel Report</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=twby4l&p=rp-70-b0-010_00-containerdetailbyvessel" target="_blank" class="text-blue-600 hover:underline">1.5.1 RP-70-B0-010/00</a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> <br>
+                                        <span class="text-gray-700">ไม่มีข้อมูล</span></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Table Row 4 -->
+                        <tr class="data-row-main cursor-pointer hover:bg-gray-50 font-normal">
+                            <td class="py-4 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline tor-link" data-target="details-4">
+                                    12.4 รายงานสรุปปริมาณตู้ในแต่ละท่าเรือ/ลานตู้/CFS/ICD แยกตามประเภทของตู้/ขนาดตู้
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 text-base">
+                                <span class="bg-green-100 text-green-800 font-semibold px-3 py-1 rounded-full text-base">ผ่าน</span>
+                            </td>
+                            <td class="py-4 px-6 text-base text-gray-500">
+                                <!-- ค่าว่าง -->
+                            </td>
+                        </tr>
+                        <!-- Hidden Details for Row 4 -->
+                        <tr id="details-4" class="details-panel hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-700">ฟังก์ชั่นพื้นฐาน</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><a href="https://drive.google.com/file/d/1vwQFYIJ6UZeqibnR1_viaxDmksL6fUz4/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 38</a></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-700">DD.02 By Process Document_Import</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>
+                                                <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.ibb5qiw7sxgu" target="_blank" class="text-blue-600 hover:underline">1.5.6 Summary Container Inventory Report</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=b7ikrz&p=rp-70-25-010_00-container_suminventoty_facility" target="_blank" class="text-blue-600 hover:underline">1.5.6 RP-70-25-010/00</a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> <br>
+                                        <span class="text-gray-700">ไม่มีข้อมูล</span></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Table Row 5 -->
+                        <tr class="data-row-main cursor-pointer hover:bg-gray-50 font-normal">
+                            <td class="py-4 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline tor-link" data-target="details-5">
+                                    12.5 รายงานสรุปจำนวนตู้เข้าท่าเรือ/ลานตู้/CFS/ICD ทางรถขนส่ง แยกตามประเภทของตู้/ขนาดตู้ ตามช่วงเวลา แสดงเป็นตาราง และกราฟเส้นโดยแกน X เป็นเวลารายชั่วโมง
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 text-base">
+                                <span class="bg-green-100 text-green-800 font-semibold px-3 py-1 rounded-full text-base">ผ่าน</span>
+                            </td>
+                            <td class="py-4 px-6 text-base text-gray-500">
+                                แก้ไขแล้ว
+                            </td>
+                        </tr>
+                        <!-- Hidden Details for Row 5 -->
+                        <tr id="details-5" class="details-panel hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-700">ฟังก์ชั่นพื้นฐาน</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><a href="https://drive.google.com/file/d/13rwnbPZUXa9BLyogIMWYHinsjWzndO2q/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 42</a></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-700">DD.06_Hinterland - Truck</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>
+                                                <a href="https://docs.google.com/document/d/1sgHEscE2W7-cA5Y5Wauv8Y94gIL7Dbr-/edit#bookmark=id.7qzie42k0vbm" target="_blank" class="text-blue-600 hover:underline">2.2.2 Summary Container Passed Gate Report</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=lgyhle&p=rp-70-35-010_00-container_sumgate_facility" target="_blank" class="text-blue-600 hover:underline">2.2.2 RP-70-35-010/00</a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> <br>
+                                        <span class="text-gray-700">คณะกรรมการเสนอให้แก้ไขกราฟเส้นให้สวยงาม และเพิ่ม Total  โดยให้พิจารณาเป็นกราฟแท่ง</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 19 พฤษภาคม 2568</span></p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">รายละเอียดการแก้ไข :</strong><br>
+                                        <span class="text-gray-700">ทีมพัฒนาระบบ รับเรื่องเพื่อนำไปหาข้อมูลเพิ่มเติมและปรับปรุงแก้ไข</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 19 พฤษภาคม 2568</span></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Table Row 6 -->
+                        <tr class="data-row-main cursor-pointer hover:bg-gray-50 font-normal">
+                            <td class="py-4 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline tor-link" data-target="details-6">
+                                    12.6 รายงานสรุปจำนวนตู้ออกจากท่าเรือ/ลานตู้/CFS/ICD ทางรถขนส่ง แยกตามประเภทของตู้/ขนาดตู้ ตามช่วงเวลา แสดงเป็นตาราง และกราฟเส้นโดยแกน X เป็นเวลารายชั่วโมง
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 text-base">
+                                <span class="bg-green-100 text-green-800 font-semibold px-3 py-1 rounded-full text-base">ผ่าน</span>
+                            </td>
+                            <td class="py-4 px-6 text-base text-gray-500">
+                                แก้ไขแล้ว
+                            </td>
+                        </tr>
+                        <!-- Hidden Details for Row 6 -->
+                        <tr id="details-6" class="details-panel hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-700">ฟังก์ชั่นพื้นฐาน</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><a href="https://drive.google.com/file/d/13rwnbPZUXa9BLyogIMWYHinsjWzndO2q/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 42</a></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-700">DD.06_Hinterland - Truck</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>
+                                                <a href="https://docs.google.com/document/d/1sgHEscE2W7-cA5Y5Wauv8Y94gIL7Dbr-/edit#bookmark=id.7qzie42k0vbm" target="_blank" class="text-blue-600 hover:underline">2.2.2 Summary Container Passed Gate Report</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=lgyhle&p=rp-70-35-010_00-container_sumgate_facility" target="_blank" class="text-blue-600 hover:underline">2.2.2 RP-70-35-010/00</a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> <br>
+                                        <span class="text-gray-700">คณะกรรมการเสนอให้แก้ไขกราฟเส้นให้สวยงาม และเพิ่ม Total  โดยให้พิจารณาเป็นกราฟแท่ง</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 19 พฤษภาคม 2568</span></p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">รายละเอียดการแก้ไข :</strong><br>
+                                        <span class="text-gray-700">ทีมพัฒนาระบบ รับเรื่องเพื่อนำไปหาข้อมูลเพิ่มเติมและปรับปรุงแก้ไข</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 19 พฤษภาคม 2568</span></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Table Row 7 -->
+                        <tr class="data-row-main cursor-pointer hover:bg-gray-50 font-normal">
+                            <td class="py-4 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline tor-link" data-target="details-7">
+                                    12.7 รายงานสรุปจำนวนตู้นำเข้า/ส่งออกทางรถไฟ (ระหว่าง ICD ลาดกระบังกับท่าเรือแหลมฉบัง) แยกตามประเภทของตู้/ขนาดตู้ ตามช่วงเวลา แสดงเป็นตาราง และกราฟเส้นโดยแกน X เป็นเวลารายชั่วโมง
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 text-base">
+                                <span class="bg-green-100 text-green-800 font-semibold px-3 py-1 rounded-full text-base">ผ่าน</span>
+                            </td>
+                            <td class="py-4 px-6 text-base text-gray-500">
+                                แก้ไขแล้ว
+                            </td>
+                        </tr>
+                        <!-- Hidden Details for Row 7 -->
+                        <tr id="details-7" class="details-panel hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-700">ฟังก์ชั่นพื้นฐาน</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><a href="https://drive.google.com/file/d/13rwnbPZUXa9BLyogIMWYHinsjWzndO2q/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 42</a></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-700">DD.04 Hinterland - Rail Import</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>
+                                                <a href="https://docs.google.com/document/d/1C2wC-1PyZgXhiNUDfaTQK9stC2tiByFM/edit#bookmark=id.59n80yg3dz62" target="_blank" class="text-blue-600 hover:underline">1.4.3 Summary Container In/Outbound by Rail Report</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=9ebzcu&p=rp-70-e0-010_00-containersuminoutboundrail" target="_blank" class="text-blue-600 hover:underline">1.4.3 RP-70-E0-010/00</a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> <br>
+                                        <span class="text-gray-700">คณะกรรมการเสนอให้แก้ไขกราฟเส้นให้สวยงาม และเพิ่ม Total  โดยให้พิจารณาเป็นกราฟแท่ง</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 19 พฤษภาคม 2568</span></p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">รายละเอียดการแก้ไข :</strong><br>
+                                        <span class="text-gray-700">ทีมพัฒนาระบบ รับเรื่องเพื่อนำไปหาข้อมูลเพิ่มเติมและปรับปรุงแก้ไข</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 19 พฤษภาคม 2568</span></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Table Row 8 -->
+                        <tr class="data-row-main cursor-pointer hover:bg-gray-50 font-normal">
+                            <td class="py-4 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline tor-link" data-target="details-8">
+                                    12.8 รายงานสรุปจำนวนตู้ผ่านเข้า/ออก Gate ต่างๆของท่าเรือ/ลานตู้/CFS/ICD ตามช่วงเวลา แสดงเป็นตาราง
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 text-base">
+                                <span class="bg-green-100 text-green-800 font-semibold px-3 py-1 rounded-full text-base">ผ่าน</span>
+                            </td>
+                            <td class="py-4 px-6 text-base text-gray-500">
+                                แก้ไขแล้ว
+                            </td>
+                        </tr>
+                        <!-- Hidden Details for Row 8 -->
+                        <tr id="details-8" class="details-panel hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-700">ฟังก์ชั่นพื้นฐาน</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><a href="https://drive.google.com/file/d/13rwnbPZUXa9BLyogIMWYHinsjWzndO2q/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 42</a></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-700">DD.06_Hinterland - Truck</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>
+                                                <a href="https://docs.google.com/document/d/1sgHEscE2W7-cA5Y5Wauv8Y94gIL7Dbr-/edit#bookmark=id.7qzie42k0vbm" target="_blank" class="text-blue-600 hover:underline">2.2.2 Summary Container Passed Gate Report</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=lgyhle&p=rp-70-35-010_00-container_sumgate_facility" target="_blank" class="text-blue-600 hover:underline">2.2.2 RP-70-35-010/00</a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> <br>
+                                        <span class="text-gray-700">คณะกรรมการเสนอให้แก้ไขกราฟเส้นให้สวยงาม และเพิ่ม Total  โดยให้พิจารณาเป็นกราฟแท่ง</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 19 พฤษภาคม 2568</span></p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">รายละเอียดการแก้ไข :</strong><br>
+                                        <span class="text-gray-700">ทีมพัฒนาระบบ รับเรื่องเพื่อนำไปหาข้อมูลเพิ่มเติมและปรับปรุงแก้ไข</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 19 พฤษภาคม 2568</span></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Table Row 9 -->
+                        <tr class="data-row-main cursor-pointer hover:bg-gray-50 font-normal">
+                            <td class="py-4 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline tor-link" data-target="details-9">
+                                    12.9 รายงานสรุปสถานะการขออนุญาติสำหรับตู้สินค้าอันตรายผ่านไปยังกรมเจ้าท่า แสดงผลในรูปแบบตาราง โดยกรองรายการแยกตามสิทธิ์เฉพาะรายการของผู้ยื่นขอ
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 text-base">
+                                <span class="bg-green-100 text-green-800 font-semibold px-3 py-1 rounded-full text-base">ผ่าน</span>
+                            </td>
+                            <td class="py-4 px-6 text-base text-gray-500">
+                                <!-- ค่าว่าง -->
+                            </td>
+                        </tr>
+                        <!-- Hidden Details for Row 9 -->
+                        <tr id="details-9" class="details-panel hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-700">ฟังก์ชั่นพื้นฐาน</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><span class="text-gray-700">การเชื่อมต่อกับกรมเจ้าท่าต้องพัฒนาเพิ่มเติม</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-700">DD.01 By Process Document_Vessel</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>
+                                                <a href="https://docs.google.com/document/d/1m3Ghe-gjvDm4r-gin9df8JckCn2U9vJC/edit#bookmark=id.vfr97yx1olhf" target="_blank" class="text-blue-600 hover:underline">2.4.1 Dangerous Container Application of Marine Department Report</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=s2m177&p=rp-70-50-010_00-container_dg_statusmd" target="_blank" class="text-blue-600 hover:underline">2.4.1 RP-70-50-010/00</a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> <br>
+                                        <span class="text-gray-700">ไม่มีข้อมูล</span></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Table Row 10 -->
+                        <tr class="data-row-main cursor-pointer hover:bg-gray-50 font-normal">
+                            <td class="py-4 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline tor-link" data-target="details-10">
+                                    12.10 รายงานสถิติการตรวจปล่อยตู้นำเข้า/ส่งออก แยกตามท่าเรือ และขนาดตู้ตามช่วงเวลา แสดงผลในรูปแบบตาราง
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 text-base">
+                                <span class="bg-green-100 text-green-800 font-semibold px-3 py-1 rounded-full text-base">ผ่าน</span>
+                            </td>
+                            <td class="py-4 px-6 text-base text-gray-500">
+                                แก้ไขแล้ว
+                            </td>
+                        </tr>
+                        <!-- Hidden Details for Row 10 -->
+                        <tr id="details-10" class="details-panel hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-700">ฟังก์ชั่นพื้นฐาน</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><a href="https://drive.google.com/file/d/1vwQFYIJ6UZeqibnR1_viaxDmksL6fUz4/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 38</a></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-700">DD.02 By Process Document_Import</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>
+                                                <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.jj3ykaswdv8b" target="_blank" class="text-blue-600 hover:underline">1.5.7 Container Release Report </a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=3urxxr&p=rp-70-55-010_00-container_release" target="_blank" class="text-blue-600 hover:underline">1.5.7 RP-70-55-010/00</a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> <br>
+                                        <span class="text-gray-700">คณะกรรมการเสนอแนะให้เพิ่มช่วงเวลาสำหรับการค้นหา</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 19 พฤษภาคม 2568</span></p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">รายละเอียดการแก้ไข :</strong><br>
+                                        <span class="text-gray-700">ทีมพัฒนาระบบ รับเรื่องเพื่อนำไปหาข้อมูลเพิ่มเติมและปรับปรุงแก้ไข</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 19 พฤษภาคม 2568</span></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Table Row 11 -->
+                        <tr class="data-row-main cursor-pointer hover:bg-gray-50 font-normal">
+                            <td class="py-4 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline tor-link" data-target="details-11">
+                                     12.11 รายงานสรุปการแจ้ง Pre-advice โดยรถบรรทุก แยกตามท่าเรือ และประเภทกิจกรรม แสดงผลในรูปแบบตาราง โดยกรองงานแยกตามสิทธิ์ตามท่าเรือ 
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 text-base">
+                                <span class="bg-green-100 text-green-800 font-semibold px-3 py-1 rounded-full text-base">ผ่าน</span>
+                            </td>
+                            <td class="py-4 px-6 text-base text-gray-500">
+                                แก้ไขแล้ว
+                            </td>
+                        </tr>
+                        <!-- Hidden Details for Row 11 -->
+                        <tr id="details-11" class="details-panel hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-700">ฟังก์ชั่นพื้นฐาน</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><a href="https://drive.google.com/file/d/13rwnbPZUXa9BLyogIMWYHinsjWzndO2q/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 42</a></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-700">DD.06_Hinterland - Truck</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>
+                                                <a href="https://docs.google.com/document/d/1sgHEscE2W7-cA5Y5Wauv8Y94gIL7Dbr-/edit#bookmark=id.7h3tk3a0bwk6" target="_blank" class="text-blue-600 hover:underline">1.5.3 Pre-Advice Report</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=ssk62f&p=rp-70-60-010_00-container_preadvice" target="_blank" class="text-blue-600 hover:underline">1.5.3 RP-70-60-010/00</a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> <br>
+                                        <span class="text-gray-700">คณะกรรมการเสนอให้ค้นหา Mode Transport เป็นแบบ Multiple Report</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 19 พฤษภาคม 2568</span></p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">รายละเอียดการแก้ไข :</strong><br>
+                                        <span class="text-gray-700">ทีมพัฒนาระบบ รับเรื่องเพื่อนำไปหาข้อมูลเพิ่มเติมและปรับปรุงแก้ไข</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 19 พฤษภาคม 2568</span></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Table Row 12 -->
+                        <tr class="data-row-main cursor-pointer hover:bg-gray-50 font-normal">
+                            <td class="py-4 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline tor-link" data-target="details-12">
+                                     12.12 รายงานสรุปการจองขอใช้บริการรถขนส่ง โดยผู้ขอใช้บริการ (ผู้นำเข้า/ส่งออก) หรือตัวแทน แยกตามประเภทงาน และสถานที่รับหรือส่งตู้
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 text-base">
+                                <span class="bg-green-100 text-green-800 font-semibold px-3 py-1 rounded-full text-base">ผ่าน</span>
+                            </td>
+                            <td class="py-4 px-6 text-base text-gray-500">
+                                <!-- ค่าว่าง -->
+                            </td>
+                        </tr>
+                        <!-- Hidden Details for Row 12 -->
+                        <tr id="details-12" class="details-panel hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-700">ฟังก์ชั่นพื้นฐาน</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><a href="https://drive.google.com/file/d/13rwnbPZUXa9BLyogIMWYHinsjWzndO2q/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 42</a></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-700">DD.06_Hinterland - Truck</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>
+                                                <a href="https://docs.google.com/document/d/1sgHEscE2W7-cA5Y5Wauv8Y94gIL7Dbr-/edit#heading=h.pba3nat3yz3y" target="_blank" class="text-blue-600 hover:underline">1.5.1 Work Order Detail for Requester Report</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=3k5fvz&p=rp-70-65-010_00_wrstatusforrequester" target="_blank" class="text-blue-600 hover:underline">1.5.1 RP-70-65-010/00</a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> <br>
+                                        <span class="text-gray-700">ไม่มีข้อมูล</span></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Table Row 13 -->
+                        <tr class="data-row-main cursor-pointer hover:bg-gray-50 font-normal">
+                            <td class="py-4 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline tor-link" data-target="details-13">
+                                     12.13 รายงานสรุปการรับงานขนส่ง สำหรับผู้ว่าจ้างและบริษัทขนส่ง เพื่อตรวจสอบสถานะงานขนส่งที่ตนเองว่าจ้าง หรือกำลังดำเนินการ แสดงรายละเอียดทะเบียนรถที่กำลังปฏิบัติงาน แสดงผลเป็นตาราง โดยกรองงานแยกตามสิทธิ์ของผู้ว่าจ้าง และบริษัทขนส่ง
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 text-base">
+                                <span class="bg-red-100 text-red-800 font-semibold px-3 py-1 rounded-full text-base">ไม่ผ่าน</span>
+                            </td>
+                            <td class="py-4 px-6 text-base text-gray-500">
+                                แก้ไขแล้ว
+                            </td>
+                        </tr>
+                        <!-- Hidden Details for Row 13 -->
+                        <tr id="details-13" class="details-panel hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-700">ฟังก์ชั่นพื้นฐาน</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><a href="https://drive.google.com/file/d/13rwnbPZUXa9BLyogIMWYHinsjWzndO2q/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 42</a></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-700">DD.06_Hinterland - Truck</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>
+                                                <a href="https://docs.google.com/document/d/1sgHEscE2W7-cA5Y5Wauv8Y94gIL7Dbr-/edit#bookmark=id.wvbjmj8ondou" target="_blank" class="text-blue-600 hover:underline">3.3.1 Work Order Operation Report</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=q5i1zp&p=rp-70-70-010_00-wroperation" target="_blank" class="text-blue-600 hover:underline">3.3.1 RP-70-70-010/00</a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> <br>
+                                        <span class="text-gray-700">1. การทบทวนและปรับปรุงหน้ารายงาน (Review and Improvement of the Report Page) คณะกรรมการเสนอให้มีการทบทวนการออกแบบและเนื้อหาของหน้ารายงานอีกครั้ง เนื่องจากตรวจสอบพบว่าการแสดงผลข้อมูลในปัจจุบันยังขาดความครบถ้วนสมบูรณ์ จึงขอให้ทีมงานดำเนินการวิเคราะห์และเพิ่มเติมข้อมูลที่จำเป็นเพื่อให้รายงานสามารถแสดงผลได้อย่างครอบคลุมยิ่งขึ้น<br>2. การแก้ไขข้อความสถานะการดำเนินงาน (Correction of Operation Status Text) สำหรับข้อมูลสถานะการดำเนินงาน (Operation Status) ที่แสดงในตาราง ให้แก้ไขข้อความสถานะจาก "Close" เป็น "Closed" เพื่อความถูกต้องตามหลักไวยากรณ์</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 19 พฤษภาคม 2568</span></p>
+                                    </div>
+                                     <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">รายละเอียดการแก้ไข :</strong><br>
+                                        <span class="text-gray-700">ทีมพัฒนาระบบชี้แจ้งว่า GPN ใช้ Formate : DD-MM-YYYY และจะดำเนินการแก้ไขข้อมูลในรายงาน ดำเนินการแก้ไขเรียบร้อยแล้ว</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 06 มิถุนายน 2568</span></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Table Row 14 -->
+                        <tr class="data-row-main cursor-pointer hover:bg-gray-50 font-normal">
+                            <td class="py-4 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline tor-link" data-target="details-14">
+                                     12.14 รายงานสรุปประวัติการขนส่งแยกตามทะเบียนรถขนส่ง ภายใต้บริษัทขนส่งนั้น ๆ สำหรับผู้ประกอบการรถขนส่งเป็นหลัก แสดงผลเป็นตาราง โดยกรองรายการแยกตามสิทธิ์ตามบริษัทขนส่ง
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 text-base">
+                                <span class="bg-red-100 text-red-800 font-semibold px-3 py-1 rounded-full text-base">ไม่ผ่าน</span>
+                            </td>
+                            <td class="py-4 px-6 text-base text-gray-500">
+                                แก้ไขแล้ว
+                            </td>
+                        </tr>
+                        <!-- Hidden Details for Row 14 -->
+                        <tr id="details-14" class="details-panel hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-700">ฟังก์ชั่นพื้นฐาน</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><a href="https://drive.google.com/file/d/13rwnbPZUXa9BLyogIMWYHinsjWzndO2q/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 42</a></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-700">DD.06_Hinterland - Truck</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>
+                                                <a href="https://docs.google.com/document/d/1sgHEscE2W7-cA5Y5Wauv8Y94gIL7Dbr-/edit#bookmark=id.t9l93vmqqhg8" target="_blank" class="text-blue-600 hover:underline">3.3.2 Work Order by License Plate Report</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=tglnzp&p=rp-70-75-010_00-wroperationbyplate" target="_blank" class="text-blue-600 hover:underline">3.3.2 RP-70-75-010/00</a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> <br>
+                                        <span class="text-gray-700">คณะกรรมการแนะนำให้มีการทบทวนและปรับปรุงหน้ารายงาน (Review and Improvement of the Report Page) คณะกรรมการเสนอให้มีการทบทวนการออกแบบและเนื้อหาของหน้ารายงานอีกครั้ง เนื่องจากตรวจสอบพบว่าการแสดงผลข้อมูลในปัจจุบันยังขาดความครบถ้วนสมบูรณ์ จึงขอให้ทีมงานดำเนินการวิเคราะห์และเพิ่มเติมข้อมูลที่จำเป็นเพื่อให้รายงานสามารถแสดงผลได้อย่างครอบคลุมยิ่งขึ้น</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 19 พฤษภาคม 2568</span></p>
+                                    </div>
+                                     <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">รายละเอียดการแก้ไข :</strong><br>
+                                        <span class="text-gray-700">ทีมพัฒนาระบบจะนำไปพิจารณาและแก้ไขข้อมูลเพิ่มเติม</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 06 มิถุนายน 2568</span></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Table Row 15 -->
+                        <tr class="data-row-main cursor-pointer hover:bg-gray-50 font-normal">
+                            <td class="py-4 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline tor-link" data-target="details-15">
+                                     12.15 รายงานสรุปประวัติการขนส่งแยกตามบริษัทขนส่ง สำหรับผู้ว่าจ้างดูประวัติการทำงานตามบริษัทขนส่งแต่ละราย แสดงผลเป็นตาราง โดยกรองรายการแยกตามสิทธิ์ตามผู้ว่าจ้าง
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 text-base">
+                                <span class="bg-red-100 text-red-800 font-semibold px-3 py-1 rounded-full text-base">ไม่ผ่าน</span>
+                            </td>
+                            <td class="py-4 px-6 text-base text-gray-500">
+                                แก้ไขแล้ว
+                            </td>
+                        </tr>
+                        <!-- Hidden Details for Row 15 -->
+                        <tr id="details-15" class="details-panel hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-700">ฟังก์ชั่นพื้นฐาน</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><a href="https://drive.google.com/file/d/13rwnbPZUXa9BLyogIMWYHinsjWzndO2q/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 42</a></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-700">DD.06_Hinterland - Truck</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>
+                                                <a href="https://docs.google.com/document/d/1sgHEscE2W7-cA5Y5Wauv8Y94gIL7Dbr-/edit#bookmark=id.t9l93vmqqhg8" target="_blank" class="text-blue-600 hover:underline">3.3.2 Work Order by License Plate Report</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=tglnzp&p=rp-70-75-010_00-wroperationbyplate" target="_blank" class="text-blue-600 hover:underline">3.3.2 RP-70-75-010/00</a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> <br>
+                                        <span class="text-gray-700">สามารถเรียบเรียงข้อเสนอแนะทั้งหมดนี้ให้เป็นทางการและจัดหมวดหมู่ให้ชัดเจน เพื่อให้ง่ายต่อการนำไปปฏิบัติต่อได้ดังนี้<br>แบบที่ 1 (เป็นทางการ แบ่งหัวข้อชัดเจนที่สุด)<br>คณะกรรมการได้มีข้อเสนอแนะเพื่อการปรับปรุงและเตรียมความพร้อมของระบบสำหรับการนำเสนอครั้งถัดไป 3 ประเด็น ดังนี้<br>1. การเตรียมข้อมูลสำหรับการนำเสนอ (Data Preparation for Presentation) ในการนำเสนอครั้งต่อไป คณะกรรมการเสนอให้มีการเตรียม "ข้อมูลจริง" หรือข้อมูลที่สมจริงมาใช้ในระบบ และระบบจะต้องอยู่ในสถานะที่พร้อม "ใช้งานได้จริง" (Live Demo) เพื่อให้สามารถสาธิตการทำงานได้อย่างเต็มประสิทธิภาพและเห็นภาพการใช้งานที่ชัดเจน<br>2. การปรับปรุงฟังก์ชันการค้นหา (Improvement of Search Functionality) สำหรับหน้าจอ HL-80-40-010/00 ในแท็บ 'Employer' ให้ดำเนินการแก้ไขส่วนแสดงผลการค้นหา (Search Result) ให้สามารถทำงานได้อย่างถูกต้อง โดยผลลัพธ์ที่แสดงจะต้องเปลี่ยนแปลงไปตามเงื่อนไข (Criteria) ที่ผู้ใช้งานระบุในช่องค้นหา<br>3. การเพิ่มข้อมูลตัวอย่าง (Adding Sample Data) เพื่อให้การสาธิตมีความต่อเนื่องและเข้าใจง่าย ขอให้มีการเพิ่ม "ข้อมูลตัวอย่าง" (Sample Data) ที่จำเป็นลงในหน้า "มอบหมายงาน" (Assign Page) ให้เรียบร้อย</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 19 พฤษภาคม 2568</span></p>
+                                    </div>
+                                     <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">รายละเอียดการแก้ไข :</strong><br>
+                                        <span class="text-gray-700">ทีมพัฒนาระบบได้ชี้แจงแล้วว่าที่นำเสนอคือ Prototype หากต้องการให้แสดงข้อมูลจริงจะเป็นโปรแกรมที่ถูกพัฒนาเรียบร้อยแล้ว</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 06 มิถุนายน 2568</span></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Table Row 16 -->
+                        <tr class="data-row-main cursor-pointer hover:bg-gray-50 font-normal">
+                            <td class="py-4 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline tor-link" data-target="details-16">
+                                     12.16 รายงานสรุปสถิติการจองคิวเข้าท่าเรือ แยกตามท่าเรือ และช่วงเวลา แสดงผลเป็นตาราง และกราฟเส้นแยกตามประเภทกิจกรรม 
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 text-base">
+                                <span class="bg-green-100 text-green-800 font-semibold px-3 py-1 rounded-full text-base">ผ่าน</span>
+                            </td>
+                            <td class="py-4 px-6 text-base text-gray-500">
+                                แก้ไขแล้ว
+                            </td>
+                        </tr>
+                        <!-- Hidden Details for Row 16 -->
+                        <tr id="details-16" class="details-panel hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-700">ฟังก์ชั่นพื้นฐาน</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><a href="https://drive.google.com/file/d/13rwnbPZUXa9BLyogIMWYHinsjWzndO2q/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 42</a></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-700">DD.06_Hinterland - Truck</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>
+                                                <a href="https://docs.google.com/document/d/1sgHEscE2W7-cA5Y5Wauv8Y94gIL7Dbr-/edit#bookmark=id.c1sze2g4d66n" target="_blank" class="text-blue-600 hover:underline">1.5.2 Summary Truck Queue Report</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=q3ox48&p=rp-70-85-010_00-queuesumbooking" target="_blank" class="text-blue-600 hover:underline">1.5.2 RP-70-85-010/00</a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> <br>
+                                        <span class="text-gray-700">คณะกรรมการแนะนำให้เพิ่มข้อมูลเกี่ยวกับกิจกรรม 6 กิจกรรม</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 19 พฤษภาคม 2568</span></p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">รายละเอียดการแก้ไข :</strong><br>
+                                        <span class="text-gray-700">ทีมพัฒนาระบบรับเรื่องเพื่อแก้ไขข้อมูลให้ถูกต้อง</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 06 มิถุนายน 2568</span></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Table Row 17 -->
+                        <tr class="data-row-main cursor-pointer hover:bg-gray-50 font-normal">
+                            <td class="py-4 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline tor-link" data-target="details-17">
+                                     12.17 รายงานสรุปการจองขอใช้บริการรถไฟ โดยผู้ขอใช้บริการ (ผู้นำเข้า/ส่งออก) หรือตัวแทน แยกตามประเภทงาน แสดงผลเป็นตาราง โดยกรองงานแยกตามสิทธิ์ของผู้ขอใช้บริการ
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 text-base">
+                                <span class="bg-green-100 text-green-800 font-semibold px-3 py-1 rounded-full text-base">ผ่าน</span>
+                            </td>
+                            <td class="py-4 px-6 text-base text-gray-500">
+                                <!-- ค่าว่าง -->
+                            </td>
+                        </tr>
+                        <!-- Hidden Details for Row 17 -->
+                        <tr id="details-17" class="details-panel hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-700">ฟังก์ชั่นพื้นฐาน</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><a href="https://drive.google.com/file/d/13rwnbPZUXa9BLyogIMWYHinsjWzndO2q/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 42</a></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-700">DD.05_Hinterland - Rail Export</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>
+                                                <a href="https://docs.google.com/document/d/1hxLsH1FxpzlLvvtuXiPr_uZSOj7xvVv5/edit#bookmark=id.24akdqo44im7" target="_blank" class="text-blue-600 hover:underline">1.3.1 Summary Rail Quota Report</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=eoaw0w&p=rp-70-90-010_00-quotarail" target="_blank" class="text-blue-600 hover:underline">1.3.1 RP-70-90-010/00</a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> <br>
+                                        <span class="text-gray-700">ไม่มีข้อมูล</span></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Table Row 18 -->
+                        <tr class="data-row-main cursor-pointer hover:bg-gray-50 font-normal">
+                            <td class="py-4 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline tor-link" data-target="details-18">
+                                     12.18 รายงานสรุปตารางรถไฟ (Rail Schedule) ที่จะเข้าเทียบท่าแยกตามเที่ยว (ขานำเข้าหรือส่งออก) และช่วงเวลา โดยแสดงรูปแบบทั้งตาราง และ Gantt Chart
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 text-base">
+                                <span class="bg-green-100 text-green-800 font-semibold px-3 py-1 rounded-full text-base">ผ่าน</span>
+                            </td>
+                            <td class="py-4 px-6 text-base text-gray-500">
+                                <!-- ค่าว่าง -->
+                            </td>
+                        </tr>
+                        <!-- Hidden Details for Row 18 -->
+                        <tr id="details-18" class="details-panel hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-700">ฟังก์ชั่นพื้นฐาน</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><a href="https://drive.google.com/file/d/13rwnbPZUXa9BLyogIMWYHinsjWzndO2q/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 42</a></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-700">DD.04 Hinterland - Rail Import</span><br><span class="text-gray-700">DD.05_Hinterland - Rail Export</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>
+                                                <a href="https://docs.google.com/document/d/1C2wC-1PyZgXhiNUDfaTQK9stC2tiByFM/edit#bookmark=id.p6c1qg18yen0" target="_blank" class="text-blue-600 hover:underline">1.4.1 Summary Rail Schedule Report</a><br>
+                                                <a href="https://docs.google.com/document/d/1C2wC-1PyZgXhiNUDfaTQK9stC2tiByFM/edit#bookmark=id.hm11pdvmmgcv" target="_blank" class="text-blue-600 hover:underline">1.4.2 Rail Schedule Gantt Chart Report</a><br>
+                                                <a href="https://docs.google.com/document/d/1hxLsH1FxpzlLvvtuXiPr_uZSOj7xvVv5/edit#bookmark=id.8dxgyc6kic6d" target="_blank" class="text-blue-600 hover:underline">1.3.2 Summary Rail Schedule Report</a><br>
+                                                <a href="https://docs.google.com/document/d/1hxLsH1FxpzlLvvtuXiPr_uZSOj7xvVv5/edit#bookmark=id.n63ysuxj42cg" target="_blank" class="text-blue-600 hover:underline">1.3.3 Rail Schedule Gantt Chart Report</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=ow29hk&p=rp-70-95-010_00-railscheduletable" target="_blank" class="text-blue-600 hover:underline">1.4.1 RP-70-95-010/00</a><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=3mj2rj&p=rp-70-97-010_00-railscheduleganttchart" target="_blank" class="text-blue-600 hover:underline">1.4.2 RP-70-97-010/00</a><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=ow29hk&p=rp-70-95-010_00-railscheduletable" target="_blank" class="text-blue-600 hover:underline">1.3.2 RP-70-95-010/00</a><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=3mj2rj&p=rp-70-97-010_00-railscheduleganttchart" target="_blank" class="text-blue-600 hover:underline">1.3.3 RP-70-97-010/00</a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> <br>
+                                        <span class="text-gray-700">ไม่มีข้อมูล</span></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Table Row 19 -->
+                        <tr class="data-row-main cursor-pointer hover:bg-gray-50 font-normal">
+                            <td class="py-4 px-6 text-base">
+                                <a href="#" class="text-blue-600 hover:underline tor-link" data-target="details-19">
+                                     12.19 รายงานสรุปเอกสาร Delivery Order ผ่านระบบ PCS แยกตามคู่ค้า และสถานะ แสดงรูปแบบตาราง และกรองรายการตามสิทธิ์ผู้ใช้งาน (เฉพาะ Delivery Order ของตนเองเท่านั้น)
+                                </a>
+                            </td>
+                            <td class="py-4 px-6 text-base">
+                                <span class="bg-red-100 text-red-800 font-semibold px-3 py-1 rounded-full text-base">ไม่ผ่าน</span>
+                            </td>
+                            <td class="py-4 px-6 text-base text-gray-500">
+                                แก้ไขแล้ว
+                            </td>
+                        </tr>
+                        <!-- Hidden Details for Row 19 -->
+                        <tr id="details-19" class="details-panel hidden">
+                            <td colspan="3" class="p-0">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">ทำได้ :</strong><br><span class="text-gray-700">ฟังก์ชั่นพื้นฐาน</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เอกสารอ้างอิง :</strong><br><span class="text-gray-700">การเชื่อมต่อกับกรมเจ้าท่าต้องพัฒนาเพิ่มเติม</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">เล่มเอกสาร :</strong><br><span class="text-gray-700">DD.02 By Process Document_Import</span></p>
+                                        </div>
+                                        <div>
+                                            <p><strong class="font-bold text-gray-800">หัวข้อที่นำเสนอ :</strong><br>
+                                                <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.471lr8yt8h8i" target="_blank" class="text-blue-600 hover:underline">1.5.8 Delivery Order Report</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">Prototype :</strong><br>
+                                            <a href="https://pcs.softyourstyle.com/?id=3wk1i5&p=rp-70-a0-010_00-deliveryorderdetail" target="_blank" class="text-blue-600 hover:underline">1.5.8 RP-70-A0-010/00</a>
+                                        </p>
+                                    </div>
+                                    <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong> <br>
+                                        <span class="text-gray-700">คณะกรรมการได้ให้ข้อเสนอแนะเพื่อการปรับปรุงระบบและรายงาน โดยมีรายละเอียดในแต่ละส่วนดังนี้<br>1. การปรับปรุงมาตรฐานและความครบถ้วนของข้อมูลและรายงาน<br>1.1 ความครบถ้วนของข้อมูล: เสนอให้ทีมงานทบทวนและเพิ่มเติมข้อมูลในส่วนต่างๆ ให้ครบถ้วนตามข้อกำหนดในเอกสาร TOR (Terms of Reference)<br>1.2 มาตรฐานของส่วนหัวและท้ายกระดาษ (Header & Footer): <br>กำหนดให้รายงานทุกฉบับต้องมีรูปแบบของส่วนหัว (Header) และส่วนท้าย (Footer) ที่เป็นมาตรฐานเดียวกันทั้งหมด<br>ในส่วนท้ายกระดาษ (Footer) ของทุกรายงาน จะต้องระบุ "ชื่อรายงาน" (Report Name) ให้ชัดเจน<br>2. การปรับปรุงข้อมูลและส่วนติดต่อผู้ใช้งาน (Data & UI Improvements)<br>2.1 การเพิ่มสถานะใน Dropdown: ใน Dropdown List ของ "สถานะใบสั่งปล่อยสินค้า" (Delivery Order Status) ให้เพิ่มตัวเลือก "Open"<br>2.2 การปรับปรุงข้อมูลและฟิลด์วันที่: <br>ให้ดำเนินการปรับปรุงข้อมูล "Tariff Free Time" ให้เป็นปัจจุบันและถูกต้อง<br>สำหรับช่อง "Free Date" ให้แก้ไขลำดับการแสดงผลของช่วงวันที่จาก "To - From" เป็น "From - To" เพื่อให้สอดคล้องกับการใช้งานทั่วไป<br>3. การพิจารณาการแสดงผลในรายงาน (Report Display Consideration)<br>3.1 การแสดงผล Free Time/Free Date: มอบหมายให้ทีมงานพิจารณาและออกแบบวิธีการแสดงผลข้อมูล "Tariff Free Time" และ "Free Date" ในหน้ารายงานใหม่ เพื่อให้ผู้ใช้งานเข้าใจได้ง่ายและชัดเจนยิ่งขึ้น</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 19 พฤษภาคม 2568</span></p>
+                                    </div>
+                                     <hr class="border-yellow-200">
+                                    <div>
+                                        <p><strong class="font-bold text-gray-800">รายละเอียดการแก้ไข :</strong><br>
+                                        <span class="text-gray-700">ทีมพัฒนาระบบรับทราบและนำกลับไปพิจารณาเพิ่มเติม</span><br>
+                                        <span class="text-sm text-gray-500">วันที่ : 06 มิถุนายน 2568</span></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // This script is provided by the user to handle the toggle functionality.
+        document.addEventListener('DOMContentLoaded', function () {
+            const torLinks = document.querySelectorAll('.tor-link');
+            const mainRows = document.querySelectorAll('.data-row-main');
+            const detailPanels = document.querySelectorAll('.details-panel');
+
+            // Add click event listener to each link in the table.
+            torLinks.forEach(link => {
+                link.addEventListener('click', function (event) {
+                    event.preventDefault(); // Prevent the link from navigating.
+
+                    const targetId = this.getAttribute('data-target');
+                    const targetElement = document.getElementById(targetId);
+                    const parentRow = this.closest('.data-row-main');
+
+                    if (targetElement && parentRow) {
+                        const isAlreadyOpen = !targetElement.classList.contains('hidden');
+
+                        // Reset all rows to their default state first.
+                        mainRows.forEach(row => {
+                            row.classList.remove('font-bold');
+                            row.classList.add('font-normal');
+                        });
+                        
+                        detailPanels.forEach(panel => {
+                            if (panel.id !== targetId) {
+                                panel.classList.add('hidden');
+                            }
+                        });
+
+                        // Toggle the clicked row.
+                        if (isAlreadyOpen) {
+                            // If it's already open, close it.
+                            targetElement.classList.add('hidden');
+                            parentRow.classList.remove('font-bold');
+                            parentRow.classList.add('font-normal');
+                        } else {
+                            // If it's closed, open it.
+                            targetElement.classList.remove('hidden');
+                            parentRow.classList.remove('font-normal');
+                            parentRow.classList.add('font-bold');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

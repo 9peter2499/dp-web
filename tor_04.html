@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype | ระบบสำหรับกิจกรรมศุลกากร</title>
+    <!-- Import Google Fonts (Sarabun) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS for styling the page based on the new template */
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* 1. Page Header (moved outside the container) */
+        .page-header {
+             /* Edited: Removed horizontal padding to align with container */
+             padding: 0 0 20px 0;
+        }
+
+        .page-header h1 {
+            font-size: 24px; /* text-2xl */
+            font-weight: 700; /* font-bold */
+            color: #1f2937; /* text-gray-800 */
+            margin-top: 0;
+            margin-bottom: 0; 
+        }
+
+        /* Responsive font size for the header */
+        @media (min-width: 640px) {
+            .page-header h1 {
+                font-size: 30px; /* sm:text-3xl */
+            }
+        }
+
+        .page-header .update-info {
+            font-size: 14px; /* text-sm */
+            color: #6b7280; /* text-gray-500 */
+            margin-top: 8px; /* mt-2 */
+        }
+
+        /* 2. Main container set to max width */
+        .container {
+            width: 100%; /* Changed from max-width */
+            background-color: #ffffff;
+            padding: 0; /* Padding will be on the table cells */
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden; /* To keep border-radius on table */
+        }
+
+        /* 3. Main Table */
+        .tor-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tor-table th, .tor-table td {
+            padding: 16px 24px;
+            text-align: left;
+            border-bottom: 1px solid #eef2f5;
+            vertical-align: middle;
+            transition: background-color 0.3s;
+        }
+        
+        /* Last row no border */
+        .tor-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .tor-table th {
+            font-size: 16px; /* text-base */
+            font-weight: 700; /* font-bold */
+            color: #4b5563; /* text-gray-600 */
+            text-transform: uppercase;
+            letter-spacing: 0.05em; /* tracking-wider */
+            /* Edited: Darker background color */
+            background-color: #e5e7eb; 
+        }
+
+        .tor-table .tor-item:hover td {
+            background-color: #f8f9fa;
+        }
+
+        .tor-table .tor-item td:first-child a {
+            color: #2563eb; /* text-blue-600 */
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .tor-table .tor-item td:first-child a:hover {
+            text-decoration: underline;
+        }
+
+        tr.tor-item td:last-child {
+            color: #6b7280; /* text-gray-500 */
+        }
+        
+        .status {
+            padding: 6px 14px;
+            border-radius: 9999px; /* rounded-full */
+            font-size: 16px; /* Increased font size */
+            font-weight: bold;
+            text-align: center;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .status-pass {
+            background-color: #dcfce7; /* bg-green-100 */
+            color: #166534; /* text-green-800 */
+        }
+        
+        .status-fail {
+            background-color: #fee2e2; /* bg-red-100 */
+            color: #991b1b; /* text-red-800 */
+        }
+        
+        /* 4. Expanded Detail Box */
+        .details-row {
+            display: none;
+        }
+
+        .details-row td {
+            padding: 0;
+        }
+        
+        .details-content {
+            background-color: #fefce8; /* bg-yellow-50 */
+            padding: 24px;
+            border-left: 4px solid #facc15; /* border-l-4 border-yellow-400 */
+            color: #1f2937; /* text-gray-800 for general text */
+            line-height: 1.6;
+        }
+        
+        .details-content a {
+            color: #2563eb; /* text-blue-600 */
+            text-decoration: underline;
+        }
+        .details-content a:hover {
+            color: #1d4ed8;
+        }
+        
+        .details-content hr {
+            border: 0;
+            border-top: 1px solid #fde68a; /* border-yellow-200 */
+            margin: 16px 0;
+        }
+        
+        .detail-flex-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+        }
+        
+        .detail-section {
+            flex: 1 1 45%;
+            min-width: 250px;
+        }
+        
+        .detail-section strong, .detail-full-width strong {
+             font-weight: 700; /* font-bold */
+             color: #1f2937; /* text-gray-800 */
+        }
+        
+        /* New class for styling date text */
+        .detail-date {
+            font-size: 0.875rem; /* 14px */
+            color: #6b7280; /* text-gray-500 */
+            margin-top: 4px;
+        }
+        
+        .suggestion-list {
+            padding-left: 20px;
+        }
+        
+        .suggestion-list .main-point {
+            font-weight: 700; /* font-bold */
+        }
+
+        /* 5. Row Interaction */
+        .row-active td {
+            font-weight: bold;
+        }
+        
+    </style>
+</head>
+<body>
+    
+    <div class="page-header">
+        <h1>ข้อกำหนด(TOR) ทั้งหมดใน | ระบบสำหรับกิจกรรมศุลกากร (Customs)</h1>
+        <p class="update-info">ข้อมูลอัพเดท วันที่ : 18 มิถุนายน 2568</p>
+    </div>
+
+    <div class="container">
+        <table class="tor-table">
+            <thead>
+                <tr>
+                    <th>ข้อกำหนด(TOR)</th>
+                    <!-- Fixed width columns -->
+                    <th style="width: 160px;">สถานะ</th>
+                    <th style="width: 160px;">การแก้ไข</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Item 1 -->
+                <tr class="tor-item">
+                    <td>
+                        <a onclick="toggleDetails(this)">
+                            4.1 มีระบบรายงานสำหรับติดตามสถานะของตู้สินค้าและสินค้าต่างๆที่เกี่ยวข้องกับกิจกรรมพิธีการศุลกากร เช่น การตรวจปล่อย, การขอ X-ray เป็นต้น โดยเชื่อมต่อข้อมูลมาจากระบบ NSW สามารถสร้างกลุ่มของตู้สินค้าที่เราสนใจ เชื่อมโยงกับระบบ Notification ที่ผู้ใช้งานลงทะเบียน (Subscribe) ไว้
+                        </a>
+                    </td>
+                    <td>
+                        <span class="status status-pass">ผ่าน</span>
+                    </td>
+                    <td>แก้ไขแล้ว</td>
+                </tr>
+                
+                <tr class="details-row">
+                    <td colspan="3">
+                        <div class="details-content">
+                            <div class="detail-flex-row">
+                                <div class="detail-section">
+                                    <strong>ทำได้ :</strong><br>พัฒนาเพิ่มเติม
+                                </div>
+                                <div class="detail-section">
+                                    <strong>เอกสารอ้างอิง :</strong><br>การ Interface กับระบบ NSW เป็นรูปแบบเฉพาะประเทศไทยระบบ PCS ต่างประเทศต้องปรับปรุงให้เข้ากับข้อกำหนดของ NSW
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="detail-flex-row">
+                                <div class="detail-section">
+                                    <strong>เล่มเอกสาร :</strong><br>DD.02 Process Document_Import
+                                </div>
+                                <div class="detail-section">
+                                    <strong>หัวข้อที่นำเสนอ :</strong><br><a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.gtj8h4s7kosg" target="_blank" rel="noopener noreferrer">1.4.2 Release Import Container and Cargo in Terminal</a>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="detail-full-width">
+                                <strong>Prototype :</strong><br><a href="https://pcs.softyourstyle.com/?id=yetnz7&p=im-60-10-010_00-container_terminal_release" target="_blank" rel="noopener noreferrer">1.4.2 IM-60-10-010/00</a>
+                            </div>
+                            <hr>
+                            <div class="detail-full-width">
+                                <strong>ข้อเสนอแนะคณะกรรมการ :</strong><br>
+                                คณะกรรมการมีข้อชี้แนะให้ทบทวนการใช้คำว่า 'Master B/L' และ 'B/L' ในทุกหน้าจอของระบบ เพื่อให้สอดคล้องกับประเภทของเอกสารที่แท้จริง (เอกสารจากสายเรือ หรือจากตัวแทน) และป้องกันความสับสน เช่น  แก้ Master B/L เป็น B/L<br>
+                                <div class="detail-date">วันที่ : 21 เมษายน 2568</div>
+                            </div>
+                            <hr>
+                            <div class="detail-full-width">
+                                <strong>รายละเอียดการแก้ไข :</strong><br>
+                                ปรับ Prototype ตามคำแนะนำของคณะกรรมการ โดย แก้ Master B/L เป็น B/L ใน Prototype ด้านบน<br>
+                                <a href="https://drive.google.com/file/d/1GBVloI8syH7u9SUM8_ial7p4c_b4erb2/view?usp=drive_link" target="_blank" rel="noopener noreferrer">ภาพตัวอย่างจุดที่แก้ไข</a><br>
+                                <div class="detail-date">วันที่ : 23 เมษายน 2568</div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Item 2 -->
+                <tr class="tor-item">
+                    <td>
+                        <a onclick="toggleDetails(this)">
+                           4.2 มีระบบ Dashboard แสดงสถิติของการตรวจปล่อยตู้ โดยสามารถสร้างกลุ่มของตู้สินค้า/สินค้าที่เราสนใจเพื่อมาแสดงผลใน Dashboard
+                        </a>
+                    </td>
+                    <td>
+                        <span class="status status-fail">ไม่ผ่าน</span>
+                    </td>
+                    <td>แก้ไขแล้ว</td>
+                </tr>
+                
+                <tr class="details-row">
+                    <td colspan="3">
+                        <div class="details-content">
+                             <div class="detail-flex-row">
+                                <div class="detail-section">
+                                    <strong>ทำได้ :</strong><br>ฟังก์ชันมาตรฐาน
+                                </div>
+                                <div class="detail-section">
+                                    <strong>เอกสารอ้างอิง :</strong><br><a href="https://drive.google.com/file/d/1SWSKcR0kQptiESvKRiSO8MA4NM9QNXrA/view?usp=drive_link" target="_blank" rel="noopener noreferrer">ภาคผนวก ค หน้า 37</a>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="detail-flex-row">
+                                <div class="detail-section">
+                                    <strong>เล่มเอกสาร :</strong><br>DD.02 Process Document_Import
+                                </div>
+                                <div class="detail-section">
+                                    <strong>หัวข้อที่นำเสนอ :</strong><br>1.5.10 <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.anu92lepchjw" target="_blank" rel="noopener noreferrer">Dashboard Import Declaration</a>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="detail-full-width">
+                                <strong>Prototype :</strong><br><a href="https://pcs.softyourstyle.com/?id=lmtw1v&p=db-20-10-010_00-import_declaration_dashboard" target="_blank" rel="noopener noreferrer">1.5.10 DB-20-10-010/00</a>
+                            </div>
+                            <hr>
+                            <div class="detail-full-width">
+                                <strong>ข้อเสนอแนะคณะกรรมการ :</strong><br>
+                                คณะกรรมการมีข้อเสนอแนะเพื่อการพัฒนาระบบเพิ่มเติมในหลายประเด็น ดังนี้<br>
+                                <div class="suggestion-list">
+                                    <span class="main-point">1. ส่วนการติดตาม (Tracking Module)</span><br>
+                                    1.1 การติดตามสถานะเรือ: เสนอให้เพิ่มฟังก์ชันการติดตามสถานะเรือ (Vessel Status Tracking) สำหรับเรือที่มีการขนส่งระหว่างท่าเรือ (Inter-port/Coastal) โดยเฉพาะ<br>
+                                    1.2 ภาษาที่ใช้: สำหรับส่วนงานติดตามนี้ ควรกำหนดให้ภาษาหลักของส่วนติดต่อผู้ใช้งาน (UI Language) เป็นภาษาอังกฤษ<br>
+                                    <span class="main-point">2. ส่วนการค้นหาข้อมูล (Search Functionality)</span><br>
+                                    2.1 เพิ่มเงื่อนไขการค้นหา: ในส่วนของเงื่อนไขการค้นหา (Search Criteria/Key Type) เสนอให้เพิ่ม "หมายเลขตู้คอนเทนเนอร์" (Container No.) เป็นอีกหนึ่งทางเลือกในการสืบค้นข้อมูล<br>
+                                    <span class="main-point">3. ส่วนหน้าภาพรวม (Dashboard Design)</span><br>
+                                    3.1 การออกแบบ: มีข้อเสนอแนะให้ปรับปรุงการออกแบบหน้าภาพรวม (Dashboard) ให้มีความสวยงาม ทันสมัย และเป็นมืออาชีพมากกว่ารูปแบบที่นำเสนอในปัจจุบัน เพื่อยกระดับประสบการณ์ของผู้ใช้งาน (User Experience)<br>
+                                </div>
+                                <div class="detail-date">วันที่ : 21 เมษายน 2568</div>
+                            </div>
+                            <hr>
+                            <div class="detail-full-width">
+                                <strong>รายละเอียดการแก้ไข :</strong><br>
+                                ปรับแก้ไข Prototype ตามคำแนะนำของคณะกรรมการ ดังตัวอย่าง <a href="https://drive.google.com/file/d/1KNY-1W3no6cv5x6rlZzQ9yoyaVEjExct/view?usp=sharing" target="_blank" rel="noopener noreferrer">ภาพตัวอย่างก่อน-หลังแก้ไข</a><br>
+                                <div class="detail-date">วันที่ : 25 เมษายน 2568</div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // JavaScript remains the same, as it only toggles classes.
+        function toggleDetails(element) {
+            const dataRow = element.closest('.tor-item');
+            const detailsRow = dataRow.nextElementSibling;
+            dataRow.classList.toggle('row-active');
+
+            if (detailsRow.style.display === 'table-row') {
+                detailsRow.style.display = 'none';
+            } else {
+                detailsRow.style.display = 'table-row';
+            }
+        }
+    </script>
+
+</body>
+</html>

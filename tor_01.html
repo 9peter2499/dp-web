@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card คุณสมบัติทั่วไปของระบบ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f0f2f5;
+        }
+        /* Style for the expanded detail row */
+        .detail-cell {
+            padding: 0 !important;
+            border: none;
+        }
+        .detail-content {
+            /* Accent Border is applied via Tailwind classes in JS */
+            padding: 1.5rem;
+        }
+        /* Custom class for the active row to make it bold */
+        .row-active {
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8">
+    <!-- Main Content Container -->
+    <div class="w-full">
+        <!-- Header outside the card -->
+        <div class="mb-6">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">ข้อกำหนด(TOR) ทั้งหมดใน | คุณสมบัติทั่วไปของระบบ</h1>
+            <p class="mt-2 text-sm text-gray-500">ข้อมูลอัพเดท วันที่ : 18 มิถุนายน 2568</p>
+        </div>
+
+        <!-- Card/Listbox Container -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+             <div class="overflow-x-auto">
+                <!-- Requirements Table -->
+                <table class="min-w-full table-fixed">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th scope="col" class="px-6 py-4 text-left text-base font-bold text-gray-600 tracking-wider">
+                                ข้อกำหนด(TOR)
+                            </th>
+                            <th scope="col" class="w-48 px-6 py-4 text-left text-base font-bold text-gray-600 tracking-wider">
+                                สถานะ
+                            </th>
+                            <th scope="col" class="w-48 px-6 py-4 text-left text-base font-bold text-gray-600 tracking-wider">
+                                การแก้ไข
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="tor-table-body" class="bg-white">
+                        <!-- Data rows will be dynamically inserted here by script -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA SETUP ---
+
+        // 1. Data parsed from the Google Sheet (Updated based on user feedback)
+        const torData = [
+            { tor: "1.1.1 ระบบสำหรับกิจกรรมเรือ (Vessel)", stdFunc: "", devMore: "Y", refDoc: '<a href="https://drive.google.com/file/d/17zlWK0gXX6tnhYGa98Gfuqh630dWLW2G/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 5</a>', status: "ผ่าน", docBook: "DD.01", topic: "", prototype: "", suggestion1: "", date1: "", suggestion2: "", date2: "" },
+            { tor: "1.1.2 ระบบสำหรับกิจกรรมนำเข้า (Import)", stdFunc: "", devMore: "Y", refDoc: '<a href="https://drive.google.com/file/d/17zlWK0gXX6tnhYGa98Gfuqh630dWLW2G/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 5</a>', status: "ผ่าน", docBook: "DD.02", topic: "", prototype: "", suggestion1: "", date1: "", suggestion2: "", date2: "" },
+            { tor: "1.1.3 ระบบสำหรับกิจกรรมศุลกากร (Customs)", stdFunc: "", devMore: "Y", refDoc: '<a href="https://drive.google.com/file/d/17zlWK0gXX6tnhYGa98Gfuqh630dWLW2G/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 5</a>', status: "ผ่าน", docBook: "DD.02", topic: "", prototype: "", suggestion1: "", date1: "", suggestion2: "", date2: "" },
+            { tor: "1.1.4 ระบบสำหรับกิจกรรมส่งออก (Export)", stdFunc: "", devMore: "Y", refDoc: '<a href="https://drive.google.com/file/d/17zlWK0gXX6tnhYGa98Gfuqh630dWLW2G/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 5</a>', status: "ผ่าน", docBook: "DD.03", topic: "", prototype: "", suggestion1: "", date1: "", suggestion2: "", date2: "" },
+            { tor: "1.1.5 ระบบสำหรับกิจกรรมทางด้านตู้และสินค้า (Container and Cargo)", stdFunc: "", devMore: "Y", refDoc: '<a href="https://drive.google.com/file/d/17zlWK0gXX6tnhYGa98Gfuqh630dWLW2G/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 5</a>', status: "ผ่าน", docBook: "DD.04", topic: "", prototype: "", suggestion1: "", date1: "", suggestion2: "", date2: "" },
+            { tor: "1.1.6 ระบบสำหรับกิจกรรมการขนส่งด้านหลังท่า (Hinterland)", stdFunc: "", devMore: "Y", refDoc: '<a href="https://drive.google.com/file/d/17zlWK0gXX6tnhYGa98Gfuqh630dWLW2G/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 5</a>', status: "ผ่าน", docBook: "DD.04", topic: "", prototype: "", suggestion1: "", date1: "", suggestion2: "", date2: "" },
+            { tor: "1.1.7 ระบบสำหรับกิจกรรมธนาคาร (Banking)", stdFunc: "", devMore: "Y", refDoc: '<a href="https://drive.google.com/file/d/17zlWK0gXX6tnhYGa98Gfuqh630dWLW2G/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 5</a>', status: "ผ่าน", docBook: "DD.02", topic: '1.1.1 <a href="https://docs.google.com/document/d/1yNnNY8tXJLNSbzjCgTgv7mdxGdw388GE/edit#bookmark=id.89hjumuxseec" target="_blank" class="text-blue-600 hover:underline">Letter of Credit</a>', prototype: '<a href="https://pcs.softyourstyle.com/?id=i9ok8y&p=im-g0-10-010_00-check_letter_of_credit" target="_blank" class="text-blue-600 hover:underline">IM-G0-10-010/00</a>', suggestion1: "", date1: "", suggestion2: "", date2: "" },
+            { tor: "1.1.8 ระบบสำหรับบริการข้อมูลทางธุรกิจอัจฉริยะ (PCS Intelligence)", stdFunc: "", devMore: "Y", refDoc: '<a href="https://drive.google.com/file/d/17zlWK0gXX6tnhYGa98Gfuqh630dWLW2G/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 5</a>', status: "ผ่าน", docBook: "DD.07", topic: "", prototype: "", suggestion1: "", date1: "", suggestion2: "", date2: "" },
+            { tor: "1.2  เป็นระบบที่มีสถาปัตยกรรมแบบเว็บแอปพลิเคชัน (Web Application) ที่มีคุณสมบัติ Responsive Web Design สามารถแสดงผลได้เหมาะสมกับทุกขนาดหน้าจอของอุปกรณ์ตั้งแต่เครื่องคอมพิวเตอร์ส่วนบุคคล (PC), เครื่องคอมพิวเตอร์พกพา (Laptop), แท๊บเล็ต (Tablet) และสมาร์ทโฟน (Smart Phone) สำหรับบางฟังก์ชันที่จำเป็นต้องใช้ผ่านแท๊บเล็ต (Tablet) หรือสมาร์ตโฟน (Smart Phone)", stdFunc: "Y", devMore: "", refDoc: '<a href="https://drive.google.com/file/d/1T6l2XQa5f_ckJdc-jT6p7iT_hJi0r8qB/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 13</a>', status: "ผ่าน", docBook: "", topic: "", prototype: "", suggestion1: "", date1: "", suggestion2: "", date2: "" },
+            { tor: "1.3 รองรับการใช้งานบน Web Browser ที่เป็นมาตรฐาน ได้แก่ Microsoft Edge, Google Chrome และ Mozilla Firefox ย้อนหลัง 2 เวอร์ชันล่าสุด ได้เป็นอย่างน้อย", stdFunc: "Y", devMore: "", refDoc: '<a href="https://drive.google.com/file/d/1T6l2XQa5f_ckJdc-jT6p7iT_hJi0r8qB/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 13</a>', status: "ผ่าน", docBook: "", topic: "", prototype: "", suggestion1: "", date1: "", suggestion2: "", date2: "" },
+            { tor: "1.4  สามารถแนบไฟล์เอกสารมาตรฐานได้ เช่น MS Word, MS Excel, PDF, Image File และอื่นๆ", stdFunc: "Y", devMore: "", refDoc: '<a href="https://drive.google.com/file/d/1T6l2XQa5f_ckJdc-jT6p7iT_hJi0r8qB/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 13</a>', status: "ผ่าน", docBook: "DD.07", topic: '3.5.1 <a href="https://docs.google.com/document/d/1ZI7sy61RQb6Tti6GQHG_-nOl9u8PAxU-/edit#bookmark=id.79d2s4v4u3f" target="_blank" class="text-blue-600 hover:underline">Document Attachment</a>', prototype: '<a href="https://pcs.softyourstyle.com/?id=xlyzdr&p=am-10-30-010_00_attachment_document_configuration_&sc=3" target="_blank" class="text-blue-600 hover:underline">AM-10-30-010/00</a>', suggestion1: "", date1: "", suggestion2: "", date2: "" },
+            { tor: "1.5  มี Short-cut หรือเมนูสำหรับการเข้าถึงระบบย่อยทำใช้งานบ่อยได้แบบรวดเร็ว", stdFunc: "Y", devMore: "", refDoc: '<a href="https://drive.google.com/file/d/1SF63jBqjwINJTnhY6m5mKvVQw_d_fZ8w/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 12</a>', status: "ผ่าน", docBook: "DD.07", topic: '1.1.3 <a href="https://docs.google.com/document/d/1ZI7sy61RQb6Tti6GQHG_-nOl9u8PAxU-/edit#bookmark=id.t2o7xiovbf87" target="_blank" class="text-blue-600 hover:underline">Home Page and Short Cut</a>', prototype: '<a href="https://pcs.softyourstyle.com/?id=jikj2p&p=sc-hp-01-1_home_page" target="_blank" class="text-blue-600 hover:underline">SC-HP-01-1</a>', suggestion1: "", date1: "", suggestion2: "", date2: "" },
+            { 
+                tor: "1.6  มีระบบการแจ้งเตือนต่าง ๆ (Notification) ที่เกี่ยวข้องกับผู้ใช้งาน", 
+                status: "ไม่ผ่าน", 
+                fix: "แก้ไขแล้ว",
+                stdFunc: "Y", 
+                devMore: "", 
+                refDoc: '<a href="https://drive.google.com/file/d/1SF63jBqjwINJTnhY6m5mKvVQw_d_fZ8w/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 12</a>', 
+                docBook: "DD.07", 
+                topic: '2.1.2 <a href="https://docs.google.com/document/d/1ZI7sy61RQb6Tti6GQHG_-nOl9u8PAxU-/edit#bookmark=id.2tj2x5acnzcw" target="_blank" class="text-blue-600 hover:underline">Connectivity</a>', 
+                prototype: '<a href="https://pcs.softyourstyle.com/?id=p85l17&p=pi-00-20-010_00_connectivitycrud&sc=3" target="_blank" class="text-blue-600 hover:underline">PI-00-20-010/00</a>', 
+                suggestion1: "ระบบควรมีความสามารถการ เพิ่ม email และ SMS ของผู้ที่ต้องได้รับ notification ที่ screen set up email and SMS ได้", 
+                date1: "09 เมษายน 2568", 
+                suggestion2: "คณะกรรมการขอเพิ่มเติม : System Notification", 
+                date2: "06 มิถุนายน 2568",
+                fixDetail: {
+                    text: `ปรับให้ Prototype เป็นไปตามข้อเสนอแนะของคณะกรรมการ ใน Email และ SMS ของผู้ที่ต้องได้รับ Notification เรียบร้อยในระบบ Setup and Utility<br><a href="https://pcs.softyourstyle.com/?id=p85l17&p=pi-00-20-010_00_connectivitycrud&sc=3" target="_blank" class="text-blue-600 hover:underline">SETUP-UTILITY > INTELLIGENCE CONNECTIVITY</a><br><a href="https://pcs.softyourstyle.com/?id=zejatn&p=su-j0-10-010_00_-_objectscrud&sc=3" target="_blank" class="text-blue-600 hover:underline">SETUP-UTILITY > INTELLIGENT OBJECTS</a><hr class="my-2 border-yellow-200">เพิ่ม System Notification ตาม Link : <a href="https://pcs.softyourstyle.com/?id=35kvbl&p=xx-xx-10-010_00_announcement_search&sc=3" target="_blank" class="text-blue-600 hover:underline">Announcement</a> ซึ่ง Admin PCS สามารถเข้าไปดำเนินการส่ง System Announcement ตาม Event หรือความต้องการให้ผู้ใช้งานในระบบรับทราบกิจกรรมที่จะเกิดขึ้นกับระบบได้`,
+                    date: "18 มิถุนายน 2568"
+                }
+            },
+            { 
+                tor: "1.7  มีหน้า Dashboard สรุปรายงานภาพรวมผลการดำเนินงานต่าง ๆ สำหรับผู้บริหาร และผู้ปฏิบัติงาน", 
+                status: "ไม่ผ่าน",
+                fix: "แก้ไขแล้ว",
+                stdFunc: "Y", 
+                devMore: "", 
+                refDoc: "", 
+                docBook: "DD.03", 
+                topic: '1.5.1 <a href="https://docs.google.com/document/d/1pSrLfg292NiOQO7K48kYXz9CeRhy-enp/edit#bookmark=id.nqfplulccjhg" target="_blank" class="text-blue-600 hover:underline">Export Declaration Tracking</a>', 
+                prototype: '<a href="https://pcs.softyourstyle.com/?id=6iu0mk&p=db-30-10-010_00-export_declaration_dashboard" target="_blank" class="text-blue-600 hover:underline">DB-20-10-010/00, RP-30-10-010/00</a>',
+                suggestion1: "คณะกรรมการแนะนำว่าควรมี track status ของเรือที่เป็นแบบ inter port", 
+                date1: "09 เมษายน 2568", 
+                suggestion2: `(คณะกรรมการขอดู Demo จาก GPN)<br><br>คณะกรรมการมีข้อเสนอแนะเพื่อการพัฒนาระบบเพิ่มเติมในหลายประเด็น ดังนี้<br><b>1. ส่วนการติดตาม (Tracking Module)</b><br>1.1 การติดตามสถานะเรือ: เสนอให้เพิ่มฟังก์ชันการติดตามสถานะเรือ (Vessel Status Tracking) สำหรับเรือที่มีการขนส่งระหว่างท่าเรือ (Inter-port/Coastal) โดยเฉพาะ<br>1.2 ภาษาที่ใช้: สำหรับส่วนงานติดตามนี้ ควรกำหนดให้ภาษาหลักของส่วนติดต่อผู้ใช้งาน (UI Language) เป็นภาษาอังกฤษ<br><br><b>2. ส่วนการค้นหาข้อมูล (Search Functionality)</b><br>2.1 เพิ่มเงื่อนไขการค้นหา: ในส่วนของเงื่อนไขการค้นหา (Search Criteria/Key Type) เสนอให้เพิ่ม "หมายเลขตู้คอนเทนเนอร์" (Container No.) เป็นอีกหนึ่งทางเลือกในการสืบค้นข้อมูล<br><br><b>3. ส่วนหน้าภาพรวม (Dashboard Design)</b><br>3.1 การออกแบบ: มีข้อเสนอแนะให้ปรับปรุงการออกแบบหน้าภาพรวม (Dashboard) ให้มีความสวยงาม ทันสมัย และเป็นมืออาชีพมากกว่ารูปแบบที่นำเสนอในปัจจุบัน เพื่อยกระดับประสบการณ์ของผู้ใช้งาน (User Experience)`, 
+                date2: "06 มิถุนายน 2568",
+                fixDetail: {
+                    text: 'บริษัท GPN ได้เข้า Demo โปรแกรมให้กับคณะกรรมการเรียบร้อย และในด้านการปรับ Prototype ได้ปรับจากรูปแบบเดิม : <a href="https://pcs.softyourstyle.com/?id=bm8nm8&p=bak-db-20-10-010_00-import_declaration_dashboard" target="_blank" class="text-blue-600 hover:underline">รูปแบบ Prototype ก่อนปรับแก้ไข</a> ไปตามข้อเสนอแนะจากคณะกรรมการ เรียบร้อยแล้วเช่นกัน ตาม : <a href="https://pcs.softyourstyle.com/?id=6iu0mk&p=db-30-10-010_00-export_declaration_dashboard" target="_blank" class="text-blue-600 hover:underline">ปรับ Prototype ใหม่</a>',
+                    date: "18 มิถุนายน 2568"
+                }
+            },
+            { tor: "1.8  ผู้ใช้สามารถเปลี่ยนรหัสผ่าน (Password) ได้ด้วยตัวเอง", status: "ผ่าน", fix: "", stdFunc: "Y", devMore: "", refDoc: '<a href="https://drive.google.com/file/d/1SF63jBqjwINJTnhY6m5mKvVQw_d_fZ8w/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 12</a>', docBook: "DD.07", topic: '1.1.2 <a href="https://docs.google.com/document/d/1ZI7sy61RQb6Tti6GQHG_-nOl9u8PAxU-/edit#bookmark=id.udhwsi8b1geh" target="_blank" class="text-blue-600 hover:underline">User Reset Password</a>', prototype: '<a href="https://pcs.softyourstyle.com/?id=jikj2p&p=sc-hp-01-1_home_page&sc=1" target="_blank" class="text-blue-600 hover:underline">Log-in Page</a>', suggestion1: "", date1: "", suggestion2: "", date2: "" },
+            { tor: "1.9  ระบบต้องสามารถกำหนดรูปแบบและรอบระยะเวลาการเปลี่ยนรหัสผ่านตามมาตรฐาน ISO27001 ของ กทท.", status: "ผ่าน", fix: "", stdFunc: "Y", devMore: "", refDoc: '<a href="https://drive.google.com/file/d/1T6l2XQa5f_ckJdc-jT6p7iT_hJi0r8qB/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 13</a>', docBook: "DD.07", topic: '1.1.2 <a href="https://docs.google.com/document/d/1ZI7sy61RQb6Tti6GQHG_-nOl9u8PAxU-/edit#bookmark=id.udhwsi8b1geh" target="_blank" class="text-blue-600 hover:underline">User Reset Password</a>', prototype: '<a href="https://pcs.softyourstyle.com/?id=jikj2p&p=sc-hp-01-1_home_page&sc=1" target="_blank" class="text-blue-600 hover:underline">Log-in Page</a>', suggestion1: "", date1: "", suggestion2: "", date2: "" },
+            { 
+                tor: "1.10  ระบบจะต้องรองรับการดำเนินการตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล", 
+                status: "ผ่าน", 
+                fix: "แก้ไขแล้ว", 
+                stdFunc: "Y", 
+                devMore: "", 
+                refDoc: '<a href="https://drive.google.com/file/d/1T6l2XQa5f_ckJdc-jT6p7iT_hJi0r8qB/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 13</a>', 
+                docBook: "DD.07", 
+                topic: '1.1.4 <a href="https://docs.google.com/document/d/1ZI7sy61RQb6Tti6GQHG_-nOl9u8PAxU-/edit#bookmark=id.bkte7f1eb07r" target="_blank" class="text-blue-600 hover:underline">Privacy Policy</a>', 
+                prototype: '<a href="https://pcs.softyourstyle.com/?id=2qo919&p=login" target="_blank" class="text-blue-600 hover:underline">Privacy Policy</a>', 
+                suggestion1: "คณะกรรมการแนะนำว่า ข้อมูลเกี่ยวกับ PDPA ควรมีรายละเอียดมากกว่านี้", 
+                date1: "23 เมษายน 2568", 
+                suggestion2: 'คณะกรรมการได้มีการตีความข้อกำหนดใน TOR ข้อ 1.10 ว่า ระบบจะต้องมีความสามารถในการ ควบคุมการแสดงผลของข้อมูลส่วนบุคคลที่มีความอ่อนไหว เช่น ชื่อ–นามสกุล หมายเลขบัตรประจำตัวประชาชน หมายเลขโทรศัพท์ ที่อยู่ ฯลฯ ระบบจะต้องสามารถ ซ่อนหรือเปิดเผยข้อมูลบางส่วน (Partial Display / Data Masking) ได้ตามระดับสิทธิ์ของผู้ใช้งาน โดย:<br>1. ผู้ใช้งานทั่วไปจะเห็นข้อมูลที่ถูกปิดบังบางส่วน เช่น “นาย XXX” หรือ “XXX-XXX-1234”<br>2. ผู้ที่มีสิทธิ์เข้าถึง (Authorized Users) จะสามารถเห็นข้อมูลฉบับเต็มได้</div><div class="text-xs text-gray-500 mt-1">วันที่ : 14 พฤษภาคม 2568</div><hr class="my-2 border-yellow-200"><div>คณะกรรมการให้ทีมพัฒนาระบบนำเสนอ Setup Parameter ในการเปิด-ปิดการมองเห็น และอยากเห็น Setup Privacy Policy, Consent',
+                date2: "11 มิถุนายน 2568",
+                fixDetail: {
+                    text: `ประเด็นเรื่องข้อมูลเกี่ยวกับ PDPA ได้เพิ่มข้อมูลคำมาตรฐานเข้าไปใน Prototype และยังเพิ่มในส่วนของการยินยอมหรือไม่ยินยอมให้ระบบดำเนินการใดๆได้(Consent) ซึ่งข้อความดังกล่าวจะปรากฎให้ผู้ใช้งานดำเนินการเลือกคำตอบได้เมื่อเข้าระบบครั้งแรก หลังลงทะเบียนผู้ใช้งานเรียบร้อยแล้ว สามารถตรวจสอบ ได้ตาม : <a href="https://pcs.softyourstyle.com/?id=2qo919&p=login&sc=3" target="_blank" class="text-blue-600 hover:underline">System Login</a> รวมไปถึงหากในอนาคตมีการเพิ่มเนื้อหาของ PDPA หรือ Consent เพิ่มเติม Admin PCS สามารถดำเนินการเปลี่ยนแปลงได้โดยเข้าไปยัง Setup ตาม <a href="https://pcs.softyourstyle.com/?id=8g8h3z&p=xx-xx-10-010_00-privacy___consent_management_searc&sc=3" target="_blank" class="text-blue-600 hover:underline">SETUP&UTILITY > PRIVACY & CONSENT MANAGEMENT</a><hr class="my-2 border-yellow-200">ได้ปรับแก้ไข Prototype ไปตามคำแนะนำของคณะกรรมการ เรียบร้อยแล้ว โดยแบ่งเป็นการแสดงผลหน้าเมื่อผู้ใช้งานไม่สิทธิ์เห็นรายละเอียดข้อมูลได้ ตาม Link <a href="https://pcs.softyourstyle.com/?id=jwfjxi&p=am-m0-40-020_00_user_management_create" target="_blank" class="text-blue-600 hover:underline">User Management</a> และ Admin PCS สามารถเข้าแก้ไขรูปแบบการแสดงหน้าจอการปกป้องข้อมูลใน Setup ได้ตาม Link : <a href="https://pcs.softyourstyle.com/?id=knwjuy&p=pi-00-10-010_00_parametercrud" target="_blank" class="text-blue-600 hover:underline">INTELLIGENCE SETUP > INTELLIGENCE PARAMETER</a>`,
+                    date: '11 มิถุนายน 2568'
+                }
+            },
+            { 
+                tor: "1.11  มีระบบบริหารและจัดเก็บสถิติการเข้าใช้งาน โดยผู้ดูแลระบบสามารถเรียกดูข้อมูล ของผู้ที่เข้ามาใช้งานระบบ โดยระบบเก็บหมายเลข IP Address ชื่อผู้ใช้ วันเวลาที่ใช้งาน และรายละเอียดที่เข้ามาใช้งานระบบของผู้ที่เข้ามาใช้งานระบบได้", 
+                status: "ไม่ผ่าน", 
+                fix: "แก้ไขแล้ว",
+                stdFunc: "Y", 
+                devMore: "", 
+                refDoc: '<a href="https://drive.google.com/file/d/1SF63jBqjwINJTnhY6m5mKvVQw_d_fZ8w/view?usp=drive_link" target="_blank" class="text-blue-600 hover:underline">ภาคผนวก ค หน้า 12</a>', 
+                docBook: "DD.07", 
+                topic: '3.14.2 <a href="https://docs.google.com/document/d/1ZI7sy61RQb6Tti6GQHG_-nOl9u8PAxU-/edit#bookmark=id.bki0lhnky9im" target="_blank" class="text-blue-600 hover:underline">Application Log</a>', 
+                prototype: '<a href="https://pcs.softyourstyle.com/?id=9ks78h&p=am-b0-10-030_00_log_user_view&sc=1" target="_blank" class="text-blue-600 hover:underline">AM-B0-10-030/00</a>', 
+                suggestion1: "คณะกรรมการมีความเห็นว่าให้ยุบรวมหน้า Log User และ Log Error เข้าเป็นหน้าเดียวกันเพื่อให้ดูง่าย(อยู่ในระหว่างการดำเนินการ)<br>นำเสนอ TOR นี้เพิ่มเติมเพราะในการนำเสนอที่ผ่านมา มีการข้ามการนำเสนอข้อนี้ไป", 
+                date1: "11 มิถุนายน 2568", 
+                suggestion2: "", 
+                date2: "",
+                fixDetail: {
+                    text: 'ดำเนินการโดยนำข้อมูลที่อยู่ใน Log User และ Log Error เข้ามารวมกันและ เพิ่มเนื้อหา จัดกลุ่มของของข้อมูลที่วิ่งเข้ามา รวมถึงเพิ่มเครื่องมือการค้นหา เพิ่มเพื่อให้สามารถเห็นข้อมูลที่ต้องการได้ตรงมากขึ้น สามารถตรวจสอบได้ตาม <a href="https://pcs.softyourstyle.com/?id=uv7btr&p=am-b0-10-020_00_application_log&sc=3" target="_blank" class="text-blue-600 hover:underline">LOG > APPLICAION LOG</a>',
+                    date: "18 มิถุนายน 2568"
+                }
+            }
+        ];
+
+        // 2. Mapping for "เล่มเอกสาร"
+        const docMap = {
+            'DD.01': 'DD.01 Process Document_Vessel',
+            'DD.02': 'DD.02 Process Document_Import',
+            'DD.03': 'DD.03 Process Document_Export',
+            'DD.04': 'DD.04 Hinterland - Rail Import',
+            'DD.05': 'DD.05_Hinterland - Rail Export',
+            'DD.06': 'DD.06_Hinterland - Truck',
+            'DD.07': 'DD.07 PCS Intelligence_Setup and Utility'
+        };
+
+        // --- APPLICATION LOGIC ---
+
+        const tableBody = document.getElementById('tor-table-body');
+
+        // Function to render the main table
+        const renderTable = () => {
+            torData.forEach((item, index) => {
+                const row = document.createElement('tr');
+                // Add a border to the bottom of each main row
+                row.className = "hover:bg-gray-50 transition-colors duration-200 main-row border-b border-gray-200";
+                
+                const statusClass = item.status === 'ผ่าน' 
+                    ? 'bg-green-100 text-green-800' 
+                    : 'bg-red-100 text-red-800';
+                
+                const fixText = item.fix || '';
+
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-normal text-base text-gray-700">
+                        <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline tor-link" data-index="${index}">${item.tor}</a>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-base">
+                        <span class="px-3 py-1 inline-flex text-base leading-5 font-semibold rounded-full ${statusClass}">
+                            ${item.status || 'N/A'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-base text-gray-500">
+                        ${fixText}
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        };
+
+        // Function to handle clicks and toggle detail view
+        const toggleDetails = (event) => {
+            if (!event.target.classList.contains('tor-link')) {
+                return;
+            }
+            event.preventDefault();
+
+            const linkElement = event.target;
+            const currentRow = linkElement.closest('tr');
+            const isAlreadyOpen = currentRow.classList.contains('row-active');
+            
+            // First, remove active state and detail rows from ALL rows
+            const allMainRows = document.querySelectorAll('.main-row');
+            allMainRows.forEach(row => row.classList.remove('row-active'));
+            
+            const allDetailRows = document.querySelectorAll('.detail-row');
+            allDetailRows.forEach(row => row.remove());
+
+            // If the clicked row was not already open, open it and make it active.
+            if (!isAlreadyOpen) {
+                currentRow.classList.add('row-active');
+
+                const dataIndex = linkElement.getAttribute('data-index');
+                const data = torData[dataIndex];
+                
+                if (!data) return;
+
+                // Create and insert the new detail row
+                const detailRow = document.createElement('tr');
+                detailRow.className = 'detail-row';
+                
+                // Section 1: ทำได้
+                let canDoText = [];
+                if (data.stdFunc === 'Y') canDoText.push('ฟังก์ชันมาตรฐาน');
+                if (data.devMore === 'Y') canDoText.push('พัฒนาเพิ่มเติม');
+                
+                // Section 3: เล่มเอกสาร
+                let docBookHtml = (data.docBook || '').split(',')
+                    .map(db => db.trim())
+                    .filter(db => db)
+                    .map(db => docMap[db] || db)
+                    .join('<br>');
+
+                // Section 6 & Fix Detail
+                let suggestionHtml = '';
+                if (data.suggestion1) {
+                    suggestionHtml += `<div>${data.suggestion1}</div><div class="text-xs text-gray-500 mt-1">วันที่ : ${data.date1 || ''}</div>`;
+                }
+                if (data.suggestion2) {
+                    if(suggestionHtml) suggestionHtml += `<hr class="my-2 border-yellow-200">`;
+                    suggestionHtml += `<div>${data.suggestion2}</div><div class="text-xs text-gray-500 mt-1">วันที่ : ${data.date2 || ''}</div>`;
+                }
+                 if (data.fixDetail) {
+                    if(suggestionHtml) suggestionHtml += `<hr class="my-2 border-yellow-200">`;
+                    suggestionHtml += `<strong class="text-gray-700">รายละเอียดการแก้ไข:</strong><div class="mt-1">${data.fixDetail.text}</div><div class="text-xs text-gray-500 mt-1">วันที่ : ${data.fixDetail.date}</div>`;
+                }
+                
+                // Prototype Rendering Logic
+                let prototypeHtml;
+                if (data.prototype) {
+                    if (data.prototype.trim().startsWith('<a')) {
+                        prototypeHtml = data.prototype;
+                    } else {
+                        prototypeHtml = `<a href="${data.prototype}" target="_blank" class="text-blue-600 hover:underline break-all">${data.prototype}</a>`;
+                    }
+                } else {
+                    prototypeHtml = '<span>(ไม่มีข้อมูล)</span>';
+                }
+
+                const detailHtml = `
+                    <td colspan="3" class="detail-cell">
+                        <div class="detail-content bg-yellow-50 text-gray-800 border-l-4 border-yellow-400">
+                            <!-- Row 1 -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4 border-b border-yellow-200">
+                                <div>
+                                    <strong class="text-gray-800">ทำได้ :</strong>
+                                    <div class="mt-1">${canDoText.join('<br>') || '(ไม่มีข้อมูล)'}</div>
+                                </div>
+                                <div>
+                                    <strong class="text-gray-800">เอกสารอ้างอิง :</strong>
+                                    <div class="mt-1">${(data.refDoc || '').replace(/\n/g, '<br>')}</div>
+                                </div>
+                            </div>
+                            <!-- Row 2 -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 py-4 border-b border-yellow-200">
+                                <div>
+                                    <strong class="text-gray-800">เล่มเอกสาร :</strong>
+                                    <div class="mt-1">${docBookHtml || '(ไม่มีข้อมูล)'}</div>
+                                </div>
+                                <div>
+                                    <strong class="text-gray-800">หัวข้อที่นำเสนอ :</strong>
+                                    <div class="mt-1">${data.topic || '(ไม่มีข้อมูล)'}</div>
+                                </div>
+                            </div>
+                            <!-- Row 3 -->
+                            <div class="py-4 border-b border-yellow-200">
+                                <strong class="text-gray-800">Prototype :</strong>
+                                <div class="mt-1">
+                                    ${prototypeHtml}
+                                </div>
+                            </div>
+                            <!-- Row 4 -->
+                            <div class="pt-4">
+                                <strong class="text-gray-800">ข้อเสนอแนะคณะกรรมการ :</strong>
+                                <div class="mt-1">${suggestionHtml || '(ไม่มีข้อมูล)'}</div>
+                            </div>
+                        </div>
+                    </td>
+                `;
+
+                detailRow.innerHTML = detailHtml;
+                currentRow.parentNode.insertBefore(detailRow, currentRow.nextSibling);
+            }
+        };
+
+        // --- INITIALIZATION ---
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTable();
+            tableBody.addEventListener('click', toggleDetails);
+        });
+
+    </script>
+</body>
+</html>
