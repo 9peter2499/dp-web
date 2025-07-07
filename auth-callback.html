@@ -20,7 +20,7 @@
                 
                 // (Optional) เพิ่มการบันทึก Log การ Login
                 try {
-                    await fetch('http://localhost:3000/api/log-action', {
+                    await fetch('https://pcsdata.onrender.com/api/log-action', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
