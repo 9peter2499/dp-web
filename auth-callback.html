@@ -13,25 +13,26 @@
         const { createClient } = supabase;
         const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // โค้ดนี้จะรอจนกว่า Supabase จะตรวจจับการ SIGNED_IN ได้สำเร็จ
-        // แล้วจึงส่งต่อไปที่หน้า tors.html
+        // รอฟังสัญญาณจาก Supabase
         _supabase.auth.onAuthStateChange(async (event, session) => {
+            // เราจะทำงานก็ต่อเมื่อมี event SIGNED_IN และมี session จริงๆ เท่านั้น
             if (event === 'SIGNED_IN' && session) {
+                
+                // (Optional) เพิ่มการบันทึก Log การ Login
+                try {
+                    await fetch('http://localhost:3000/api/log-action', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            userId: session.user.id,
+                            action: 'LOGIN_SUCCESS'
+                        })
+                    });
+                } catch(e) {
+                    console.error("Failed to log login action:", e);
+                }
 
-                // --- ส่วนที่เพิ่มเข้ามา ---
-                // ส่ง Log ไปที่ Backend
-                await fetch('https://pcsdata.onrender.com/api/log-action', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        userId: session.user.id,
-                        action: 'LOGIN_SUCCESS'
-                    })
-                });
-                // --- สิ้นสุดส่วนที่เพิ่ม ---
-
-                // แล้วค่อย redirect ไปหน้า tors.html
-
+                // Redirect ไปที่หน้าหลัก
                 window.location.href = '/tors.html';
             }
         });
