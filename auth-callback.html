@@ -14,28 +14,38 @@
         const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // รอฟังสัญญาณจาก Supabase
-        _supabase.auth.onAuthStateChange(async (event, session) => {
-            // เราจะทำงานก็ต่อเมื่อมี event SIGNED_IN และมี session จริงๆ เท่านั้น
-            if (event === 'SIGNED_IN' && session) {
-                
-                // (Optional) เพิ่มการบันทึก Log การ Login
-                try {
-                    await fetch('https://pcsdata.onrender.com/api/log-action', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            userId: session.user.id,
-                            action: 'LOGIN_SUCCESS'
-                        })
-                    });
-                } catch(e) {
-                    console.error("Failed to log login action:", e);
-                }
+        (async () => {
+      // 2. ดึง session จาก URL (วิธีใหม่และแนะนำ)
+      const { data: { session }, error } = await supabase.auth.getSessionFromUrl({
+        storeSession: true
+      });
+      if (error) {
+        console.error('Error getting session from URL:', error.message);
+        return;
+      }
+      if (!session) {
+        console.warn('No session found in callback URL');
+        return;
+      }
 
-                // Redirect ไปที่หน้าหลัก
-                window.location.href = '/tors.html';
-            }
+      // 3. (Optional) บันทึก Log การเข้าสู่ระบบ
+      try {
+        await fetch('https://pcsdata.onrender.com/api/log-action', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: session.user.id,
+            action: 'LOGIN_SUCCESS'
+          })
         });
+      } catch (e) {
+        console.error('Failed to log login action:', e);
+      }
+
+      // 4. Redirect ไปที่หน้า tors.html (ระบุเป็น absolute URL จะชัวร์กว่า)
+      window.location.href = 'https://dp-web-lyfe.onrender.com/tors.html';
+    })();
+    
     </script>
 </body>
 </html>
