@@ -14,22 +14,29 @@
     // --- 1. เตรียม client ---
     const SUPABASE_URL      = 'https://fhnprrlmlhleomfqqvpp.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZobnBycmxtbGhsZW9tZnFxdnBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA5MTAyMjIsImV4cCI6MjA2NjQ4NjIyMn0.WA-_yNFWxpFnJBA3oh5UlOtq89KBm5hqsb51oi04hMk';
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // expose client ให้เรียกดูใน console ได้
+    window.supabaseClient = supabaseClient;
+
+    // ดู URL และ fragment ที่เบราเซอร์เห็นจริงๆ
+    console.log('🔍 Auth callback URL:', window.location.href);
+    console.log('🔍 Hash fragment:', window.location.hash);
 
     try {
       let session;
 
       // --- 2. ลองดึง session จาก URL fragment ---
-      const { data, error: urlErr } = 
-        await supabase.auth.getSessionFromUrl({ storeSession: true });
-      console.log('fromUrl:', data, urlErr);
-      if (data?.session) {
-        session = data.session;
+      const { data: urlData, error: urlErr } = 
+        await supabaseClient.auth.getSessionFromUrl({ storeSession: true });
+      console.log('✅ getSessionFromUrl →', urlData, urlErr);
+      if (urlData?.session) {
+        session = urlData.session;
       } else {
         // --- 3. ถ้าไม่มีจริงๆ ให้ fallback ไปดึงจาก storage ---
-        const { data: stored, error: storedErr } = await supabase.auth.getSession();
-        console.log('fromStorage:', stored, storedErr);
-        session = stored.session;
+        const { data: storedData, error: storedErr } = await supabaseClient.auth.getSession();
+        console.log('✅ getSession (storage) →', storedData, storedErr);
+        session = storedData.session;
       }
 
       // --- 4. ถ้ายังไม่มี session ให้โยงกลับ login ---
@@ -50,7 +57,7 @@
       // --- 5. มี session แล้ว → ไป tors.html ---
       window.location.replace('/tors.html');
     } catch (err) {
-      console.error('Auth callback failed:', err);
+      console.error('❌ Auth callback failed:', err);
       // ถ้าไม่ผ่านจริงๆ → กลับไป login.html
       window.location.replace('/login.html');
     }
