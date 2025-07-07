@@ -111,20 +111,21 @@
         let currentUserRole = 'viewer';
         let quillEditor;
 
-        // --- All Functions Defined First ---
+        // --- 2. FUNCTIONS (ประกาศทั้งหมดก่อนเรียกใช้) ---
         
         async function initPage(session) {
             try {
                 const { data: profile } = await _supabase.from('profiles').select('role').eq('id', session.user.id).single();
                 if (profile) currentUserRole = profile.role;
-            } catch (e) {
-                console.error("Could not fetch user role", e);
-            }
+            } catch (e) { console.error("Could not fetch user role", e); }
             
             const userInfoPanel = document.getElementById('user-info-panel');
             userInfoPanel.classList.remove('hidden');
             document.getElementById('user-display').textContent = session.user.email;
-            document.getElementById('logout-btn').onclick = async () => await _supabase.auth.signOut();
+            document.getElementById('logout-btn').onclick = async () => {
+                const { error } = await _supabase.auth.signOut();
+                if(!error) window.location.href = '/login.html';
+            };
 
             try {
                 const response = await fetch('https://pcsdata.onrender.com/api/tors');
@@ -138,7 +139,7 @@
             }
         }
 
-       function populateFilters(data) {
+        function populateFilters(data) {
             const moduleObjects = [...new Map(data.map(item => [item.Modules.module_id, item.Modules.module_name])).entries()];
             moduleObjects.sort((a, b) => a[0].localeCompare(b[0]));
             const statuses = [...new Set(data.map(item => item.tor_status).filter(s => s))].sort();
@@ -160,27 +161,26 @@
             let filteredData = allTorsData.filter(item => {
                 const moduleMatch = (moduleValue === 'all') || (item.Modules?.module_name === moduleValue);
                 const statusMatch = (statusValue === 'all') || (item.tor_status === statusValue);
-                const searchString = `${item.tor_id} ${item.Modules?.module_name || ''} ${item.tor_name || ''} ${item.tor_status || ''} ${item.tor_fixing || ''}`.toLowerCase();
+                const searchString = `${item.tor_id || ''} ${item.Modules?.module_name || ''} ${item.tor_name || ''} ${item.tor_status || ''} ${item.tor_fixing || ''}`.toLowerCase();
                 const searchMatch = !searchValue || searchString.includes(searchValue);
                 return moduleMatch && statusMatch && searchMatch;
             });
             renderTable(filteredData);
         }
 
-
         function renderTable(data) {
             const tableBody = document.getElementById('tor-table-body');
             const isAdmin = currentUserRole === 'admin';
             let latestDate = null;
-    
-            tableBody.innerHTML = ''; // Clear previous content
+            
+            tableBody.innerHTML = '';
             if (data.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="${isAdmin ? 5 : 4}" class="p-4 text-center text-gray-500">ไม่พบข้อมูลที่ตรงกับเงื่อนไข</td></tr>`;
-                return;
+                 tableBody.innerHTML = `<tr><td colspan="${isAdmin ? 5 : 4}" class="p-4 text-center text-gray-500">ไม่พบข้อมูลที่ตรงกับเงื่อนไข</td></tr>`;
+                 return;
             }
 
             const headerRow = document.querySelector('thead tr');
-            headerRow.innerHTML = `<th class="p-4 text-center text-base font-bold text-gray-600 w-16">ลำดับ</th><th class="p-4 text-left text-base font-bold text-gray-600">ข้อกำหนด(TOR)</th><th class="p-4 text-center text-base font-bold text-gray-600 w-32">สถานะ</th><th class="p-4 text-center text-base font-bold text-gray-600 w-48">การแก้ไข</th>`;
+            headerRow.innerHTML = `<th class="p-4 text-center text-base font-bold text-gray-600 w-16">ลำดับ</th><th class="p-4 text-left text-base font-bold text-gray-600 w-2/5">ข้อกำหนด(TOR)</th><th class="p-4 text-center text-base font-bold text-gray-600 w-32">สถานะ</th><th class="p-4 text-center text-base font-bold text-gray-600 w-48">การแก้ไข</th>`;
             if (isAdmin) {
                 const actionHeader = document.createElement('th');
                 actionHeader.className = 'p-4 text-left text-base font-bold text-gray-600 w-20';
@@ -200,29 +200,30 @@
                     <td class="p-4 border-b border-gray-200"><a class="tor-link cursor-pointer">${tor.tor_name}</a></td>
                     <td class="p-4 border-b border-gray-200 text-center"><span class="px-3 py-1 text-sm font-semibold rounded-full ${tor.tor_status === 'ผ่าน' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${tor.tor_status || 'N/A'}</span></td>
                     <td class="p-4 border-b border-gray-200 text-center text-gray-600">${tor.tor_fixing || ''}</td>
-        `       ;
+                `;
                 if(isAdmin) {
                     mainRowHTML += `<td class="p-4 border-b border-gray-200 text-center"><a href="/torsedit.html?id=${tor.tor_id}" class="text-indigo-600 hover:text-indigo-900 font-semibold">[Edit]</a></td>`;
                 }
                 mainRow.innerHTML = mainRowHTML;
                 tableBody.appendChild(mainRow);
-        
+                
                 const detailsRow = document.createElement('tr');
                 detailsRow.className = 'details-row';
                 detailsRow.innerHTML = `<td colspan="${isAdmin ? 5 : 4}" class="p-0"><div class="bg-white p-4 text-sm">กำลังโหลดรายละเอียด...</div></td>`;
                 tableBody.appendChild(detailsRow);
 
-                mainRow.querySelector('.tor-link').addEventListener('click', (event) => {
-                    event.preventDefault();
-                    toggleDetails(detailsRow, mainRow, tor.tor_id);
+                mainRow.addEventListener('click', (event) => {
+                    if (event.target.tagName !== 'A' || event.target.classList.contains('tor-link')) {
+                       event.preventDefault();
+                       toggleDetails(detailsRow, mainRow, tor.tor_id);
+                    }
                 });
             });
 
             if (latestDate) {
                 document.getElementById('last-updated').textContent = `ข้อมูลอัปเดตล่าสุด: ${latestDate.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}`;
             }
-
-            // --- เรียกใช้ฟังก์ชันเลื่อนหน้าจอหลังจากวาดตารางเสร็จ ---
+            
             scrollToTorFromHash(); 
         }
         
