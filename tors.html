@@ -10,16 +10,66 @@
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <style>
-        /* ... CSS Styles ... */
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f0f2f5;
+        }
+        /* Style for the expanded detail row */
+        .detail-cell {
+            padding: 0 !important;
+            border: none;
+        }
+        .detail-content {
+            /* Accent Border is applied via Tailwind classes in JS */
+            padding: 1.5rem;
+        }
+        /* Custom class for the active row to make it bold */
+        .row-active {
+            font-weight: 700;
+        }
     </style>
 </head>
-<body class="bg-gray-100 p-4 sm:p-8">
+<body class="bg-gray-100 p-8">
 
-    <div class="max-w-screen-xl mx-auto">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">รายการข้อกำหนด (TOR) ทั้งหมด</h1>
+                <p id="last-updated" class="text-sm text-gray-500 mt-1">ข้อมูลอัปเดตล่าสุด: กำลังโหลด...</p>
+            </div>
+            <div id="user-info-panel" class="hidden flex items-center gap-4">
+                <span id="user-display" class="font-semibold text-gray-700"></span>
+                <button id="logout-btn" class="bg-red-600 text-white font-bold py-2 px-3 rounded hover:bg-red-700 transition-colors text-sm">
+                    ออกจากระบบ
+                </button>
+            </div>
         </div>
+
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full w-full">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="p-4 text-left text-base font-bold text-gray-600 w-1/12">ลำดับ</th>
+                            <th class="p-4 text-left text-base font-bold text-gray-600 w-3/12">ระบบงาน</th>
+                            <th class="p-4 text-left text-base font-bold text-gray-600 w-5/12">ข้อกำหนด(TOR)</th>
+                            <th class="p-4 text-left text-base font-bold text-gray-600 w-1/12">สถานะ</th>
+                            <th class="p-4 text-left text-base font-bold text-gray-600 w-2/12">การแก้ไข</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tor-table-body" class="divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="5" class="p-4 text-center text-gray-500">กำลังโหลดข้อมูล...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
     <div id="popup-modal" class="popup-overlay fixed inset-0 z-50 flex items-center justify-center hidden opacity-0">
-        </div>
+        <div id="editor-container" style="height: 200px;"></div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
