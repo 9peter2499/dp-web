@@ -189,7 +189,7 @@
                     await _supabase.auth.signOut();
 
                     // หลังจาก signOut สำเร็จ ให้ส่ง Log
-                    await fetch('http://localhost:3000/api/log-action', {
+                    await fetch('https://pcsdata.onrender.com/api/log-action', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
@@ -201,7 +201,7 @@
                     };
 
             try {
-                const response = await fetch('http://localhost:3000/api/tors');
+                const response = await fetch('https://pcsdata.onrender.com/api/tors');
                 if (!response.ok) throw new Error('Network response was not ok');
                 allTorsData = await response.json();
                 allTorsData.sort((a, b) => a.tor_id.localeCompare(b.tor_id));
@@ -322,7 +322,7 @@
                 const detailCell = detailsRow.querySelector('td > div');
                 detailCell.innerHTML = `<div class="bg-yellow-50/70 p-6">กำลังโหลด...</div>`;
                 try {
-                    const res = await fetch(`http://localhost:3000/api/tors/${torId}`);
+                    const res = await fetch(`https://pcsdata.onrender.com/api/tors/${torId}`);
                     const details = await res.json();
                     detailCell.innerHTML = createDetailContent(details); 
                     addDetailEventListeners(details);
@@ -524,7 +524,7 @@
             }
             
             try {
-                const response = await fetch(`http://localhost:3000${endpoint}`, {
+                const response = await fetch(`https://pcsdata.onrender.com${endpoint}`, {
                     method: method,
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
                     body: JSON.stringify(body)
@@ -558,7 +558,7 @@
              const endpoint = `/api/${type}/${recordId}`;
 
              try {
-                const response = await fetch(`http://localhost:3000${endpoint}`, {
+                const response = await fetch(`https://pcsdata.onrender.com${endpoint}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${session.access_token}` }
                 });

@@ -20,7 +20,7 @@
 
                 // --- ส่วนที่เพิ่มเข้ามา ---
                 // ส่ง Log ไปที่ Backend
-                await fetch('http://localhost:3000/api/log-action', {
+                await fetch('https://pcsdata.onrender.com/api/log-action', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
