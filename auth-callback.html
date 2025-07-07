@@ -1,45 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
-    <title>Authenticating...</title>
+  <meta charset="UTF-8" />
+  <title>Authenticating...</title>
 </head>
-<body>
-    <p>กำลังตรวจสอบสถานะการล็อคอิน, กรุณารอสักครู่...</p>
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/dist/umd/supabase.umd.min.js"></script>
+<body class="p-8">
+  <p>กำลังตรวจสอบสถานะการล็อคอิน, กรุณารอสักครู่...</p>
 
-    <script type="module">
-  import { createClient } 
-    from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm';
+  <script type="module">
+    import { createClient } 
+      from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm';
 
-  const SUPABASE_URL      = 'https://fhnprrlmlhleomfqqvpp.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZobnBycmxtbGhsZW9tZnFxdnBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA5MTAyMjIsImV4cCI6MjA2NjQ4NjIyMn0.WA-_yNFWxpFnJBA3oh5UlOtq89KBm5hqsb51oi04hMk';
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // --- 1. เตรียม client ---
+    const SUPABASE_URL      = 'https://fhnprrlmlhleomfqqvpp.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZobnBycmxtbGhsZW9tZnFxdnBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA5MTAyMjIsImV4cCI6MjA2NjQ4NjIyMn0.WA-_yNFWxpFnJBA3oh5UlOtq89KBm5hqsb51oi04hMk';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  try {
-    // ดึง session จาก URL fragment (OAuth callback)
-    const { data: { session }, error: urlErr } =
-      await supabase.auth.getSessionFromUrl({ storeSession: true });
-    if (urlErr) throw urlErr;
-    if (!session) throw new Error('No session returned');
+    try {
+      let session;
 
-    // (Optional) บันทึก log
-    await fetch('https://pcsdata.onrender.com/api/log-action', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        userId: session.user.id,
-        action: 'LOGIN_SUCCESS'
-      })
-    });
+      // --- 2. ลองดึง session จาก URL fragment ---
+      const { data, error: urlErr } = 
+        await supabase.auth.getSessionFromUrl({ storeSession: true });
+      console.log('fromUrl:', data, urlErr);
+      if (data?.session) {
+        session = data.session;
+      } else {
+        // --- 3. ถ้าไม่มีจริงๆ ให้ fallback ไปดึงจาก storage ---
+        const { data: stored, error: storedErr } = await supabase.auth.getSession();
+        console.log('fromStorage:', stored, storedErr);
+        session = stored.session;
+      }
 
-    // ได้ session แล้ว → ไปหน้า tors.html
-    window.location.href = '/tors.html';
-  } catch (err) {
-    console.error('Auth callback failed:', err.message);
-    // ถ้าไม่สำเร็จจริงๆ → กลับไปหน้า login.html
-    window.location.href = '/login.html';
-  }
-</script>
+      // --- 4. ถ้ายังไม่มี session ให้โยงกลับ login ---
+      if (!session) {
+        throw new Error('ไม่พบ session หลัง callback');
+      }
+
+      // (Optional) บันทึก Log การ Login
+      await fetch('https://pcsdata.onrender.com/api/log-action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: session.user.id,
+          action: 'LOGIN_SUCCESS'
+        })
+      }).catch(console.warn);
+
+      // --- 5. มี session แล้ว → ไป tors.html ---
+      window.location.replace('/tors.html');
+    } catch (err) {
+      console.error('Auth callback failed:', err);
+      // ถ้าไม่ผ่านจริงๆ → กลับไป login.html
+      window.location.replace('/login.html');
+    }
+  </script>
 </body>
 </html>
