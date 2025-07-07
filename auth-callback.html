@@ -6,27 +6,21 @@
 <body>
     <p>กำลังตรวจสอบสถานะการล็อคอิน, กรุณารอสักครู่...</p>
     
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/dist/umd/supabase.min.js"></script>
     <script>
         const SUPABASE_URL = 'https://fhnprrlmlhleomfqqvpp.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZobnBycmxtbGhsZW9tZnFxdnBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA5MTAyMjIsImV4cCI6MjA2NjQ4NjIyMn0.WA-_yNFWxpFnJBA3oh5UlOtq89KBm5hqsb51oi04hMk';
-        const { createClient } = supabase;
-        const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // รอฟังสัญญาณจาก Supabase
         (async () => {
-      // 2. ดึง session จาก URL (วิธีใหม่และแนะนำ)
-      const { data: { session }, error } = await supabase.auth.getSessionFromUrl({
-        storeSession: true
-      });
-      if (error) {
-        console.error('Error getting session from URL:', error.message);
-        return;
-      }
-      if (!session) {
-        console.warn('No session found in callback URL');
-        return;
-      }
+    // เมื่อใช้ UMD bundle ตัวนี้จะมี getSessionFromUrl
+    const { data: { session }, error } = 
+      await supabaseClient.auth.getSessionFromUrl({ storeSession: true });
+    if (error) {
+      console.error('getSessionFromUrl error:', error.message);
+      return;
+    }
 
       // 3. (Optional) บันทึก Log การเข้าสู่ระบบ
       try {
@@ -45,7 +39,7 @@
       // 4. Redirect ไปที่หน้า tors.html (ระบุเป็น absolute URL จะชัวร์กว่า)
       window.location.href = 'https://dp-web-lyfe.onrender.com/tors.html';
     })();
-    
+
     </script>
 </body>
 </html>
