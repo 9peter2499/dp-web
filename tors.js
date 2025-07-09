@@ -16,8 +16,8 @@ async function initPage(session) {
   //const apiStatus = document.querySelector("#api-status span");
   //const renderMode = document.querySelector("#render-mode span");
 
-  authStatus.textContent = "Event: " + session.event;
-  authStatus.className = "text-green-400";
+  //authStatus.textContent = "Event: " + session.event;
+  //authStatus.className = "text-green-400";
 
   if (session) {
     sessionStatus.textContent =
