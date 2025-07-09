@@ -48,6 +48,7 @@
   <body class="bg-gray-100 p-4 sm:p-8">
     <div class="max-w-screen-xl mx-auto">
       <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+        <!-- ซ้าย: ชื่อหัวเรื่อง -->
         <div>
           <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">
             รายการข้อกำหนด (TOR) ทั้งหมด
@@ -56,6 +57,26 @@
             ข้อมูลอัปเดตล่าสุด: กำลังโหลด...
           </p>
         </div>
+
+        <!-- กลาง: ปุ่มนำทางเพิ่มเติม -->
+        <div class="flex gap-2">
+          <a href="dashboard.html">
+            <button
+              class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-3 rounded text-sm shadow"
+            >
+              📊 สรุปผลการนำเสนอ
+            </button>
+          </a>
+          <a href="present.html">
+            <button
+              class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 rounded text-sm shadow"
+            >
+              🗓️ รายงานการนำเสนอ
+            </button>
+          </a>
+        </div>
+
+        <!-- ขวา: ข้อมูลผู้ใช้และปุ่ม logout -->
         <div id="user-info-panel" class="hidden flex items-center gap-4">
           <span id="user-display" class="font-semibold text-gray-700"></span>
           <button
