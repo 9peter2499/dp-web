@@ -166,7 +166,7 @@ function renderTable(data) {
                     <td class="p-4 text-center border-b border-gray-200">${
                       index + 1
                     }</td>
-                    <td class="p-4 border-b border-gray-200"><a class="tor-link cursor-pointer">${
+                    <td class="p-4 border-b border-gray-200"><a class="tor-link cursor-pointer" style="color:blue;">${
                       tor.tor_name
                     }</a></td>
                     <td class="p-4 border-b border-gray-200 text-center"><span class="px-3 py-1 text-sm font-semibold rounded-full ${
