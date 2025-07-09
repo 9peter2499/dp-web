@@ -10,7 +10,7 @@ let quillEditor;
 
         // --- 2. FUNCTIONS (ประกาศทั้งหมดก่อนเรียกใช้) ---
         
-        async function initPage(session) {
+    async function initPage(session) {
     const authStatus = document.querySelector('#auth-status span');
     const sessionStatus = document.querySelector('#session-status span');
     const apiStatus = document.querySelector('#api-status span');
@@ -64,6 +64,16 @@ let quillEditor;
         apiStatus.className = 'text-red-400';
         document.getElementById('tor-table-body').innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
     }
+
+    console.log('📡 กำลัง fetch API...');
+try {
+  const response = await fetch('https://pcsdata.onrender.com/api/tors');
+  console.log('✅ fetch success?', response.ok, response.status);
+  const json = await response.json();
+  console.log('📦 Data:', json.slice(0, 2)); // ตัวอย่าง
+} catch (error) {
+  console.error('❌ Fetch failed:', error);
+}
 }
 
         function populateFilters(data) {
