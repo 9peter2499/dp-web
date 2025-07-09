@@ -11,10 +11,10 @@ let quillEditor;
 // --- 2. FUNCTIONS (ประกาศทั้งหมดก่อนเรียกใช้) ---
 
 async function initPage(session) {
-  const authStatus = document.querySelector("#auth-status span");
-  const sessionStatus = document.querySelector("#session-status span");
-  const apiStatus = document.querySelector("#api-status span");
-  const renderMode = document.querySelector("#render-mode span");
+  //const authStatus = document.querySelector("#auth-status span");
+  //const sessionStatus = document.querySelector("#session-status span");
+  //const apiStatus = document.querySelector("#api-status span");
+  //const renderMode = document.querySelector("#render-mode span");
 
   authStatus.textContent = "Event: " + session.event;
   authStatus.className = "text-green-400";
