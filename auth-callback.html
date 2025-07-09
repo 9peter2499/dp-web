@@ -7,28 +7,23 @@
 <body class="p-8">
   <p>กำลังตรวจสอบสถานะการล็อคอิน, กรุณารอสักครู่...</p>
 
+  <script src="./config.js"></script>
   <script type="module">
     import { createClient } 
       from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm';
 
-    const SUPABASE_URL      = 'https://fhnprrlmlhleomfqqvpp.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZobnBycmxtbGhsZW9tZnFxdnBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA5MTAyMjIsImV4cCI6MjA2NjQ4NjIyMn0.WA-_yNFWxpFnJBA3oh5UlOtq89KBm5hqsb51oi04hMk';
+    // ✅ ใช้ config จาก config.js (โหลดแบบ global script)
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // (debug) ให้เรียกดูใน console
-    window.supabaseClient = supabase;
     console.log('🔍 Checking persisted session…');
 
     try {
-      // ดึง session ที่เก็บไว้ใน cookie/localStorage
       const { data: { session }, error } = await supabase.auth.getSession();
       console.log('👉 getSession →', session, error);
 
       if (session) {
-        // ถ้ามี session → ไปหน้า tors.html
         window.location.replace('/tors.html');
       } else {
-        // ถ้าไม่มี → ไปหน้า login.html
         window.location.replace('/login.html');
       }
     } catch (err) {
@@ -36,5 +31,6 @@
       window.location.replace('/login.html');
     }
   </script>
+  
 </body>
 </html>
