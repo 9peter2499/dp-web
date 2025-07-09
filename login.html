@@ -38,30 +38,24 @@
 
     </div>
 
-    <script src="./config.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        // Supabase Client
-        const { createClient } = supabase;
-        const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+   <script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm';
+  import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
 
-        const googleLoginButton = document.getElementById('google-login-btn');
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const googleLoginButton = document.getElementById('google-login-btn');
 
-        // ฟังก์ชันนี้จะทำหน้าที่เดียว คือส่งผู้ใช้ไป Login ที่ Google
-        // Supabase จะจัดการเรื่องการ redirect กลับมาที่ Site URL (tors.html) ให้เอง
-        async function signInWithGoogle() {
-                await _supabase.auth.signInWithOAuth({
-                provider: 'google',
-                options: {
-                // บังคับให้ Google ส่งผู้ใช้กลับมาที่หน้า Callback ของเรา
-                redirectTo: 'https://dp-web-lyfe.onrender.com/auth-callback.html' 
-            }
-        });
+  async function signInWithGoogle() {
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: 'https://dp-web-lyfe.onrender.com/auth-callback.html'
+      }
+    });
+  }
 
-
-    }
-        googleLoginButton.addEventListener('click', signInWithGoogle);
-    </script>
+  googleLoginButton.addEventListener('click', signInWithGoogle);
+</script>
 
 </body>
 </html>
