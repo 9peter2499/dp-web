@@ -160,7 +160,8 @@ function renderTable(data) {
     if (!latestDate || torDate > latestDate) latestDate = torDate;
 
     const mainRow = document.createElement("tr");
-    mainRow.className = "main-row";
+    mainRow.className =
+      "main-row hover:bg-yellow-50 transition-colors duration-150";
     mainRow.dataset.torId = tor.tor_id;
     let mainRowHTML = `
                     <td class="p-4 text-center border-b border-gray-200">${
