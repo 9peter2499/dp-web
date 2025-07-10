@@ -415,6 +415,7 @@ function createDetailContent(details) {
             isAdmin
               ? `<div class="space-x-2">
                   <button class="bg-indigo-500 text-white py-1 px-3 rounded hover:bg-indigo-600 text-xs">นำเสนอตามกำหนดปกติ</button>
+                  <button class="bg-orange-500 text-white py-1 px-3 rounded hover:bg-orange-600 text-xs">นำเสนอแก้ไขเพิ่มเติม</button>
                 </div>`
               : ""
           }
