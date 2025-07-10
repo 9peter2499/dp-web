@@ -249,7 +249,6 @@ function createDetailContent(details) {
 
   const isAdmin = currentUserRole === "admin";
 
-  // --- ส่วนแก้ไข: เพิ่มการเรียงข้อมูลในฟังก์ชันนี้ ---
   const createItemList = (items, type) => {
     if (!items || items.length === 0) {
       return "<li>ไม่มีข้อมูล</li>";
@@ -258,13 +257,11 @@ function createDetailContent(details) {
       ? items
       : items.filter((item) => item.status === 1);
 
-    // --- เพิ่มส่วนนี้เพื่อเรียงข้อมูล ---
     itemsToDisplay.sort((a, b) => {
       const dateA = new Date(a.feedback_date || a.worked_date);
       const dateB = new Date(b.feedback_date || b.worked_date);
-      return dateB - dateA; // เรียงจากใหม่ไปเก่า (Descending)
+      return dateB - dateA;
     });
-    // --- สิ้นสุดส่วนการเรียงข้อมูล ---
 
     if (itemsToDisplay.length === 0) {
       return isAdmin
@@ -287,39 +284,78 @@ function createDetailContent(details) {
         const recordId = item.feedback_id || item.worked_id;
 
         return `
-                        <li class="flex justify-between items-start py-3" data-record-id="${recordId}">
-                            <div class="flex-1 space-y-1">
-                                <div class="prose prose-sm max-w-none">${message}</div>
-                                <div class="text-xs text-gray-500">วันที่: ${formattedDate}</div>
-                            </div>
-                            <div class="flex items-center ml-4 flex-shrink-0">
-                                ${
-                                  isAdmin
-                                    ? `
-                                    <div class="text-right">
-                                        <span class="text-xs font-semibold mr-3 ${statusColor}">(${statusText})</span>
-                                    </div>
-                                    <div class="relative inline-block text-left dropdown ml-2">
-                                        <button class="text-gray-400 hover:text-black p-1 text-xs dropdown-toggle"> <i class="fas fa-ellipsis-v"></i> </button>
-                                        <div class="dropdown-menu hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
-                                            <div class="py-1" role="menu" aria-orientation="vertical">
-                                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 edit-item-btn" data-type="${type}" data-record-id="${recordId}">แก้ไขรายการ</a>
-                                                <a href="#" class="block px-4 py-2 text-sm text-red-700 hover:bg-gray-100 delete-item-btn" data-type="${type}" data-record-id="${recordId}">ลบรายการนี้</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `
-                                    : ""
-                                }
-                            </div>
-                        </li>
-                    `;
+          <li class="flex justify-between items-start py-3" data-record-id="${recordId}">
+            <div class="flex-1 space-y-1">
+              <div class="prose prose-sm max-w-none">${message}</div>
+              <div class="text-xs text-gray-500">วันที่: ${formattedDate}</div>
+            </div>
+            <div class="flex items-center ml-4 flex-shrink-0">
+              ${
+                isAdmin
+                  ? `
+                  <div class="text-right">
+                    <span class="text-xs font-semibold mr-3 ${statusColor}">(${statusText})</span>
+                  </div>
+                  <div class="relative inline-block text-left dropdown ml-2">
+                    <button class="text-gray-400 hover:text-black p-1 text-xs dropdown-toggle">
+                      <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <div class="dropdown-menu hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
+                      <div class="py-1" role="menu" aria-orientation="vertical">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 edit-item-btn" data-type="${type}" data-record-id="${recordId}">แก้ไขรายการ</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-red-700 hover:bg-gray-100 delete-item-btn" data-type="${type}" data-record-id="${recordId}">ลบรายการนี้</a>
+                      </div>
+                    </div>
+                  </div>
+                `
+                  : ""
+              }
+            </div>
+          </li>
+        `;
       })
       .join('<hr class="border-yellow-200/60 my-1">');
   };
 
+  const createPresentationTable = (items) => {
+    if (!items || items.length === 0) {
+      return "<div class='text-gray-500'>ไม่มีข้อมูล</div>";
+    }
+
+    const rows = items
+      .map((item) => {
+        const date = new Date(item.present_date).toLocaleDateString("th-TH", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+        return `
+          <tr class="border-b">
+            <td class="p-2">${date}</td>
+            <td class="p-2">${item.present_method || "-"}</td>
+            <td class="p-2">${item.presenter_name || "-"}</td>
+          </tr>
+        `;
+      })
+      .join("");
+
+    return `
+      <table class="table-auto w-full text-sm mb-4 border border-gray-300 rounded">
+        <thead class="bg-yellow-100">
+          <tr>
+            <th class="p-2 text-left">วันที่ที่นำเสนอ</th>
+            <th class="p-2 text-left">ลักษณะการนำเสนอ</th>
+            <th class="p-2 text-left">ผู้นำเสนอ</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+  };
+
   const feedbackHtml = createItemList(detail.PATFeedback, "feedback");
   const workedHtml = createItemList(detail.PCSWorked, "worked");
+  const presentationHtml = createPresentationTable(detail.TORPresentations);
 
   const sectionTitleClass =
     "text-sm font-bold text-gray-700 bg-yellow-200/80 px-3 py-1 rounded-full inline-block mb-2";
@@ -327,51 +363,50 @@ function createDetailContent(details) {
     "prose prose-sm max-w-none text-gray-800 [&_a]:text-blue-600 [&_a:hover]:underline";
 
   return `
-                <div class="bg-yellow-50/70 border-l-4 border-yellow-400 p-6 space-y-5 text-base">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 pb-5 border-b border-yellow-200/60">
-                        <div><span class="${sectionTitleClass}">ทำได้:</span><div class="${contentClass} mt-2">${
-    detail.tord_posible || "(ไม่มีข้อมูล)"
-  }</div></div>
-                        <div><span class="${sectionTitleClass}">เล่มเอกสาร:</span><div class="${contentClass} mt-2">${
-    detail.tord_document || "(ไม่มีข้อมูล)"
-  }</div></div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 py-5 border-b border-yellow-200/60">
-                         <div><span class="${sectionTitleClass}">เอกสารอ้างอิง:</span><div class="${contentClass} mt-2">${
-    detail.tord_reference || "(ไม่มีข้อมูล)"
-  }</div></div>
-                        <div><span class="${sectionTitleClass}">หัวข้อที่นำเสนอ:</span><div class="${contentClass} mt-2">${
-    detail.tord_header || "(ไม่มีข้อมูล)"
-  }</div></div>
-                    </div>
-                    <div class="py-5 border-b border-yellow-200/60"><span class="${sectionTitleClass}">Prototype:</span><div class="${contentClass} mt-2">${
-    detail.tord_prototype || "(ไม่มีข้อมูล)"
-  }</div></div>
-                    <div class="pt-4">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="${sectionTitleClass}">ข้อเสนอแนะคณะกรรมการ:</span>
-                            ${
-                              isAdmin
-                                ? `<button class="add-item-btn text-xs bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600" data-type="feedback" data-tord-id="${detail.tord_id}"><i class="fas fa-plus mr-1"></i>เพิ่ม</button>`
-                                : ""
-                            }
-                        </div>
-                        <ul class="pl-2 space-y-1">${feedbackHtml}</ul>
-                    </div>
-                    <div class="pt-2">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="${sectionTitleClass}">รายละเอียดการแก้ไข:</span>
-                            ${
-                              isAdmin
-                                ? `<button class="add-item-btn text-xs bg-blue-500 text-white py-1 px-3 rounded-md hover:bg-blue-600" data-type="worked" data-tord-id="${detail.tord_id}"><i class="fas fa-plus mr-1"></i>เพิ่ม</button>`
-                                : ""
-                            }
-                        </div>
-                        <ul class="pl-2 space-y-1">${workedHtml}</ul>
-                    </div>
-                </div>
-            `;
-}
+    <div class="bg-yellow-50/70 border-l-4 border-yellow-400 p-6 space-y-5 text-base">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 pb-5 border-b border-yellow-200/60">
+        <div><span class="${sectionTitleClass}">ทำได้:</span><div class="${contentClass} mt-2">${detail.tord_posible || "(ไม่มีข้อมูล)"}</div></div>
+        <div><span class="${sectionTitleClass}">เล่มเอกสาร:</span><div class="${contentClass} mt-2">${detail.tord_document || "(ไม่มีข้อมูล)"}</div></div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 py-5 border-b border-yellow-200/60">
+        <div><span class="${sectionTitleClass}">เอกสารอ้างอิง:</span><div class="${contentClass} mt-2">${detail.tord_reference || "(ไม่มีข้อมูล)"}</div></div>
+        <div><span class="${sectionTitleClass}">หัวข้อที่นำเสนอ:</span><div class="${contentClass} mt-2">${detail.tord_header || "(ไม่มีข้อมูล)"}</div></div>
+      </div>
+      <div class="py-5 border-b border-yellow-200/60">
+        <span class="${sectionTitleClass}">Prototype:</span>
+        <div class="${contentClass} mt-2">${detail.tord_prototype || "(ไม่มีข้อมูล)"}</div>
+      </div>
+      <div class="pt-4">
+        <div class="flex justify-between items-center mb-2">
+          <span class="${sectionTitleClass}">ข้อเสนอแนะคณะกรรมการ:</span>
+          ${
+            isAdmin
+              ? `<button class="add-item-btn text-xs bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600" data-type="feedback" data-tord-id="${detail.tord_id}"><i class="fas fa-plus mr-1"></i>เพิ่ม</button>`
+              : ""
+          }
+        </div>
+        <ul class="pl-2 space-y-1">${feedbackHtml}</ul>
+      </div>
+      <div class="pt-2">
+        <div class="flex justify-between items-center mb-2">
+          <span class="${sectionTitleClass}">รายละเอียดการแก้ไข:</span>
+          ${
+            isAdmin
+              ? `<button class="add-item-btn text-xs bg-blue-500 text-white py-1 px-3 rounded-md hover:bg-blue-600" data-type="worked" data-tord-id="${detail.tord_id}"><i class="fas fa-plus mr-1"></i>เพิ่ม</button>`
+              : ""
+          }
+        </div>
+        <ul class="pl-2 space-y-1">${workedHtml}</ul>
+      </div>
+      <div class="pt-2">
+        <div class="flex justify-between items-center mb-2">
+          <span class="${sectionTitleClass}">การนำเสนอ TOR:</span>
+          ${
+            isAdmin
+              ? `<div class="space-x-2">
+                  <button class="bg-indigo-500 text-white py-1 px-3 rounded hover:bg-indigo-600 text-xs">นำเสนอตามกำหนดปกติ</button>
+                  <button class="b
+
 
 function addDetailEventListeners(details) {
   const detailElement = document.querySelector(`.details-row.is-open`);
