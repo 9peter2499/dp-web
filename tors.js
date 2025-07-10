@@ -405,7 +405,6 @@ function createDetailContent(details) {
             isAdmin
               ? `<div class="space-x-2">
                   <button class="bg-indigo-500 text-white py-1 px-3 rounded hover:bg-indigo-600 text-xs">นำเสนอตามกำหนดปกติ</button>
-                  <button class="b
 
 
 function addDetailEventListeners(details) {
