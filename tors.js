@@ -409,19 +409,26 @@ function createDetailContent(details) {
         <ul class="pl-2 space-y-1">${workedHtml}</ul>
       </div>
       <div class="pt-2">
-        <div class="flex justify-between items-center mb-2">
-          <span class="${sectionTitleClass}">การนำเสนอ TOR:</span>
-          ${
-            isAdmin
-              ? `<div class="space-x-2">
-                  <button class="bg-indigo-500 text-white py-1 px-3 rounded hover:bg-indigo-600 text-xs">นำเสนอตามกำหนดปกติ</button>
-                  <button class="bg-orange-500 text-white py-1 px-3 rounded hover:bg-orange-600 text-xs">นำเสนอแก้ไขเพิ่มเติม</button>
-                </div>`
-              : ""
-          }
-        </div>
-        ${presentationHtml}
-      </div>
+  <span class="${sectionTitleClass}">การนำเสนอ TOR:</span>
+  <div class="${contentClass} mt-2">
+    ${presentationHtml}
+    
+    ${
+      isAdmin
+        ? `
+        <div class="text-center mt-4">
+          <button class="bg-indigo-500 text-white py-1 px-3 rounded hover:bg-indigo-600 text-xs mr-2">
+            นำเสนอตามกำหนดปกติ
+          </button>
+          <button class="bg-orange-500 text-white py-1 px-3 rounded hover:bg-orange-600 text-xs">
+            นำเสนอแก้ไขเพิ่มเติม
+          </button>
+        </div>`
+        : ""
+    }
+  </div>
+</div>
+
     </div>`;
 }
 
