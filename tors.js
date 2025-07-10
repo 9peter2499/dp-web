@@ -365,16 +365,26 @@ function createDetailContent(details) {
   return `
     <div class="bg-yellow-50/70 border-l-4 border-yellow-400 p-6 space-y-5 text-base">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 pb-5 border-b border-yellow-200/60">
-        <div><span class="${sectionTitleClass}">ทำได้:</span><div class="${contentClass} mt-2">${detail.tord_posible || "(ไม่มีข้อมูล)"}</div></div>
-        <div><span class="${sectionTitleClass}">เล่มเอกสาร:</span><div class="${contentClass} mt-2">${detail.tord_document || "(ไม่มีข้อมูล)"}</div></div>
+        <div><span class="${sectionTitleClass}">ทำได้:</span><div class="${contentClass} mt-2">${
+    detail.tord_posible || "(ไม่มีข้อมูล)"
+  }</div></div>
+        <div><span class="${sectionTitleClass}">เล่มเอกสาร:</span><div class="${contentClass} mt-2">${
+    detail.tord_document || "(ไม่มีข้อมูล)"
+  }</div></div>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 py-5 border-b border-yellow-200/60">
-        <div><span class="${sectionTitleClass}">เอกสารอ้างอิง:</span><div class="${contentClass} mt-2">${detail.tord_reference || "(ไม่มีข้อมูล)"}</div></div>
-        <div><span class="${sectionTitleClass}">หัวข้อที่นำเสนอ:</span><div class="${contentClass} mt-2">${detail.tord_header || "(ไม่มีข้อมูล)"}</div></div>
+        <div><span class="${sectionTitleClass}">เอกสารอ้างอิง:</span><div class="${contentClass} mt-2">${
+    detail.tord_reference || "(ไม่มีข้อมูล)"
+  }</div></div>
+        <div><span class="${sectionTitleClass}">หัวข้อที่นำเสนอ:</span><div class="${contentClass} mt-2">${
+    detail.tord_header || "(ไม่มีข้อมูล)"
+  }</div></div>
       </div>
       <div class="py-5 border-b border-yellow-200/60">
         <span class="${sectionTitleClass}">Prototype:</span>
-        <div class="${contentClass} mt-2">${detail.tord_prototype || "(ไม่มีข้อมูล)"}</div>
+        <div class="${contentClass} mt-2">${
+    detail.tord_prototype || "(ไม่มีข้อมูล)"
+  }</div>
       </div>
       <div class="pt-4">
         <div class="flex justify-between items-center mb-2">
@@ -405,7 +415,14 @@ function createDetailContent(details) {
             isAdmin
               ? `<div class="space-x-2">
                   <button class="bg-indigo-500 text-white py-1 px-3 rounded hover:bg-indigo-600 text-xs">นำเสนอตามกำหนดปกติ</button>
-
+                </div>`
+              : ""
+          }
+        </div>
+        ${presentationHtml}
+      </div>
+    </div>`;
+}
 
 function addDetailEventListeners(details) {
   const detailElement = document.querySelector(`.details-row.is-open`);
