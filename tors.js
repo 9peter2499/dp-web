@@ -18,7 +18,10 @@ const loadMasterOptions = async (group) => {
   );
   const options = await res.json();
 
-  console.log("🟡 options ที่ได้:", options); // เพิ่มบรรทัดนี้
+  if (!Array.isArray(options)) {
+    console.error("❌ ไม่ได้ array:", options);
+    throw new Error("โหลด MasterOptions ไม่สำเร็จ");
+  }
 
   return options.reduce((map, opt) => {
     map[opt.option_id] = opt.option_label;
@@ -60,7 +63,9 @@ async function initPage(session) {
     renderMode.className = "text-red-400";
   }
 
-  await loadMasterOptions();
+  await loadMasterOptions("tor_status");
+  await loadMasterOptions("tor_fixing");
+  await loadMasterOptions("tord_posible");
 
   const userInfoPanel = document.getElementById("user-info-panel");
   userInfoPanel.classList.remove("hidden");
