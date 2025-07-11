@@ -221,17 +221,22 @@
         }
       }
 
-      async function loadMasterOptions(group) {
-        const { data, error } = await _supabase
-          .from("MasterOptions")
-          .select("*")
-          .eq("option_group", group)
-          .eq("is_active", true)
-          .order("display_order", { ascending: true });
+      const loadMasterOptions = async (group) => {
+        const res = await fetch(
+          `https://pcsdata.onrender.com/api/options?group=${group}`
+        );
+        const options = await res.json();
 
-        if (error) throw new Error(`โหลด MasterOptions (${group}) ล้มเหลว`);
-        return data;
-      }
+        if (!Array.isArray(options)) {
+          console.error("❌ ไม่ได้ array:", options);
+          throw new Error("โหลด MasterOptions ไม่สำเร็จ");
+        }
+
+        return options.reduce((map, opt) => {
+          map[opt.option_id] = opt.option_label;
+          return map;
+        }, {});
+      };
 
       function populateSelect(selectEl, options, selectedValue) {
         selectEl.innerHTML = "";
