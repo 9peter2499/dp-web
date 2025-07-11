@@ -8,7 +8,19 @@ let allTorsData = [];
 let currentUserRole = "viewer";
 let quillEditor;
 
-// --- 2. FUNCTIONS (ประกาศทั้งหมดก่อนเรียกใช้) ---
+let masterOptionsMap = {};
+
+// --- 2. FUNCTIONS ---
+
+async function loadMasterOptions() {
+  const res = await fetch("https://pcsdata.onrender.com/api/options");
+  const options = await res.json();
+  masterOptionsMap = options.reduce((map, opt) => {
+    if (!map[opt.option_group]) map[opt.option_group] = [];
+    map[opt.option_group].push(opt);
+    return map;
+  }, {});
+}
 
 async function initPage(session) {
   const authStatus = document.querySelector("#auth-status span");
@@ -26,7 +38,6 @@ async function initPage(session) {
   } else {
     sessionStatus.textContent = "NO (Session is null)";
     sessionStatus.className = "text-red-400";
-    // ถ้าไม่มี session ก็ไม่ต้องทำอะไรต่อ
     return;
   }
 
@@ -44,6 +55,8 @@ async function initPage(session) {
     renderMode.textContent = "Error fetching role";
     renderMode.className = "text-red-400";
   }
+
+  await loadMasterOptions();
 
   const userInfoPanel = document.getElementById("user-info-panel");
   userInfoPanel.classList.remove("hidden");
@@ -70,16 +83,6 @@ async function initPage(session) {
     document.getElementById(
       "tor-table-body"
     ).innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
-  }
-
-  console.log("📡 กำลัง fetch API...");
-  try {
-    const response = await fetch("https://pcsdata.onrender.com/api/tors");
-    console.log("✅ fetch success?", response.ok, response.status);
-    const json = await response.json();
-    console.log("📦 Data:", json.slice(0, 2)); // ตัวอย่าง
-  } catch (error) {
-    console.error("❌ Fetch failed:", error);
   }
 }
 
@@ -278,7 +281,13 @@ function createDetailContent(details) {
           month: "long",
           year: "numeric",
         });
-        const statusText = item.status === 1 ? "แสดงในรายงาน" : "ร่าง";
+        const groupKey =
+          type === "feedback" ? "feedback_status" : "worked_status";
+        const label =
+          masterOptionsMap[groupKey]?.find(
+            (opt) => opt.option_id === item.status.toString()
+          )?.option_label || `(สถานะ ${item.status})`;
+        const statusText = label;
         const statusColor =
           item.status === 1 ? "text-green-600" : "text-yellow-600";
         const recordId = item.feedback_id || item.worked_id;
@@ -498,20 +507,36 @@ function openPopup(type, tordId, existingData = null) {
     });
   }
 
+  const statusSelect = document.getElementById("popup-status");
+  const groupKey = type === "feedback" ? "feedback_status" : "worked_status";
+  statusSelect.innerHTML = masterOptionsMap[groupKey]
+    .map(
+      (opt) => `<option value="${opt.option_id}">${opt.option_label}</option>`
+    )
+    .join("");
+
   if (existingData) {
     title.textContent =
       type === "feedback" ? "แก้ไขข้อเสนอแนะ" : "แก้ไขรายละเอียดการทำงาน";
     quillEditor.root.innerHTML =
       existingData.feedback_message || existingData.worked_message;
-    document.getElementById("popup-status").value = existingData.status;
+    statusSelect.value = existingData.status.toString();
   } else {
     title.textContent =
       type === "feedback"
         ? "เพิ่มข้อเสนอแนะใหม่"
         : "เพิ่มรายละเอียดการทำงานใหม่";
     quillEditor.root.innerHTML = "";
-    document.getElementById("popup-status").value = 0;
+    statusSelect.value = masterOptionsMap[groupKey]?.[0]?.option_id || 0;
   }
+
+  modal.classList.remove("hidden");
+  setTimeout(() => modal.classList.remove("opacity-0"), 10);
+  modal.querySelector(".popup-content").classList.remove("scale-95");
+
+  document.getElementById("save-popup-btn").onclick = () => {
+    handleSave(type, tordId, existingData);
+  };
 
   modal.classList.remove("hidden");
   setTimeout(() => modal.classList.remove("opacity-0"), 10);
@@ -530,9 +555,9 @@ function closePopup() {
 }
 
 async function handleSave(type, tordId, existingData) {
-  console.log("🧩 type =", type);
-  console.log("🧩 tordId =", tordId);
-  console.log("🧩 existingData =", existingData);
+  //console.log("🧩 type =", type);
+  //console.log("🧩 tordId =", tordId);
+  //console.log("🧩 existingData =", existingData);
 
   const content = quillEditor.root.innerHTML;
   const status = parseInt(document.getElementById("popup-status").value);
