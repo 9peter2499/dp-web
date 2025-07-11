@@ -12,15 +12,19 @@ let masterOptionsMap = {};
 
 // --- 2. FUNCTIONS ---
 
-async function loadMasterOptions() {
-  const res = await fetch("https://pcsdata.onrender.com/api/options");
+const loadMasterOptions = async (group) => {
+  const res = await fetch(
+    `https://pcsdata.onrender.com/api/options?group=${group}`
+  );
   const options = await res.json();
-  masterOptionsMap = options.reduce((map, opt) => {
-    if (!map[opt.option_group]) map[opt.option_group] = [];
-    map[opt.option_group].push(opt);
+
+  console.log("🟡 options ที่ได้:", options); // เพิ่มบรรทัดนี้
+
+  return options.reduce((map, opt) => {
+    map[opt.option_id] = opt.option_label;
     return map;
   }, {});
-}
+};
 
 async function initPage(session) {
   const authStatus = document.querySelector("#auth-status span");
