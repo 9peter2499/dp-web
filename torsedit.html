@@ -261,9 +261,9 @@
 
           // โหลด MasterOptions ทั้งหมด
           const [statusOpts, fixingOpts, posibleOpts] = await Promise.all([
-            loadMasterOptions("tor_status"),
-            loadMasterOptions("tor_fixing"),
-            loadMasterOptions("tord_posible"),
+            loadMasterOptions("status"),
+            loadMasterOptions("fixing"),
+            loadMasterOptions("posible"),
           ]);
 
           // Populate dropdown

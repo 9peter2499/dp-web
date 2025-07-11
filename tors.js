@@ -63,9 +63,9 @@ async function initPage(session) {
     renderMode.className = "text-red-400";
   }
 
-  await loadMasterOptions("tor_status");
-  await loadMasterOptions("tor_fixing");
-  await loadMasterOptions("tord_posible");
+  await loadMasterOptions("status");
+  await loadMasterOptions("fixing");
+  await loadMasterOptions("posible");
 
   const userInfoPanel = document.getElementById("user-info-panel");
   userInfoPanel.classList.remove("hidden");
