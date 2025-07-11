@@ -223,23 +223,25 @@
 
       const loadMasterOptions = async (group) => {
         const res = await fetch(
-          `https://pcsdata.onrender.com/api/options?group=${group}`
+          `https://pcsdata.onrender.com/api/options/${group}`
         );
         const options = await res.json();
 
         if (!Array.isArray(options)) {
-          console.error("❌ ไม่ได้ array:", options);
-          throw new Error("โหลด MasterOptions ไม่สำเร็จ");
+          console.error("❌ API ไม่ได้ส่ง array:", options);
+          throw new Error(`โหลด MasterOptions สำหรับ '${group}' ไม่สำเร็จ`);
         }
 
-        return options.reduce((map, opt) => {
-          map[opt.option_id] = opt.option_label;
-          return map;
-        }, {});
+        return options;
       };
 
       function populateSelect(selectEl, options, selectedValue) {
-        selectEl.innerHTML = "";
+        if (!Array.isArray(options)) {
+          console.warn("populateSelect ได้ options ที่ไม่ใช่ array:", options);
+          return;
+        }
+
+        selectEl.innerHTML = `<option value="">-- กรุณาเลือก --</option>`;
         options.forEach((opt) => {
           const option = document.createElement("option");
           option.value = opt.option_id;
@@ -268,13 +270,13 @@
           ]);
 
           // Populate dropdown
-          populateSelect(torStatusSelect, statusOpts, data.tor_status_id);
-          populateSelect(torFixingSelect, fixingOpts, data.tor_fixing_id);
-
+          populateSelect(torStatusSelect, statusOpts || [], data.tor_status_id);
+          populateSelect(torFixingSelect, fixingOpts || [], data.tor_fixing_id);
           const detail = data.TORDetail[0] || {};
+
           populateSelect(
             tordPosibleSelect,
-            posibleOpts,
+            posibleOpts || [],
             detail.tord_posible_id
           );
 
