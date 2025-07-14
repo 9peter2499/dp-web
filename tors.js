@@ -65,7 +65,15 @@ function openPresentationModal(tord_id, ptt_type) {
   const modalTitle = document.getElementById("presentationModalTitle");
 
   // --- สร้างและตั้งค่า Title ใหม่ ---
-  modalTitle.textContent = `บันทึกข้อมูลการนำเสนอ : TOR หัวข้อ : ${tord_id}`;
+  // 1. ค้นหาข้อมูล TOR ทั้งหมดจาก allTorsData โดยใช้ tord_id
+  const torData = allTorsData.find((tor) => tor.tor_id === tord_id);
+
+  // 2. ดึงเอาเฉพาะส่วนตัวเลขด้านหน้าของ tor_name (ถ้าหาเจอ)
+  //    ถ้าหาไม่เจอ ให้ใช้ tord_id เป็นค่าสำรอง
+  const topicIdentifier = torData ? torData.tor_name.split(" ")[0] : tord_id;
+
+  // 3. นำไปสร้างเป็น Title ใหม่
+  modalTitle.textContent = `บันทึกข้อมูลการนำเสนอ : TOR หัวข้อ : ${topicIdentifier}`;
 
   // ตั้งค่า Date Picker ให้เป็นวันที่ปัจจุบัน (ใน Format YYYY-MM-DD)
   const today = new Date().toISOString().split("T")[0];
