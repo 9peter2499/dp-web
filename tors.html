@@ -248,6 +248,92 @@
       </div>
     </div>
 
+    <div
+      id="presentationModal"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden opacity-0 transition-opacity"
+    >
+      <div
+        class="popup-content bg-white rounded-lg shadow-xl transform scale-95 transition-transform w-full max-w-lg p-6"
+      >
+        <div class="flex justify-between items-center mb-4">
+          <h5 class="text-lg font-bold">บันทึกข้อมูลการนำเสนอ</h5>
+          <button
+            id="closePresentationModalBtn"
+            class="text-gray-500 hover:text-gray-700"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="presentationForm">
+            <input type="hidden" id="modal_tord_id" />
+
+            <div class="mb-3">
+              <label class="font-semibold">วันที่:</label>
+              <p id="modal_display_date">--/--/----</p>
+            </div>
+
+            <div class="mb-3">
+              <label class="font-semibold">เงื่อนไข:</label>
+              <p id="modal_display_type">------</p>
+            </div>
+
+            <div class="flex gap-4 mb-3">
+              <div class="w-1/2">
+                <label
+                  for="startTime"
+                  class="block text-sm font-medium text-gray-700"
+                  >Start time</label
+                >
+                <select
+                  id="startTime"
+                  class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                ></select>
+              </div>
+              <div class="w-1/2">
+                <label
+                  for="endTime"
+                  class="block text-sm font-medium text-gray-700"
+                  >End time</label
+                >
+                <select
+                  id="endTime"
+                  class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                ></select>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label
+                for="presentationRemark"
+                class="block text-sm font-medium text-gray-700"
+                >Remark</label
+              >
+              <textarea
+                id="presentationRemark"
+                rows="3"
+                class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+              ></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="mt-6 flex justify-end space-x-3">
+          <button
+            id="cancelPresentationModalBtn"
+            class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded"
+          >
+            ยกเลิก
+          </button>
+          <button
+            id="savePresentationBtn"
+            class="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded"
+          >
+            บันทึก
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script type="module" src="./tors.js"></script>
   </body>
 </html>

@@ -29,6 +29,130 @@ const loadMasterOptions = async (group) => {
   }, {});
 };
 
+//=====================================================
+// SECTION: Presentation Logic
+//=====================================================
+
+// สร้างตัวแปร Modal ของ Bootstrap ไว้ใช้งาน (ถ้ายังไม่มี)
+// ให้แน่ใจว่าได้ import Bootstrap JS ใน tors.html ก่อนนะครับ
+// const presentationModal = new bootstrap.Modal(document.getElementById('presentationModal')); // ถ้าใช้ Bootstrap
+const presentationModalElement = document.getElementById(
+  "popup-modal-presentation"
+); // สมมติว่าสร้าง Modal ใหม่
+
+function populateTimeDropdowns() {
+  const startTimeSelect = document.getElementById("startTime");
+  const endTimeSelect = document.getElementById("endTime");
+  if (!startTimeSelect || !endTimeSelect) return;
+
+  startTimeSelect.innerHTML = "";
+  endTimeSelect.innerHTML = "";
+
+  for (let i = 8; i <= 17; i++) {
+    const hour = i.toString().padStart(2, "0");
+    ["00", "30"].forEach((minute) => {
+      const time = `${hour}:${minute}`;
+      const option = `<option value="${time}">${time}</option>`;
+      startTimeSelect.innerHTML += option;
+      endTimeSelect.innerHTML += option;
+    });
+  }
+}
+
+function openPresentationModal(tord_id, ptt_type) {
+  const modal = document.getElementById("presentationModal");
+
+  modal.querySelector("#modal_tord_id").value = tord_id;
+  modal.querySelector("#modal_display_date").textContent =
+    new Date().toLocaleDateString("th-TH");
+  modal.querySelector("#modal_display_type").textContent = ptt_type;
+
+  modal.querySelector("#presentationRemark").value = "";
+
+  // Logic เปิด Modal ของ Tailwind
+  modal.classList.remove("hidden");
+  setTimeout(() => modal.classList.remove("opacity-0"), 10);
+  modal.querySelector(".popup-content").classList.remove("scale-95");
+}
+
+async function handlePresentationSubmit() {
+  const modal = document.getElementById("presentationModal");
+  const tord_id = modal.querySelector("#modal_tord_id").value;
+  const ptt_type = modal.querySelector("#modal_display_type").textContent;
+  const startTime = modal.querySelector("#startTime").value;
+  const endTime = modal.querySelector("#endTime").value;
+  const ptt_remark = modal.querySelector("#presentationRemark").value;
+
+  const payload = {
+    ptt_type: ptt_type,
+    ptt_date: new Date().toISOString().split("T")[0],
+    ptt_timerange: `${startTime} - ${endTime}`,
+    ptt_remark: ptt_remark,
+    selected_tors: [tord_id],
+  };
+
+  try {
+    const {
+      data: { session },
+    } = await _supabase.auth.getSession();
+    const response = await fetch(
+      "https://pcsdata.onrender.com/api/presentation",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error);
+
+    alert("บันทึกข้อมูลสำเร็จ!");
+    closePresentationModal();
+
+    // โหลดข้อมูล Detail ใหม่เพื่อ Refresh
+    const openDetailsRow = document.querySelector(".details-row.is-open");
+    if (openDetailsRow) {
+      const mainRow = openDetailsRow.previousElementSibling;
+      toggleDetails(openDetailsRow, mainRow, tord_id); // ปิด
+      toggleDetails(openDetailsRow, mainRow, tord_id); // เปิดใหม่เพื่อ refresh
+    }
+  } catch (error) {
+    alert(`เกิดข้อผิดพลาด: ${error.message}`);
+  }
+  try {
+    // ... โค้ด fetch API เหมือนเดิม ...
+    alert("บันทึกข้อมูลสำเร็จ!");
+    closePresentationModal(); // เรียกใช้ฟังก์ชันปิดที่ถูกต้อง
+    // ... โค้ด refresh ข้อมูลเหมือนเดิม ...
+  } catch (error) {
+    alert(`เกิดข้อผิดพลาด: ${error.message}`);
+  }
+}
+
+function closePresentationModal() {
+  const modal = document.getElementById("presentationModal");
+  modal.classList.add("opacity-0");
+  modal.querySelector(".popup-content").classList.add("scale-95");
+  setTimeout(() => modal.classList.add("hidden"), 300);
+}
+
+// --- เพิ่ม Event Listener สำหรับปุ่ม Presentation ---
+// ใช้ Event Delegation เพื่อให้ทำงานกับปุ่มที่สร้างขึ้นมาใหม่ได้
+document
+  .getElementById("tor-table-body")
+  .addEventListener("click", function (event) {
+    if (event.target.classList.contains("presentation-btn")) {
+      const button = event.target;
+      const tord_id = button.dataset.tordId;
+      const type = button.dataset.type;
+      openPresentationModal(tord_id, type);
+    }
+  });
+
 async function initPage(session) {
   const authStatus = document.querySelector("#auth-status span");
   const sessionStatus = document.querySelector("#session-status span");
@@ -435,10 +559,14 @@ function createDetailContent(details) {
       isAdmin
         ? `
         <div class="text-center mt-4">
-          <button class="bg-indigo-500 text-white py-1 px-3 rounded hover:bg-indigo-600 text-xs mr-2">
+          <button class="presentation-btn bg-indigo-500 text-white py-1 px-3 rounded hover:bg-indigo-600 text-xs mr-2" 
+                  data-tord-id="${detail.tord_id}" 
+                  data-type="นำเสนอตามกำหนดปกติ">
             นำเสนอตามกำหนดปกติ
           </button>
-          <button class="bg-orange-500 text-white py-1 px-3 rounded hover:bg-orange-600 text-xs">
+          <button class="presentation-btn bg-orange-500 text-white py-1 px-3 rounded hover:bg-orange-600 text-xs"
+                  data-tord-id="${detail.tord_id}"
+                  data-type="นำเสนอแก้ไขเพิ่มเติม">
             นำเสนอแก้ไขเพิ่มเติม
           </button>
         </div>`
@@ -496,6 +624,21 @@ function addDetailEventListeners(details) {
         handleDelete(button.dataset.type, button.dataset.recordId);
       }
     };
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // ... โค้ดเดิมของคุณ ...
+    document
+      .getElementById("closePresentationModalBtn")
+      ?.addEventListener("click", closePresentationModal);
+    document
+      .getElementById("cancelPresentationModalBtn")
+      ?.addEventListener("click", closePresentationModal);
+    document
+      .getElementById("savePresentationBtn")
+      ?.addEventListener("click", handlePresentationSubmit);
+
+    populateTimeDropdowns(); // <-- **ย้ายการเรียกใช้ฟังก์ชันมาไว้ตรงนี้**
   });
 }
 
@@ -699,6 +842,21 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("cancel-popup-btn")
     .addEventListener("click", closePopup);
+
+  // --- เพิ่มโค้ดส่วนนี้เข้าไป ---
+  populateTimeDropdowns(); // << เรียกใช้ฟังก์ชันนี้เพื่อสร้างตัวเลือกเวลา
+
+  // เชื่อมปุ่มของ Presentation Modal
+  document
+    .getElementById("closePresentationModalBtn")
+    ?.addEventListener("click", closePresentationModal);
+  document
+    .getElementById("cancelPresentationModalBtn")
+    ?.addEventListener("click", closePresentationModal);
+  document
+    .getElementById("savePresentationBtn")
+    ?.addEventListener("click", handlePresentationSubmit);
+  // --- สิ้นสุดส่วนที่เพิ่ม ---
 
   _supabase.auth.onAuthStateChange((_event, session) => {
     if (session) {
