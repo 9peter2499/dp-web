@@ -62,6 +62,11 @@ function populateTimeDropdowns() {
 function openPresentationModal(tord_id, ptt_type) {
   const modal = document.getElementById("presentationModal");
 
+  const modalTitle = document.getElementById("presentationModalTitle");
+
+  // --- สร้างและตั้งค่า Title ใหม่ ---
+  modalTitle.textContent = `บันทึกข้อมูลการนำเสนอ : TOR หัวข้อ : ${tord_id}`;
+
   // ตั้งค่า Date Picker ให้เป็นวันที่ปัจจุบัน (ใน Format YYYY-MM-DD)
   const today = new Date().toISOString().split("T")[0];
   document.getElementById("presentationDate").value = today;
