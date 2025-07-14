@@ -61,17 +61,17 @@ function populateTimeDropdowns() {
 
 function openPresentationModal(tord_id, ptt_type) {
   const modal = document.getElementById("presentationModal");
+
+  // ตั้งค่า Date Picker ให้เป็นวันที่ปัจจุบัน (ใน Format YYYY-MM-DD)
   const today = new Date().toISOString().split("T")[0];
   document.getElementById("presentationDate").value = today;
 
+  // เซ็ตค่าอื่นๆ ใน Modal
   modal.querySelector("#modal_tord_id").value = tord_id;
-  modal.querySelector("#modal_display_date").textContent =
-    new Date().toLocaleDateString("th-TH");
   modal.querySelector("#modal_display_type").textContent = ptt_type;
-
   modal.querySelector("#presentationRemark").value = "";
 
-  // --- ตั้งค่าเวลาเริ่มต้น ---
+  // ตั้งค่าเวลาเริ่มต้น
   document.getElementById("startTime").value = "09:00";
   document.getElementById("endTime").value = "16:00";
 
