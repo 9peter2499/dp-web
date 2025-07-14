@@ -69,6 +69,10 @@ function openPresentationModal(tord_id, ptt_type) {
 
   modal.querySelector("#presentationRemark").value = "";
 
+  // --- ตั้งค่าเวลาเริ่มต้น ---
+  document.getElementById("startTime").value = "09:00";
+  document.getElementById("endTime").value = "16:00";
+
   // Logic เปิด Modal ของ Tailwind
   modal.classList.remove("hidden");
   setTimeout(() => modal.classList.remove("opacity-0"), 10);

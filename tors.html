@@ -264,26 +264,28 @@
             <i class="fas fa-times"></i>
           </button>
         </div>
+
         <div class="modal-body">
           <form id="presentationForm">
             <input type="hidden" id="modal_tord_id" />
 
-            <div class="mb-3">
-              <label class="font-semibold">วันที่:</label>
-              <p id="modal_display_date">--/--/----</p>
+            <div class="flex gap-x-6 mb-5">
+              <div class="w-1/2">
+                <label class="font-semibold text-gray-700">วันที่:</label>
+                <p id="modal_display_date" class="mt-1">--/--/----</p>
+              </div>
+              <div class="w-1/2">
+                <label class="font-semibold text-gray-700">เงื่อนไข:</label>
+                <p id="modal_display_type" class="mt-1">------</p>
+              </div>
             </div>
 
-            <div class="mb-3">
-              <label class="font-semibold">เงื่อนไข:</label>
-              <p id="modal_display_type">------</p>
-            </div>
-
-            <div class="flex gap-4 mb-3">
+            <div class="flex gap-x-6 mb-5">
               <div class="w-1/2">
                 <label
                   for="startTime"
                   class="block text-sm font-medium text-gray-700"
-                  >Start time</label
+                  >เริ่มนำเสนอ</label
                 >
                 <select
                   id="startTime"
@@ -294,7 +296,7 @@
                 <label
                   for="endTime"
                   class="block text-sm font-medium text-gray-700"
-                  >End time</label
+                  >สิ้นสุดนำเสนอ</label
                 >
                 <select
                   id="endTime"
@@ -303,11 +305,11 @@
               </div>
             </div>
 
-            <div class="mb-3">
+            <div>
               <label
                 for="presentationRemark"
                 class="block text-sm font-medium text-gray-700"
-                >Remark</label
+                >หมายเหตุ</label
               >
               <textarea
                 id="presentationRemark"
@@ -317,6 +319,7 @@
             </div>
           </form>
         </div>
+
         <div class="mt-6 flex justify-end space-x-3">
           <button
             id="cancelPresentationModalBtn"
