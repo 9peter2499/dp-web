@@ -127,7 +127,10 @@ async function handlePresentationSubmit() {
     );
 
     const result = await response.json();
-    if (!response.ok) throw new Error(result.error);
+    if (!response.ok) {
+      // ถ้ามี Error จาก API ให้โยน Error พร้อมข้อความจาก API
+      throw new Error(result.error);
+    }
 
     alert("บันทึกข้อมูลสำเร็จ!");
     closePresentationModal();
@@ -140,15 +143,8 @@ async function handlePresentationSubmit() {
       toggleDetails(openDetailsRow, mainRow, tord_id); // เปิดใหม่เพื่อ refresh
     }
   } catch (error) {
-    alert(`เกิดข้อผิดพลาด: ${error.message}`);
-  }
-  try {
-    // ... โค้ด fetch API เหมือนเดิม ...
-    alert("บันทึกข้อมูลสำเร็จ!");
-    closePresentationModal(); // เรียกใช้ฟังก์ชันปิดที่ถูกต้อง
-    // ... โค้ด refresh ข้อมูลเหมือนเดิม ...
-  } catch (error) {
-    alert(`เกิดข้อผิดพลาด: ${error.message}`);
+    // แสดง Error ที่ถูกต้องเพียงอันเดียว
+    alert(`เกิดขึ้นข้อผิดพลาด: ${error.message}`);
   }
 }
 
