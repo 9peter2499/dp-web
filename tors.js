@@ -29,6 +29,29 @@ const loadMasterOptions = async (group) => {
   }, {});
 };
 
+async function loadPresentationDates() {
+  try {
+    const res = await fetch(
+      "https://pcsdata.onrender.com/api/presentation/dates"
+    );
+    const dates = await res.json();
+
+    const dateFilter = document.getElementById("date-filter");
+    dateFilter.innerHTML = '<option value="">-- เลือกวันที่ --</option>';
+
+    dates.forEach((date) => {
+      const formatted = new Date(date).toLocaleDateString("th-TH", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+      dateFilter.innerHTML += `<option value="${date}">${formatted}</option>`;
+    });
+  } catch (err) {
+    console.error("❌ Failed to load dates:", err);
+  }
+}
+
 //=====================================================
 // SECTION: Presentation Logic
 //=====================================================
@@ -237,7 +260,9 @@ async function initPage(session) {
 function populateFilters(data) {
   const moduleObjects = [
     ...new Map(
-      data.map((item) => [item.Modules.module_id, item.Modules.module_name])
+      data
+        .filter((item) => item.Modules && item.Modules.module_id)
+        .map((item) => [item.Modules.module_id, item.Modules.module_name])
     ).entries(),
   ];
   moduleObjects.sort((a, b) => a[0].localeCompare(b[0]));
@@ -325,7 +350,7 @@ function renderTable(data) {
                       tor.tor_status === "ผ่าน"
                         ? "bg-green-100 text-green-800"
                         : "bg-red-100 text-red-800"
-                    }">${tor.tor_status || "N/A"}</span></td>
+                    }">${tor.tor_status?.option_label || "N/A"}</span></td>
                     <td class="p-4 border-b border-gray-200 text-center text-gray-600">${
                       tor.tor_fixing || ""
                     }</td>
@@ -523,7 +548,7 @@ function createDetailContent(details) {
   };
   const feedbackHtml = createItemList(detail.PATFeedback, "feedback");
   const workedHtml = createItemList(detail.PCSWorked, "worked");
-  const presentationHtml = createPresentationTable(detail.TORPresentations);
+  const presentationHtml = createPresentationTable(detail.PresentationItems);
 
   const sectionTitleClass =
     "text-sm font-bold text-gray-700 bg-yellow-200/80 px-3 py-1 rounded-full inline-block mb-2";
@@ -687,7 +712,8 @@ function openPopup(type, tordId, existingData = null) {
 
   const statusSelect = document.getElementById("popup-status");
   const groupKey = type === "feedback" ? "feedback_status" : "worked_status";
-  statusSelect.innerHTML = masterOptionsMap[groupKey]
+  const options = masterOptionsMap[groupKey] || [];
+  statusSelect.innerHTML = options
     .map(
       (opt) => `<option value="${opt.option_id}">${opt.option_label}</option>`
     )
