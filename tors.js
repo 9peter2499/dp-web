@@ -61,6 +61,8 @@ function populateTimeDropdowns() {
 
 function openPresentationModal(tord_id, ptt_type) {
   const modal = document.getElementById("presentationModal");
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("presentationDate").value = today;
 
   modal.querySelector("#modal_tord_id").value = tord_id;
   modal.querySelector("#modal_display_date").textContent =
@@ -89,7 +91,7 @@ async function handlePresentationSubmit() {
 
   const payload = {
     ptt_type: ptt_type,
-    ptt_date: new Date().toISOString().split("T")[0],
+    ptt_date: document.getElementById("presentationDate").value,
     ptt_timerange: `${startTime} - ${endTime}`,
     ptt_remark: ptt_remark,
     selected_tors: [tord_id],
