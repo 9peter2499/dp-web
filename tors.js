@@ -474,42 +474,53 @@ function createDetailContent(details) {
       .join('<hr class="border-yellow-200/60 my-1">');
   };
 
-  const createPresentationTable = (items) => {
-    if (!items || items.length === 0) {
-      return "<div class='text-gray-500'>ไม่มีข้อมูล</div>";
+  const createPresentationTable = (presentationItems) => {
+    // ถ้าไม่มีข้อมูล PresentationItems หรือไม่มีเลย ให้แสดงว่าไม่มีข้อมูล
+    if (!presentationItems || presentationItems.length === 0) {
+      return "<div class='text-gray-500'>ไม่มีข้อมูลการนำเสนอ</div>";
     }
 
-    const rows = items
+    // สร้างแถวในตารางจากข้อมูลที่ได้
+    const rows = presentationItems
       .map((item) => {
-        const date = new Date(item.present_date).toLocaleDateString("th-TH", {
+        // ดึงข้อมูล Presentation หลักออกมา
+        const p = item.Presentation;
+        if (!p) return ""; // ถ้าไม่มีข้อมูลหลัก ให้ข้ามไป
+
+        const date = new Date(p.ptt_date).toLocaleDateString("th-TH", {
           year: "numeric",
           month: "long",
           day: "numeric",
         });
+
         return `
-          <tr class="border-b">
-            <td class="p-2">${date}</td>
-            <td class="p-2">${item.present_method || "-"}</td>
-            <td class="p-2">${item.presenter_name || "-"}</td>
-          </tr>
-        `;
+        <tr class="border-b">
+          <td class="p-2">${date}</td>
+          <td class="p-2">${p.ptt_type || "-"}</td>
+          <td class="p-2">${p.ptt_timerange || "-"}</td>
+          <td class="p-2">${p.ptt_remark || "-"}</td>
+          <td class="p-2">${p.ptt_by || "-"}</td>
+        </tr>
+      `;
       })
       .join("");
 
+    // สร้างตารางทั้งหมด
     return `
-      <table class="table-auto w-full text-sm mb-4 border border-gray-300 rounded">
-        <thead class="bg-yellow-100">
-          <tr>
-            <th class="p-2 text-left">วันที่ที่นำเสนอ</th>
-            <th class="p-2 text-left">ลักษณะการนำเสนอ</th>
-            <th class="p-2 text-left">ผู้นำเสนอ</th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
-    `;
+    <table class="table-auto w-full text-sm mb-4 border border-gray-300 rounded">
+      <thead class="bg-yellow-100">
+        <tr>
+          <th class="p-2 text-left">วันที่นำเสนอ</th>
+          <th class="p-2 text-left">เงื่อนไข</th>
+          <th class="p-2 text-left">ช่วงเวลา</th>
+          <th class="p-2 text-left">หมายเหตุ</th>
+          <th class="p-2 text-left">ผู้บันทึก</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
   };
-
   const feedbackHtml = createItemList(detail.PATFeedback, "feedback");
   const workedHtml = createItemList(detail.PCSWorked, "worked");
   const presentationHtml = createPresentationTable(detail.TORPresentations);
