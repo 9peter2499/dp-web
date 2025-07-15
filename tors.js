@@ -51,7 +51,8 @@ async function initPage(session) {
       throw new Error(`Network response was not ok (${response.status})`);
 
     const rawData = await response.json();
-    // เก็บข้อมูลดิบไว้เพื่อใช้ในการ filter
+
+    // ✅ แก้ไขส่วนนี้: แปลงข้อมูลและเก็บ ID/Label ให้ครบถ้วน
     allTorsData = rawData.map((item) => ({
       ...item,
       tor_status_id: item.tor_status?.option_id,
@@ -209,20 +210,25 @@ function applyFilters() {
     const statusMatch =
       statusValue === "all" || item.tor_status_id === statusValue;
 
+    // ✅ --- ส่วนที่แก้ไข ---
+    // ตรรกะการกรองวันที่ที่ทำงานกับข้อมูลใหม่
     const dateMatch =
       !dateValue ||
-      item.TORDetail?.some((d) =>
-        d.PresentationItems?.some(
-          (pi) => pi.Presentation?.ptt_date === dateValue
-        )
-      );
+      (item.TORDetail &&
+        item.TORDetail.some(
+          (detail) =>
+            detail.PresentationItems &&
+            detail.PresentationItems.some(
+              (pi) => pi.Presentation && pi.Presentation.ptt_date === dateValue
+            )
+        ));
 
     const searchString = `${item.tor_id || ""} ${
       item.Modules?.module_name || ""
     } ${item.tor_name || ""} ${item.tor_status_label || ""} ${
       item.tor_fixing_label || ""
     }`.toLowerCase();
-    const searchMatch = !searchValue || searchString.includes(searchValue);
+    const searchMatch = !searchValue || searchString.includes(searchString);
 
     return moduleMatch && statusMatch && searchMatch && dateMatch;
   });
