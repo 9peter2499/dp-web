@@ -35,13 +35,15 @@ async function loadPresentationDates() {
       "https://pcsdata.onrender.com/api/presentation/dates"
     );
     const dates = await res.json();
+
     const dateFilter = document.getElementById("date-filter");
+    if (!dateFilter) return;
+
     dateFilter.innerHTML = '<option value="">-- เลือกวันที่ --</option>';
     dates.forEach((date) => {
-      const dateObj = new Date(date);
-      dateFilter.innerHTML += `<option value="${date}">${dateObj.toLocaleDateString(
-        "th-TH"
-      )}</option>`;
+      dateFilter.innerHTML += `<option value="${date}">${new Date(
+        date
+      ).toLocaleDateString("th-TH")}</option>`;
     });
   } catch (err) {
     console.error("❌ Load presentation dates failed:", err);
@@ -306,16 +308,15 @@ async function loadLatestUpdateDate() {
     const res = await fetch(
       "https://pcsdata.onrender.com/api/presentation/last-updated"
     );
-    const result = await res.json();
-    const latestDate = new Date(result.latestDate);
-    const thaiDate = latestDate.toLocaleDateString("th-TH", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-    document.getElementById(
-      "last-updated"
-    ).textContent = `ข้อมูลอัปเดตล่าสุด: ${thaiDate}`;
+
+    if (!res.ok) throw new Error("Response not OK");
+
+    const data = await res.json();
+    const updateBox = document.getElementById("last-updated-box");
+    if (updateBox) {
+      const latestDate = new Date(data.latest).toLocaleDateString("th-TH");
+      updateBox.textContent = `ข้อมูลอัปเดตล่าสุด: ${latestDate}`;
+    }
   } catch (err) {
     console.error("Error loading latest update date:", err);
   }
