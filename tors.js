@@ -985,39 +985,11 @@ function scrollToTorFromHash() {
   }
 }
 
-// --- Initialization and Event Listeners ---
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log("🚀 DOM Loaded");
+  await loadStatusOptions(); // ✅ โหลดสถานะ
+  await loadPresentationDates(); // ✅ โหลดวันที่นำเสนอ (ถ้ายังไม่ได้เรียกไว้ที่อื่น)
+  await loadTORs(); // ✅ โหลด TOR หลัก (คุณอาจมีอยู่แล้ว)
 
-  // ✅ 1. โหลด dropdown
-  await loadStatusOptions();
-  await loadPresentationDates();
-  await loadTORs();
-
-  // ✅ 2. Quill Editor
-  quillEditor = new Quill("#editor-container", {
-    modules: { toolbar: true },
-    theme: "snow",
-  });
-
-  // ✅ 3. Filter & Search
-  document
-    .getElementById("module-filter")
-    .addEventListener("change", applyFilters);
-  document
-    .getElementById("status-filter")
-    .addEventListener("change", applyFilters);
-  document.getElementById("search-box").addEventListener("input", applyFilters);
-
-  // ✅ 4. Popup modal
-  document
-    .getElementById("close-popup-btn")
-    .addEventListener("click", closePopup);
-  document
-    .getElementById("cancel-popup-btn")
-    .addEventListener("click", closePopup);
-
-  // ✅ 5. Presentation modal
   document
     .getElementById("closePresentationModalBtn")
     ?.addEventListener("click", closePresentationModal);
@@ -1028,8 +1000,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     .getElementById("savePresentationBtn")
     ?.addEventListener("click", handlePresentationSubmit);
 
-  // ✅ 6. Time Dropdown
-  populateTimeDropdowns();
+  populateTimeDropdowns(); // <-- **ย้ายการเรียกใช้ฟังก์ชันมาไว้ตรงนี้**
+
+  quillEditor = new Quill("#editor-container", {
+    modules: { toolbar: true },
+    theme: "snow",
+  });
+
+  document
+    .getElementById("module-filter")
+    .addEventListener("change", applyFilters);
+  document
+    .getElementById("status-filter")
+    .addEventListener("change", applyFilters);
+  document.getElementById("search-box").addEventListener("input", applyFilters);
+  document
+    .getElementById("close-popup-btn")
+    .addEventListener("click", closePopup);
+  document
+    .getElementById("cancel-popup-btn")
+    .addEventListener("click", closePopup);
+
+  // --- เพิ่มโค้ดส่วนนี้เข้าไป ---
+  populateTimeDropdowns(); // << เรียกใช้ฟังก์ชันนี้เพื่อสร้างตัวเลือกเวลา
+
+  // เชื่อมปุ่มของ Presentation Modal
+  document
+    .getElementById("closePresentationModalBtn")
+    ?.addEventListener("click", closePresentationModal);
+  document
+    .getElementById("cancelPresentationModalBtn")
+    ?.addEventListener("click", closePresentationModal);
+  document
+    .getElementById("savePresentationBtn")
+    ?.addEventListener("click", handlePresentationSubmit);
+  // --- สิ้นสุดส่วนที่เพิ่ม ---
 
   _supabase.auth.onAuthStateChange((_event, session) => {
     if (session) {
