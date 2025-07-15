@@ -288,7 +288,8 @@ async function populateFilters(data) {
       (moduleFilter.innerHTML += `<option value="${name}">${name}</option>`)
   );
 
-  statusFilter.innerHTML = '<option value="">ทุกสถานะ</option>';
+  const statusFilter = document.getElementById("status-filter");
+  statusFilter.innerHTML = '<option value="all">ทุกสถานะ</option>';
   statusOptions.forEach((opt) => {
     statusFilter.innerHTML += `<option value="${opt.option_id}">${opt.option_label}</option>`;
   });
