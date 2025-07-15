@@ -802,6 +802,68 @@ function addDetailEventListeners(details) {
       }
     };
   });
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    await loadStatusOptions(); // ✅ โหลดสถานะ
+    await loadPresentationDates(); // ✅ โหลดวันที่นำเสนอ (ถ้ายังไม่ได้เรียกไว้ที่อื่น)
+    await loadTORs(); // ✅ โหลด TOR หลัก (คุณอาจมีอยู่แล้ว)
+
+    document
+      .getElementById("closePresentationModalBtn")
+      ?.addEventListener("click", closePresentationModal);
+    document
+      .getElementById("cancelPresentationModalBtn")
+      ?.addEventListener("click", closePresentationModal);
+    document
+      .getElementById("savePresentationBtn")
+      ?.addEventListener("click", handlePresentationSubmit);
+
+    populateTimeDropdowns(); // <-- **ย้ายการเรียกใช้ฟังก์ชันมาไว้ตรงนี้**
+
+    quillEditor = new Quill("#editor-container", {
+      modules: { toolbar: true },
+      theme: "snow",
+    });
+
+    document
+      .getElementById("module-filter")
+      .addEventListener("change", applyFilters);
+    document
+      .getElementById("status-filter")
+      .addEventListener("change", applyFilters);
+    document
+      .getElementById("search-box")
+      .addEventListener("input", applyFilters);
+    document
+      .getElementById("close-popup-btn")
+      .addEventListener("click", closePopup);
+    document
+      .getElementById("cancel-popup-btn")
+      .addEventListener("click", closePopup);
+
+    // --- เพิ่มโค้ดส่วนนี้เข้าไป ---
+    populateTimeDropdowns(); // << เรียกใช้ฟังก์ชันนี้เพื่อสร้างตัวเลือกเวลา
+
+    // เชื่อมปุ่มของ Presentation Modal
+    document
+      .getElementById("closePresentationModalBtn")
+      ?.addEventListener("click", closePresentationModal);
+    document
+      .getElementById("cancelPresentationModalBtn")
+      ?.addEventListener("click", closePresentationModal);
+    document
+      .getElementById("savePresentationBtn")
+      ?.addEventListener("click", handlePresentationSubmit);
+    // --- สิ้นสุดส่วนที่เพิ่ม ---
+
+    _supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        initPage(session);
+      } else {
+        window.location.href = "/login.html";
+      }
+    });
+  });
 }
 
 function openPopup(type, tordId, existingData = null) {
@@ -985,23 +1047,8 @@ function scrollToTorFromHash() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  await loadStatusOptions(); // ✅ โหลดสถานะ
-  await loadPresentationDates(); // ✅ โหลดวันที่นำเสนอ (ถ้ายังไม่ได้เรียกไว้ที่อื่น)
-  await loadTORs(); // ✅ โหลด TOR หลัก (คุณอาจมีอยู่แล้ว)
-
-  document
-    .getElementById("closePresentationModalBtn")
-    ?.addEventListener("click", closePresentationModal);
-  document
-    .getElementById("cancelPresentationModalBtn")
-    ?.addEventListener("click", closePresentationModal);
-  document
-    .getElementById("savePresentationBtn")
-    ?.addEventListener("click", handlePresentationSubmit);
-
-  populateTimeDropdowns(); // <-- **ย้ายการเรียกใช้ฟังก์ชันมาไว้ตรงนี้**
-
+// --- Initialization and Event Listeners ---
+document.addEventListener("DOMContentLoaded", () => {
   quillEditor = new Quill("#editor-container", {
     modules: { toolbar: true },
     theme: "snow",
