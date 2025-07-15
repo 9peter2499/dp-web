@@ -175,24 +175,24 @@ function populateFilters(data) {
     statusFilter.innerHTML += `<option value="${opt.option_id}">${opt.option_label}</option>`;
   });
 
-//   // Populate Presentation Dates
-//   const presentationDates = new Set();
-//   data.forEach((tor) => {
-//     tor.TORDetail?.forEach((detail) => {
-//       detail.PresentationItems?.forEach((item) => {
-//         if (item.Presentation?.ptt_date) {
-//           presentationDates.add(item.Presentation.ptt_date);
-//         }
-//       });
-//     });
-//   });
-//   dateFilter.innerHTML = '<option value="">-- เลือกวันที่ --</option>';
-//   [...presentationDates].sort().forEach((date) => {
-//     dateFilter.innerHTML += `<option value="${date}">${new Date(
-//       date
-//     ).toLocaleDateString("th-TH")}</option>`;
-//   });
-// }
+  //   // Populate Presentation Dates
+  //   const presentationDates = new Set();
+  //   data.forEach((tor) => {
+  //     tor.TORDetail?.forEach((detail) => {
+  //       detail.PresentationItems?.forEach((item) => {
+  //         if (item.Presentation?.ptt_date) {
+  //           presentationDates.add(item.Presentation.ptt_date);
+  //         }
+  //       });
+  //     });
+  //   });
+  //   dateFilter.innerHTML = '<option value="">-- เลือกวันที่ --</option>';
+  //   [...presentationDates].sort().forEach((date) => {
+  //     dateFilter.innerHTML += `<option value="${date}">${new Date(
+  //       date
+  //     ).toLocaleDateString("th-TH")}</option>`;
+  //   });
+}
 
 function applyFilters() {
   const moduleValue = document.getElementById("module-filter").value;
