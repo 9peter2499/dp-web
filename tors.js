@@ -334,7 +334,8 @@ async function loadStatusOptions() {
     );
     const options = await res.json();
 
-    select.innerHTML = `<option value="">-- เลือกสถานะ --</option>`;
+    // ✅ ค่าแรกควรใช้ value = "all" ให้ตรงกับ logic ใน applyFilters()
+    select.innerHTML = `<option value="all">ทุกสถานะ</option>`;
     options.forEach((opt) => {
       select.innerHTML += `<option value="${opt.option_id}">${opt.option_label}</option>`;
     });
@@ -362,11 +363,15 @@ function applyFilters() {
       !dateValue ||
       (item.TORDetail &&
         item.TORDetail.some((detail) =>
-          detail.PresentationItems?.some(
-            (pi) =>
-              new Date(pi.Presentation?.ptt_date).toDateString() ===
-              new Date(dateValue).toDateString()
-          )
+          detail.PresentationItems?.some((pi) => {
+            const rawDate = pi.Presentation?.ptt_date;
+            if (!rawDate) return false;
+
+            // เนื่องจาก rawDate เป็น Date (ไม่ใช่ timestamp)
+            // แปลงเป็น string แบบ YYYY-MM-DD ตรง ๆ ได้เลย
+            const torDate = new Date(rawDate).toISOString().split("T")[0];
+            return torDate === dateValue;
+          })
         ));
 
     const searchString = `${item.tor_id || ""} ${
@@ -406,11 +411,8 @@ function renderTable(data) {
   }
 
   data.forEach((tor, index) => {
-    const torDate = new Date(tor.created_at);
-    if (!latestDate || torDate > latestDate) latestDate = torDate;
-
     // ✅ คำนวณสถานะ
-    const statusLabel = tor.tor_fixing?.option_label || "N/A";
+    const statusLabel = tor.tor_status?.option_label || "N/A";
     const statusColor =
       statusLabel.includes("ผ่าน") || tor.tor_status?.option_id === "PASS"
         ? "bg-green-100 text-green-800"
@@ -449,9 +451,6 @@ function renderTable(data) {
     mainRow.innerHTML = mainRowHTML;
     tableBody.appendChild(mainRow);
 
-    mainRow.innerHTML = mainRowHTML;
-    tableBody.appendChild(mainRow);
-
     const detailsRow = document.createElement("tr");
     detailsRow.className = "details-row";
     detailsRow.innerHTML = `<td colspan="${
@@ -467,6 +466,18 @@ function renderTable(data) {
         event.preventDefault();
         toggleDetails(detailsRow, mainRow, tor.tor_id);
       }
+    });
+  });
+
+  latestDate = null;
+  data.forEach((tor) => {
+    tor.TORDetail?.forEach((detail) => {
+      detail.PresentationItems?.forEach((item) => {
+        const date = new Date(item.Presentation?.ptt_date);
+        if (!isNaN(date) && (!latestDate || date > latestDate)) {
+          latestDate = date;
+        }
+      });
     });
   });
 
@@ -500,7 +511,11 @@ async function toggleDetails(detailsRow, mainRow, torId) {
     try {
       const res = await fetch(`https://pcsdata.onrender.com/api/tors/${torId}`);
       const details = await res.json();
-      detailCell.innerHTML = createDetailContent(details);
+      detailCell.innerHTML = (
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded shadow-sm">
+          ${createDetailContent(details)}
+        </div>
+      );
       addDetailEventListeners(details);
     } catch (e) {
       detailCell.innerHTML = `<div class="bg-red-100 text-red-800 p-4">เกิดข้อผิดพลาดในการโหลดรายละเอียด</div>`;
