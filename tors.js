@@ -324,6 +324,25 @@ async function loadLatestUpdateDate() {
   }
 }
 
+async function loadStatusOptions() {
+  const select = document.getElementById("status-filter");
+  if (!select) return;
+
+  try {
+    const res = await fetch(
+      "https://pcsdata.onrender.com/api/options?group=status"
+    );
+    const options = await res.json();
+
+    select.innerHTML = `<option value="">-- เลือกสถานะ --</option>`;
+    options.forEach((opt) => {
+      select.innerHTML += `<option value="${opt.option_id}">${opt.option_label}</option>`;
+    });
+  } catch (err) {
+    console.error("❌ โหลดสถานะไม่สำเร็จ:", err);
+  }
+}
+
 function applyFilters() {
   const moduleValue = document.getElementById("module-filter").value;
   const statusValue = document.getElementById("status-filter").value;
@@ -345,9 +364,8 @@ function applyFilters() {
         item.TORDetail.some((detail) =>
           detail.PresentationItems?.some(
             (pi) =>
-              new Date(pi.Presentation?.ptt_date)
-                .toISOString()
-                .split("T")[0] === dateValue
+              new Date(pi.Presentation?.ptt_date).toDateString() ===
+              new Date(dateValue).toDateString()
           )
         ));
 
@@ -392,10 +410,11 @@ function renderTable(data) {
     if (!latestDate || torDate > latestDate) latestDate = torDate;
 
     // ✅ คำนวณสถานะ
-    const statusLabel = tor.tor_status?.option_label || "";
-    const statusColor = statusLabel.includes("ผ่าน")
-      ? "bg-green-100 text-green-800"
-      : "bg-red-100 text-red-800";
+    const statusLabel = tor.tor_fixing?.option_label || "N/A";
+    const statusColor =
+      statusLabel.includes("ผ่าน") || tor.tor_status?.option_id === "PASS"
+        ? "bg-green-100 text-green-800"
+        : "bg-red-100 text-red-800";
 
     const mainRow = document.createElement("tr");
     mainRow.className =
@@ -604,18 +623,20 @@ function createDetailContent(details) {
 
     // สร้างตารางทั้งหมด
     return `
-    <table class="table-auto w-full text-sm mb-4 border border-gray-300 rounded">
-      <thead class="bg-yellow-100">
-        <tr>
-          <th class="p-2 text-left">วันที่นำเสนอ</th>
-          <th class="p-2 text-left">เงื่อนไข</th>
-          <th class="p-2 text-left">ช่วงเวลา</th>
-          <th class="p-2 text-left">หมายเหตุ</th>
-          <th class="p-2 text-left">ผู้บันทึก</th>
-        </tr>
-      </thead>
-      <tbody>${rows}</tbody>
-    </table>
+    <div class="overflow-x-auto">
+      <table class="table-auto w-full text-sm mb-4 border border-gray-300 rounded">
+        <thead class="bg-yellow-100">
+          <tr>
+            <th class="p-2 text-left">วันที่นำเสนอ</th>
+            <th class="p-2 text-left">เงื่อนไข</th>
+            <th class="p-2 text-left">ช่วงเวลา</th>
+            <th class="p-2 text-left">หมายเหตุ</th>
+            <th class="p-2 text-left">ผู้บันทึก</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
   `;
   };
   const feedbackHtml = createItemList(detail.PATFeedback, "feedback");
@@ -749,8 +770,11 @@ function addDetailEventListeners(details) {
     };
   });
 
-  document.addEventListener("DOMContentLoaded", () => {
-    // ... โค้ดเดิมของคุณ ...
+  document.addEventListener("DOMContentLoaded", async () => {
+    await loadStatusOptions(); // ✅ โหลดสถานะ
+    await loadPresentationDates(); // ✅ โหลดวันที่นำเสนอ (ถ้ายังไม่ได้เรียกไว้ที่อื่น)
+    await loadTORs(); // ✅ โหลด TOR หลัก (คุณอาจมีอยู่แล้ว)
+
     document
       .getElementById("closePresentationModalBtn")
       ?.addEventListener("click", closePresentationModal);
