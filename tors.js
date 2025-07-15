@@ -29,14 +29,14 @@ const loadMasterOptions = async (group) => {
 };
 
 async function loadPresentationDates() {
+  const dateFilter = document.getElementById("date-filter");
+  if (!dateFilter) return;
+
   try {
     const res = await fetch(
       "https://pcsdata.onrender.com/api/presentation/dates"
     );
     const dates = await res.json();
-
-    const dateFilter = document.getElementById("date-filter");
-    if (!dateFilter) return;
 
     dateFilter.innerHTML = '<option value="">-- เลือกวันที่ --</option>';
     dates.forEach((date) => {
@@ -47,6 +47,8 @@ async function loadPresentationDates() {
   } catch (err) {
     console.error("❌ Load presentation dates failed:", err);
   }
+
+  dateFilter.addEventListener("change", applyFilters);
 }
 
 async function fetchAndRenderData() {
@@ -306,10 +308,16 @@ async function loadLatestUpdateDate() {
     if (!res.ok) throw new Error("Response not OK");
 
     const data = await res.json();
-    const updateBox = document.getElementById("last-updated-box");
-    if (updateBox) {
-      const latestDate = new Date(data.latest).toLocaleDateString("th-TH");
-      updateBox.textContent = `ข้อมูลอัปเดตล่าสุด: ${latestDate}`;
+    const updateBox = document.getElementById("last-updated");
+
+    if (updateBox && data.latestDate) {
+      const latestDate = new Date(data.latestDate);
+      const formatted = latestDate.toLocaleDateString("th-TH", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+      updateBox.textContent = `ข้อมูลอัปเดตล่าสุด: ${formatted}`;
     }
   } catch (err) {
     console.error("Error loading latest update date:", err);
@@ -319,6 +327,7 @@ async function loadLatestUpdateDate() {
 function applyFilters() {
   const moduleValue = document.getElementById("module-filter").value;
   const statusValue = document.getElementById("status-filter").value;
+  const dateValue = document.getElementById("date-filter").value;
   const searchValue = document
     .getElementById("search-box")
     .value.trim()
@@ -328,15 +337,30 @@ function applyFilters() {
     const moduleMatch =
       moduleValue === "all" || item.Modules?.module_name === moduleValue;
     const statusMatch =
-      statusValue === "all" || item.tor_status_id === statusValue;
+      statusValue === "all" || item.tor_status?.option_id === statusValue;
+
+    const dateMatch =
+      !dateValue ||
+      (item.TORDetail &&
+        item.TORDetail.some((detail) =>
+          detail.PresentationItems?.some(
+            (pi) =>
+              new Date(pi.Presentation?.ptt_date)
+                .toISOString()
+                .split("T")[0] === dateValue
+          )
+        ));
+
     const searchString = `${item.tor_id || ""} ${
       item.Modules?.module_name || ""
-    } ${item.tor_name || ""} ${item.tor_status || ""} ${
-      item.tor_fixing || ""
+    } ${item.tor_name || ""} ${item.tor_status?.option_label || ""} ${
+      item.tor_fixing?.option_label || ""
     }`.toLowerCase();
     const searchMatch = !searchValue || searchString.includes(searchValue);
-    return moduleMatch && statusMatch && searchMatch;
+
+    return moduleMatch && statusMatch && searchMatch && dateMatch;
   });
+
   renderTable(filteredData);
 }
 
@@ -367,29 +391,45 @@ function renderTable(data) {
     const torDate = new Date(tor.created_at);
     if (!latestDate || torDate > latestDate) latestDate = torDate;
 
+    // ✅ คำนวณสถานะ
+    const statusLabel = tor.tor_status?.option_label || "";
+    const statusColor = statusLabel.includes("ผ่าน")
+      ? "bg-green-100 text-green-800"
+      : "bg-red-100 text-red-800";
+
     const mainRow = document.createElement("tr");
     mainRow.className =
       "main-row hover:bg-yellow-50 transition-colors duration-150";
     mainRow.dataset.torId = tor.tor_id;
+
     let mainRowHTML = `
-                    <td class="p-4 text-center border-b border-gray-200">${
-                      index + 1
-                    }</td>
-                    <td class="p-4 border-b border-gray-200"><a class="tor-link cursor-pointer" style="color:blue;">${
-                      tor.tor_name
-                    }</a></td>
-                    <td class="p-4 border-b border-gray-200 text-center"><span class="px-3 py-1 text-sm font-semibold rounded-full ${
-                      tor.tor_status === "PASS"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }">${tor.tor_status?.option_label || "N/A"}</span></td>
-                    <td class="p-4 border-b border-gray-200 text-center text-gray-600">${
-                      tor.tor_fixing || ""
-                    }</td>
-                `;
+    <td class="p-4 text-center border-b border-gray-200">${index + 1}</td>
+    <td class="p-4 border-b border-gray-200">
+      <a class="tor-link cursor-pointer text-blue-600 hover:underline">${
+        tor.tor_name
+      }</a>
+    </td>
+    <td class="p-4 border-b border-gray-200 text-center">
+      <span class="px-3 py-1 text-sm font-semibold rounded-full ${statusColor}">
+        ${statusLabel || "N/A"}
+      </span>
+    </td>
+    <td class="p-4 border-b border-gray-200 text-center text-gray-600">
+      ${tor.tor_fixing?.option_label || ""}
+    </td>
+  `;
+
     if (isAdmin) {
-      mainRowHTML += `<td class="p-4 border-b border-gray-200 text-center"><a href="/torsedit.html?id=${tor.tor_id}" class="text-indigo-600 hover:text-indigo-900 font-semibold">[Edit]</a></td>`;
+      mainRowHTML += `
+      <td class="p-4 border-b border-gray-200 text-center">
+        <a href="/torsedit.html?id=${tor.tor_id}" class="text-indigo-600 hover:text-indigo-900 font-semibold">[Edit]</a>
+      </td>
+    `;
     }
+
+    mainRow.innerHTML = mainRowHTML;
+    tableBody.appendChild(mainRow);
+
     mainRow.innerHTML = mainRowHTML;
     tableBody.appendChild(mainRow);
 
@@ -590,8 +630,8 @@ function createDetailContent(details) {
   return `
     <div class="bg-yellow-50/70 border-l-4 border-yellow-400 p-6 space-y-5 text-base">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 pb-5 border-b border-yellow-200/60">
-        <div><span class="${sectionTitleClass}">ทำได้:</span><div class="${contentClass} mt-2">${
-    detail.tord_posible || "(ไม่มีข้อมูล)"
+        <div class="${contentClass} mt-2">${
+    detail.tord_posible?.option_label || "(ไม่มีข้อมูล)"
   }</div></div>
         <div><span class="${sectionTitleClass}">เล่มเอกสาร:</span><div class="${contentClass} mt-2">${
     detail.tord_document || "(ไม่มีข้อมูล)"
