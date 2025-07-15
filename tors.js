@@ -36,6 +36,7 @@ async function initPage(session) {
       loadMasterOptions("status"),
       loadMasterOptions("fixing"),
       loadMasterOptions("posible"),
+      loadPresentationDates(),
     ]);
   } catch (e) {
     console.error("Failed to load master options", e);
@@ -81,6 +82,35 @@ async function initPage(session) {
   document.getElementById("user-display").textContent = session.user.email;
   document.getElementById("logout-btn").onclick = async () =>
     await _supabase.auth.signOut();
+}
+
+async function loadPresentationDates() {
+  const dateFilter = document.getElementById("presented-date-filter");
+  if (!dateFilter) return;
+
+  try {
+    const res = await fetch(
+      "https://pcsdata.onrender.com/api/presentation/dates"
+    );
+    if (!res.ok) throw new Error("Failed to fetch presentation dates");
+
+    const dates = await res.json();
+
+    dateFilter.innerHTML = '<option value="">-- เลือกวันที่ --</option>';
+    dates.forEach((dateString) => {
+      const date = new Date(dateString);
+      const displayDate = date.toLocaleDateString("th-TH", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+      dateFilter.innerHTML += `<option value="${dateString}">${displayDate}</option>`;
+    });
+  } catch (err) {
+    console.error("❌ Load presentation dates failed:", err);
+    dateFilter.innerHTML =
+      '<option value="">-- ไม่สามารถโหลดวันที่ --</option>';
+  }
 }
 
 async function loadMasterOptions(group) {
@@ -226,9 +256,10 @@ function renderTable(data) {
 
   data.forEach((tor, index) => {
     const statusLabel = tor.tor_status_label;
-    const statusColor = statusLabel.includes("ผ่าน")
-      ? "bg-green-100 text-green-800"
-      : "bg-red-100 text-red-800";
+    const statusColor =
+      statusLabel === "ผ่าน"
+        ? "bg-green-100 text-green-800"
+        : "bg-red-100 text-red-800";
 
     const mainRow = document.createElement("tr");
     mainRow.className =
