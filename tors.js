@@ -511,11 +511,11 @@ async function toggleDetails(detailsRow, mainRow, torId) {
     try {
       const res = await fetch(`https://pcsdata.onrender.com/api/tors/${torId}`);
       const details = await res.json();
-      detailCell.innerHTML = (
-        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded shadow-sm">
-          ${createDetailContent(details)}
-        </div>
-      );
+      detailCell.innerHTML = `
+      <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded shadow-sm">
+        ${createDetailContent(details)}
+      </div>
+    `;
       addDetailEventListeners(details);
     } catch (e) {
       detailCell.innerHTML = `<div class="bg-red-100 text-red-800 p-4">เกิดข้อผิดพลาดในการโหลดรายละเอียด</div>`;
