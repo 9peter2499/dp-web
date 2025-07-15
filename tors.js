@@ -2,7 +2,6 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm";
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
 
-// จากตรงนี้ลงไปคือโค้ดที่เตอร์แนบมาทั้งหมด
 const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let allTorsData = [];
 let currentUserRole = "viewer";
@@ -65,16 +64,10 @@ async function fetchStatusOptions() {
   const res = await fetch(
     "https://pcsdata.onrender.com/api/options?group=tor_status"
   );
+  if (!res.ok) throw new Error("Failed to fetch status options");
   return await res.json();
 }
 
-//=====================================================
-// SECTION: Presentation Logic
-//=====================================================
-
-// สร้างตัวแปร Modal ของ Bootstrap ไว้ใช้งาน (ถ้ายังไม่มี)
-// ให้แน่ใจว่าได้ import Bootstrap JS ใน tors.html ก่อนนะครับ
-// const presentationModal = new bootstrap.Modal(document.getElementById('presentationModal')); // ถ้าใช้ Bootstrap
 const presentationModalElement = document.getElementById(
   "popup-modal-presentation"
 ); // สมมติว่าสร้าง Modal ใหม่
@@ -274,6 +267,8 @@ async function initPage(session) {
 }
 
 async function populateFilters(data) {
+  const statusOptions = await fetchStatusOptions();
+
   const moduleObjects = [
     ...new Map(
       data
@@ -293,8 +288,6 @@ async function populateFilters(data) {
       (moduleFilter.innerHTML += `<option value="${name}">${name}</option>`)
   );
 
-  const statusOptions = await fetchStatusOptions(); // เขียนฟังก์ชันนี้ไว้ด้านนอก
-  const statusFilter = document.getElementById("status-filter");
   statusFilter.innerHTML = '<option value="">ทุกสถานะ</option>';
   statusOptions.forEach((opt) => {
     statusFilter.innerHTML += `<option value="${opt.option_id}">${opt.option_label}</option>`;
@@ -334,7 +327,7 @@ function applyFilters() {
     const moduleMatch =
       moduleValue === "all" || item.Modules?.module_name === moduleValue;
     const statusMatch =
-      statusValue === "all" || item.tor_status === statusValue;
+      statusValue === "all" || item.tor_status_id === statusValue;
     const searchString = `${item.tor_id || ""} ${
       item.Modules?.module_name || ""
     } ${item.tor_name || ""} ${item.tor_status || ""} ${
