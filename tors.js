@@ -326,7 +326,10 @@ async function loadLatestUpdateDate() {
 
 async function loadStatusOptions() {
   const select = document.getElementById("status-filter");
-  if (!select) return;
+  if (!select) {
+    console.error("⛔ ไม่พบ select#status-filter");
+    return;
+  }
 
   try {
     const res = await fetch(
@@ -334,10 +337,21 @@ async function loadStatusOptions() {
     );
     const options = await res.json();
 
-    // ✅ ค่าแรกควรใช้ value = "all" ให้ตรงกับ logic ใน applyFilters()
-    select.innerHTML = `<option value="all">ทุกสถานะ</option>`;
+    // 🔄 ล้าง options เดิม
+    select.innerHTML = "";
+
+    // ✅ เพิ่มตัวเลือก "ทุกสถานะ"
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "ทุกสถานะ";
+    select.appendChild(defaultOption);
+
+    // ✅ เติม options จาก API
     options.forEach((opt) => {
-      select.innerHTML += `<option value="${opt.option_id}">${opt.option_label}</option>`;
+      const option = document.createElement("option");
+      option.value = opt.option_id;
+      option.textContent = opt.option_label;
+      select.appendChild(option);
     });
   } catch (err) {
     console.error("❌ โหลดสถานะไม่สำเร็จ:", err);
