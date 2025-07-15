@@ -130,12 +130,9 @@ async function loadLatestUpdateDate() {
     const res = await fetch(
       "https://pcsdata.onrender.com/api/presentation/last-updated"
     );
-
     if (!res.ok) throw new Error("Response not OK");
-
     const data = await res.json();
     const updateBox = document.getElementById("last-updated");
-
     if (updateBox && data.latestDate) {
       const latestDate = new Date(data.latestDate);
       const formatted = latestDate.toLocaleDateString("th-TH", {
