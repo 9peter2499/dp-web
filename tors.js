@@ -48,6 +48,24 @@ async function loadPresentationDates() {
   }
 }
 
+async function fetchAndRenderData() {
+  try {
+    const response = await fetch("https://pcsdata.onrender.com/api/tors");
+    const data = await response.json();
+    renderTable(data);
+    populateFilters(data);
+  } catch (error) {
+    console.error("Error fetching TORs:", error);
+  }
+}
+
+async function fetchStatusOptions() {
+  const res = await fetch(
+    "https://pcsdata.onrender.com/api/options?group=tor_status"
+  );
+  return await res.json();
+}
+
 //=====================================================
 // SECTION: Presentation Logic
 //=====================================================
