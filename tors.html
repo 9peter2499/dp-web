@@ -255,6 +255,7 @@
       </div>
     </div>
 
+    <!-- Presentation Modal (Tailwind CSS Version) -->
     <div
       id="presentationModal"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden opacity-0 transition-opacity"
@@ -266,6 +267,7 @@
           <h5 id="presentationModalTitle" class="text-lg font-bold">
             บันทึกข้อมูลการนำเสนอ
           </h5>
+          <!-- ✅ เพิ่ม ID ให้ปุ่มปิด -->
           <button
             id="closePresentationModalBtn"
             class="text-gray-500 hover:text-gray-700"
@@ -276,8 +278,10 @@
 
         <div class="modal-body">
           <form id="presentationForm">
+            <!-- Hidden inputs to store data -->
             <input type="hidden" id="modal_tord_id" />
 
+            <!-- แถวที่ 1: วันที่ และ เงื่อนไข -->
             <div class="flex gap-x-6 mb-5">
               <div class="w-1/2">
                 <label
@@ -298,6 +302,7 @@
               </div>
             </div>
 
+            <!-- แถวที่ 2: เวลาเริ่มและสิ้นสุด -->
             <div class="flex gap-x-6 mb-5">
               <div class="w-1/2">
                 <label
@@ -323,6 +328,7 @@
               </div>
             </div>
 
+            <!-- แถวที่ 3: หมายเหตุ -->
             <div>
               <label
                 for="presentationRemark"
@@ -339,6 +345,7 @@
         </div>
 
         <div class="mt-6 flex justify-end space-x-3">
+          <!-- ✅ เพิ่ม ID ให้ปุ่มยกเลิกและบันทึก -->
           <button
             id="cancelPresentationModalBtn"
             class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded"
