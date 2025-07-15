@@ -35,20 +35,16 @@ async function loadPresentationDates() {
       "https://pcsdata.onrender.com/api/presentation/dates"
     );
     const dates = await res.json();
-
     const dateFilter = document.getElementById("date-filter");
     dateFilter.innerHTML = '<option value="">-- เลือกวันที่ --</option>';
-
     dates.forEach((date) => {
-      const formatted = new Date(date).toLocaleDateString("th-TH", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      });
-      dateFilter.innerHTML += `<option value="${date}">${formatted}</option>`;
+      const dateObj = new Date(date);
+      dateFilter.innerHTML += `<option value="${date}">${dateObj.toLocaleDateString(
+        "th-TH"
+      )}</option>`;
     });
   } catch (err) {
-    console.error("❌ Failed to load dates:", err);
+    console.error("❌ Load presentation dates failed:", err);
   }
 }
 
@@ -257,7 +253,7 @@ async function initPage(session) {
   }
 }
 
-function populateFilters(data) {
+async function populateFilters(data) {
   const moduleObjects = [
     ...new Map(
       data
@@ -278,10 +274,32 @@ function populateFilters(data) {
   );
 
   const statusFilter = document.getElementById("status-filter");
-  statusFilter.innerHTML = '<option value="all">ทุกสถานะ</option>';
-  statuses.forEach(
-    (s) => (statusFilter.innerHTML += `<option value="${s}">${s}</option>`)
-  );
+  statusFilter.innerHTML = '<option value="">ทุกสถานะ</option>';
+  statuses.forEach((s) => {
+    statusFilter.innerHTML += `<option value="${s.option_id}">${s.option_label}</option>`;
+  });
+
+  await loadPresentationDates();
+}
+
+async function loadLatestUpdateDate() {
+  try {
+    const res = await fetch(
+      "https://pcsdata.onrender.com/api/presentation/last-updated"
+    );
+    const result = await res.json();
+    const latestDate = new Date(result.latestDate);
+    const thaiDate = latestDate.toLocaleDateString("th-TH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+    document.getElementById(
+      "last-updated"
+    ).textContent = `ข้อมูลอัปเดตล่าสุด: ${thaiDate}`;
+  } catch (err) {
+    console.error("Error loading latest update date:", err);
+  }
 }
 
 function applyFilters() {
@@ -347,7 +365,7 @@ function renderTable(data) {
                       tor.tor_name
                     }</a></td>
                     <td class="p-4 border-b border-gray-200 text-center"><span class="px-3 py-1 text-sm font-semibold rounded-full ${
-                      tor.tor_status === "ผ่าน"
+                      tor.tor_status === "PASS"
                         ? "bg-green-100 text-green-800"
                         : "bg-red-100 text-red-800"
                     }">${tor.tor_status?.option_label || "N/A"}</span></td>
@@ -918,6 +936,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+window.onload = async () => {
+  await fetchAndRenderData();
+  await loadLatestUpdateDate(); // <<-- แสดงวันที่ล่าสุดจาก Presentation
+};
 
 document.body.addEventListener("click", function (event) {
   if (!event.target.closest(".dropdown")) {
