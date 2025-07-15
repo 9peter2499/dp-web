@@ -665,7 +665,7 @@ function createDetailContent(details) {
 
   return `
     <div class="bg-yellow-50/70 border-l-4 border-yellow-400 p-6 space-y-5 text-base">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 pb-5 border-b border-yellow-200/60">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 pb-5 border-b"> 
         <div class="${contentClass} mt-2">${
     detail.tord_posible?.option_label || "(ไม่มีข้อมูล)"
   }</div></div>
@@ -673,7 +673,7 @@ function createDetailContent(details) {
     detail.tord_document || "(ไม่มีข้อมูล)"
   }</div></div>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 py-5 border-b border-yellow-200/60">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 py-5 border-b">
         <div><span class="${sectionTitleClass}">เอกสารอ้างอิง:</span><div class="${contentClass} mt-2">${
     detail.tord_reference || "(ไม่มีข้อมูล)"
   }</div></div>
@@ -681,7 +681,7 @@ function createDetailContent(details) {
     detail.tord_header || "(ไม่มีข้อมูล)"
   }</div></div>
       </div>
-      <div class="py-5 border-b border-yellow-200/60">
+      <div class="py-5 border-b">
         <span class="${sectionTitleClass}">Prototype:</span>
         <div class="${contentClass} mt-2">${
     detail.tord_prototype || "(ไม่มีข้อมูล)"
