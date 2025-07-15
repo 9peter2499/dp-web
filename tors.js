@@ -273,10 +273,11 @@ async function populateFilters(data) {
       (moduleFilter.innerHTML += `<option value="${name}">${name}</option>`)
   );
 
+  const statusOptions = await fetchStatusOptions(); // เขียนฟังก์ชันนี้ไว้ด้านนอก
   const statusFilter = document.getElementById("status-filter");
   statusFilter.innerHTML = '<option value="">ทุกสถานะ</option>';
-  statuses.forEach((s) => {
-    statusFilter.innerHTML += `<option value="${s.option_id}">${s.option_label}</option>`;
+  statusOptions.forEach((opt) => {
+    statusFilter.innerHTML += `<option value="${opt.option_id}">${opt.option_label}</option>`;
   });
 
   await loadPresentationDates();
