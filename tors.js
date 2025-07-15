@@ -7,258 +7,66 @@ let allTorsData = [];
 let currentUserRole = "viewer";
 let quillEditor;
 
-let masterOptionsMap = {};
+let masterOptions = {};
 
-// --- 2. FUNCTIONS ---
-
-const loadMasterOptions = async (group) => {
-  const res = await fetch(
-    `https://pcsdata.onrender.com/api/options?group=${group}`
-  );
-  const options = await res.json();
-
-  if (!Array.isArray(options)) {
-    console.error("❌ ไม่ได้ array:", options);
-    throw new Error("โหลด MasterOptions ไม่สำเร็จ");
-  }
-
-  return options.reduce((map, opt) => {
-    map[opt.option_id] = opt.option_label;
-    return map;
-  }, {});
-};
-
-async function loadPresentationDates() {
-  const dateFilter = document.getElementById("date-filter");
-  if (!dateFilter) return;
-
-  try {
-    const res = await fetch(
-      "https://pcsdata.onrender.com/api/presentation/dates"
-    );
-    const dates = await res.json();
-
-    dateFilter.innerHTML = '<option value="">-- เลือกวันที่ --</option>';
-    dates.forEach((date) => {
-      dateFilter.innerHTML += `<option value="${date}">${new Date(
-        date
-      ).toLocaleDateString("th-TH")}</option>`;
-    });
-  } catch (err) {
-    console.error("❌ Load presentation dates failed:", err);
-  }
-
-  dateFilter.addEventListener("change", applyFilters);
-}
-
-async function fetchAndRenderData() {
-  try {
-    const response = await fetch("https://pcsdata.onrender.com/api/tors");
-    const data = await response.json();
-    renderTable(data);
-    populateFilters(data);
-  } catch (error) {
-    console.error("Error fetching TORs:", error);
-  }
-}
-
-async function fetchStatusOptions() {
-  const res = await fetch(
-    "https://pcsdata.onrender.com/api/options?group=tor_status"
-  );
-  if (!res.ok) throw new Error("Failed to fetch status options");
-  return await res.json();
-}
-
-const presentationModalElement = document.getElementById(
-  "popup-modal-presentation"
-); // สมมติว่าสร้าง Modal ใหม่
-
-function populateTimeDropdowns() {
-  const startTimeSelect = document.getElementById("startTime");
-  const endTimeSelect = document.getElementById("endTime");
-  if (!startTimeSelect || !endTimeSelect) return;
-
-  startTimeSelect.innerHTML = "";
-  endTimeSelect.innerHTML = "";
-
-  for (let i = 8; i <= 17; i++) {
-    const hour = i.toString().padStart(2, "0");
-    ["00", "30"].forEach((minute) => {
-      const time = `${hour}:${minute}`;
-      const option = `<option value="${time}">${time}</option>`;
-      startTimeSelect.innerHTML += option;
-      endTimeSelect.innerHTML += option;
-    });
-  }
-}
-
-function openPresentationModal(tord_id, ptt_type) {
-  const modal = document.getElementById("presentationModal");
-
-  const modalTitle = document.getElementById("presentationModalTitle");
-
-  // --- สร้างและตั้งค่า Title ใหม่ ---
-  // 1. ค้นหาข้อมูล TOR ทั้งหมดจาก allTorsData โดยใช้ tord_id
-  const torData = allTorsData.find((tor) => tor.tor_id === tord_id);
-
-  // 2. ดึงเอาเฉพาะส่วนตัวเลขด้านหน้าของ tor_name (ถ้าหาเจอ)
-  //    ถ้าหาไม่เจอ ให้ใช้ tord_id เป็นค่าสำรอง
-  const topicIdentifier = torData ? torData.tor_name.split(" ")[0] : tord_id;
-
-  // 3. นำไปสร้างเป็น Title ใหม่
-  modalTitle.textContent = `บันทึกข้อมูลการนำเสนอ : TOR หัวข้อ : ${topicIdentifier}`;
-
-  // ตั้งค่า Date Picker ให้เป็นวันที่ปัจจุบัน (ใน Format YYYY-MM-DD)
-  const today = new Date().toISOString().split("T")[0];
-  document.getElementById("presentationDate").value = today;
-
-  // เซ็ตค่าอื่นๆ ใน Modal
-  modal.querySelector("#modal_tord_id").value = tord_id;
-  modal.querySelector("#modal_display_type").textContent = ptt_type;
-  modal.querySelector("#presentationRemark").value = "";
-
-  // ตั้งค่าเวลาเริ่มต้น
-  document.getElementById("startTime").value = "09:00";
-  document.getElementById("endTime").value = "16:00";
-
-  // Logic เปิด Modal ของ Tailwind
-  modal.classList.remove("hidden");
-  setTimeout(() => modal.classList.remove("opacity-0"), 10);
-  modal.querySelector(".popup-content").classList.remove("scale-95");
-}
-
-async function handlePresentationSubmit() {
-  const modal = document.getElementById("presentationModal");
-  const tord_id = modal.querySelector("#modal_tord_id").value;
-  const ptt_type = modal.querySelector("#modal_display_type").textContent;
-  const startTime = modal.querySelector("#startTime").value;
-  const endTime = modal.querySelector("#endTime").value;
-  const ptt_remark = modal.querySelector("#presentationRemark").value;
-
-  const payload = {
-    ptt_type: ptt_type,
-    ptt_date: document.getElementById("presentationDate").value,
-    ptt_timerange: `${startTime} - ${endTime}`,
-    ptt_remark: ptt_remark,
-    selected_tors: [tord_id],
-  };
-
-  try {
-    const {
-      data: { session },
-    } = await _supabase.auth.getSession();
-    const response = await fetch(
-      "https://pcsdata.onrender.com/api/presentation",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify(payload),
-      }
-    );
-
-    const result = await response.json();
-    if (!response.ok) {
-      // ถ้ามี Error จาก API ให้โยน Error พร้อมข้อความจาก API
-      throw new Error(result.error);
-    }
-
-    alert("บันทึกข้อมูลสำเร็จ!");
-    closePresentationModal();
-
-    // โหลดข้อมูล Detail ใหม่เพื่อ Refresh
-    const openDetailsRow = document.querySelector(".details-row.is-open");
-    if (openDetailsRow) {
-      const mainRow = openDetailsRow.previousElementSibling;
-      toggleDetails(openDetailsRow, mainRow, tord_id); // ปิด
-      toggleDetails(openDetailsRow, mainRow, tord_id); // เปิดใหม่เพื่อ refresh
-    }
-  } catch (error) {
-    // แสดง Error ที่ถูกต้องเพียงอันเดียว
-    alert(`เกิดขึ้นข้อผิดพลาด: ${error.message}`);
-  }
-}
-
-function closePresentationModal() {
-  const modal = document.getElementById("presentationModal");
-  modal.classList.add("opacity-0");
-  modal.querySelector(".popup-content").classList.add("scale-95");
-  setTimeout(() => modal.classList.add("hidden"), 300);
-}
-
-// --- เพิ่ม Event Listener สำหรับปุ่ม Presentation ---
-// ใช้ Event Delegation เพื่อให้ทำงานกับปุ่มที่สร้างขึ้นมาใหม่ได้
-document
-  .getElementById("tor-table-body")
-  .addEventListener("click", function (event) {
-    if (event.target.classList.contains("presentation-btn")) {
-      const button = event.target;
-      const tord_id = button.dataset.tordId;
-      const type = button.dataset.type;
-      openPresentationModal(tord_id, type);
-    }
-  });
+// --- 1. CORE FUNCTIONS ---
 
 async function initPage(session) {
-  const authStatus = document.querySelector("#auth-status span");
-  const sessionStatus = document.querySelector("#session-status span");
+  console.log("🚀 Initializing page...");
   const apiStatus = document.querySelector("#api-status span");
-  const renderMode = document.querySelector("#render-mode span");
 
-  authStatus.textContent = "Event: " + session.event;
-  authStatus.className = "text-green-400";
-
-  if (session) {
-    sessionStatus.textContent =
-      "YES (User ID: " + session.user.id.substring(0, 8) + "...)";
-    sessionStatus.className = "text-green-400";
-  } else {
-    sessionStatus.textContent = "NO (Session is null)";
-    sessionStatus.className = "text-red-400";
-    return;
-  }
-
+  // Step 1: Fetch user role
   try {
     const { data: profile } = await _supabase
       .from("profiles")
       .select("role")
       .eq("id", session.user.id)
       .single();
-    if (profile) currentUserRole = profile.role;
-    renderMode.textContent = `User Role: ${currentUserRole}`;
-    renderMode.className = "text-cyan-400";
+    currentUserRole = profile?.role || "viewer";
+    document.querySelector(
+      "#render-mode span"
+    ).textContent = `User Role: ${currentUserRole}`;
   } catch (e) {
     console.error("Could not fetch user role", e);
-    renderMode.textContent = "Error fetching role";
-    renderMode.className = "text-red-400";
   }
 
-  await loadMasterOptions("status");
-  await loadMasterOptions("fixing");
-  await loadMasterOptions("posible");
+  // Step 2: Load all necessary master options
+  try {
+    await Promise.all([
+      loadMasterOptions("status"),
+      loadMasterOptions("fixing"),
+      loadMasterOptions("posible"),
+    ]);
+  } catch (e) {
+    console.error("Failed to load master options", e);
+  }
 
-  const userInfoPanel = document.getElementById("user-info-panel");
-  userInfoPanel.classList.remove("hidden");
-  document.getElementById("user-display").textContent = session.user.email;
-  document.getElementById("logout-btn").onclick = async () =>
-    await _supabase.auth.signOut();
-
+  // Step 3: Fetch main TOR data
   try {
     apiStatus.textContent = "Fetching from API...";
     apiStatus.className = "text-yellow-400";
     const response = await fetch("https://pcsdata.onrender.com/api/tors");
-    if (!response.ok) throw new Error("Network response was not ok");
-    allTorsData = await response.json();
+    if (!response.ok)
+      throw new Error(`Network response was not ok (${response.status})`);
+
+    const rawData = await response.json();
+    // เก็บข้อมูลดิบไว้เพื่อใช้ในการ filter
+    allTorsData = rawData.map((item) => ({
+      ...item,
+      tor_status_id: item.tor_status?.option_id,
+      tor_fixing_id: item.tor_fixing?.option_id,
+      tor_status_label: item.tor_status?.option_label || "N/A",
+      tor_fixing_label: item.tor_fixing?.option_label || "",
+    }));
 
     apiStatus.textContent = `Success - Fetched ${allTorsData.length} records.`;
     apiStatus.className = "text-green-400";
 
+    // Step 4: Populate UI
     allTorsData.sort((a, b) => a.tor_id.localeCompare(b.tor_id));
     populateFilters(allTorsData);
     applyFilters();
+    loadLatestUpdateDate();
   } catch (error) {
     apiStatus.textContent = `Error: ${error.message}`;
     apiStatus.className = "text-red-400";
@@ -266,37 +74,25 @@ async function initPage(session) {
       "tor-table-body"
     ).innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
   }
+
+  // Step 5: Setup user panel
+  const userInfoPanel = document.getElementById("user-info-panel");
+  userInfoPanel.classList.remove("hidden");
+  document.getElementById("user-display").textContent = session.user.email;
+  document.getElementById("logout-btn").onclick = async () =>
+    await _supabase.auth.signOut();
 }
 
-async function populateFilters(data) {
-  const statusOptions = await fetchStatusOptions();
-
-  const moduleObjects = [
-    ...new Map(
-      data
-        .filter((item) => item.Modules && item.Modules.module_id)
-        .map((item) => [item.Modules.module_id, item.Modules.module_name])
-    ).entries(),
-  ];
-  moduleObjects.sort((a, b) => a[0].localeCompare(b[0]));
-  const statuses = [
-    ...new Set(data.map((item) => item.tor_status).filter((s) => s)),
-  ].sort();
-
-  const moduleFilter = document.getElementById("module-filter");
-  moduleFilter.innerHTML = '<option value="all">ระบบงานทั้งหมด</option>';
-  moduleObjects.forEach(
-    ([id, name]) =>
-      (moduleFilter.innerHTML += `<option value="${name}">${name}</option>`)
+async function loadMasterOptions(group) {
+  const res = await fetch(
+    `https://pcsdata.onrender.com/api/options?group=${group}`
   );
-
-  const statusFilter = document.getElementById("status-filter");
-  statusFilter.innerHTML = '<option value="all">ทุกสถานะ</option>';
-  statusOptions.forEach((opt) => {
-    statusFilter.innerHTML += `<option value="${opt.option_id}">${opt.option_label}</option>`;
-  });
-
-  await loadPresentationDates();
+  if (!res.ok) {
+    console.error(`Failed to load options for group: ${group}`);
+    masterOptions[group] = [];
+    return;
+  }
+  masterOptions[group] = await res.json();
 }
 
 async function loadLatestUpdateDate() {
@@ -324,48 +120,57 @@ async function loadLatestUpdateDate() {
   }
 }
 
-async function loadStatusOptions() {
-  const select = document.getElementById("status-filter");
-  if (!select) {
-    console.error("⛔ ไม่พบ select#status-filter");
-    return;
-  }
+// --- 2. FILTERING AND RENDERING ---
 
-  try {
-    console.log("🔄 Loading status options...");
+function populateFilters(data) {
+  const moduleFilter = document.getElementById("module-filter");
+  const statusFilter = document.getElementById("status-filter");
+  const dateFilter = document.getElementById("presented-date-filter");
 
-    const res = await fetch(
-      "https://pcsdata.onrender.com/api/options?group=status"
-    );
-    const options = await res.json();
+  // Populate Modules
+  const modules = [
+    ...new Map(
+      data
+        .filter((item) => item.Modules?.module_id)
+        .map((item) => [item.Modules.module_id, item.Modules.module_name])
+    ).entries(),
+  ];
+  modules.sort((a, b) => a[0].localeCompare(b[0]));
+  moduleFilter.innerHTML = '<option value="all">ระบบงานทั้งหมด</option>';
+  modules.forEach(
+    ([id, name]) =>
+      (moduleFilter.innerHTML += `<option value="${id}">${name}</option>`)
+  );
 
-    console.log("✅ Options loaded:", options);
+  // Populate Statuses
+  statusFilter.innerHTML = '<option value="all">ทุกสถานะ</option>';
+  (masterOptions["status"] || []).forEach((opt) => {
+    statusFilter.innerHTML += `<option value="${opt.option_id}">${opt.option_label}</option>`;
+  });
 
-    // 🔄 ล้าง options เดิม
-    select.innerHTML = "";
-
-    // ✅ เพิ่มตัวเลือก "ทุกสถานะ"
-    const defaultOption = document.createElement("option");
-    defaultOption.value = "";
-    defaultOption.textContent = "ทุกสถานะ";
-    select.appendChild(defaultOption);
-
-    // ✅ เติม options จาก API
-    options.forEach((opt) => {
-      const option = document.createElement("option");
-      option.value = opt.option_id;
-      option.textContent = opt.option_label;
-      select.appendChild(option);
+  // Populate Presentation Dates
+  const presentationDates = new Set();
+  data.forEach((tor) => {
+    tor.TORDetail?.forEach((detail) => {
+      detail.PresentationItems?.forEach((item) => {
+        if (item.Presentation?.ptt_date) {
+          presentationDates.add(item.Presentation.ptt_date);
+        }
+      });
     });
-  } catch (err) {
-    console.error("❌ โหลดสถานะไม่สำเร็จ:", err);
-  }
+  });
+  dateFilter.innerHTML = '<option value="">-- เลือกวันที่ --</option>';
+  [...presentationDates].sort().forEach((date) => {
+    dateFilter.innerHTML += `<option value="${date}">${new Date(
+      date
+    ).toLocaleDateString("th-TH")}</option>`;
+  });
 }
 
 function applyFilters() {
   const moduleValue = document.getElementById("module-filter").value;
   const statusValue = document.getElementById("status-filter").value;
-  const dateValue = document.getElementById("date-filter").value;
+  const dateValue = document.getElementById("presented-date-filter").value;
   const searchValue = document
     .getElementById("search-box")
     .value.trim()
@@ -373,42 +178,33 @@ function applyFilters() {
 
   let filteredData = allTorsData.filter((item) => {
     const moduleMatch =
-      moduleValue === "all" || item.Modules?.module_name === moduleValue;
+      moduleValue === "all" || item.Modules?.module_id === moduleValue;
     const statusMatch =
-      statusValue === "all" || item.tor_status?.option_id === statusValue;
+      statusValue === "all" || item.tor_status_id === statusValue;
 
     const dateMatch =
       !dateValue ||
-      (item.TORDetail &&
-        item.TORDetail.some((detail) =>
-          detail.PresentationItems?.some((pi) => {
-            const rawDate = pi.Presentation?.ptt_date;
-            if (!rawDate) return false;
-
-            // เนื่องจาก rawDate เป็น Date (ไม่ใช่ timestamp)
-            // แปลงเป็น string แบบ YYYY-MM-DD ตรง ๆ ได้เลย
-            const torDate = new Date(rawDate).toISOString().split("T")[0];
-            return torDate === dateValue;
-          })
-        ));
+      item.TORDetail?.some((d) =>
+        d.PresentationItems?.some(
+          (pi) => pi.Presentation?.ptt_date === dateValue
+        )
+      );
 
     const searchString = `${item.tor_id || ""} ${
       item.Modules?.module_name || ""
-    } ${item.tor_name || ""} ${item.tor_status?.option_label || ""} ${
-      item.tor_fixing?.option_label || ""
+    } ${item.tor_name || ""} ${item.tor_status_label || ""} ${
+      item.tor_fixing_label || ""
     }`.toLowerCase();
     const searchMatch = !searchValue || searchString.includes(searchValue);
 
     return moduleMatch && statusMatch && searchMatch && dateMatch;
   });
-
   renderTable(filteredData);
 }
 
 function renderTable(data) {
   const tableBody = document.getElementById("tor-table-body");
   const isAdmin = currentUserRole === "admin";
-  let latestDate = null;
 
   tableBody.innerHTML = "";
   if (data.length === 0) {
@@ -429,12 +225,10 @@ function renderTable(data) {
   }
 
   data.forEach((tor, index) => {
-    // ✅ คำนวณสถานะ
-    const statusLabel = tor.tor_status?.option_label || "N/A";
-    const statusColor =
-      statusLabel.includes("ผ่าน") || tor.tor_status?.option_id === "PASS"
-        ? "bg-green-100 text-green-800"
-        : "bg-red-100 text-red-800";
+    const statusLabel = tor.tor_status_label;
+    const statusColor = statusLabel.includes("ผ่าน")
+      ? "bg-green-100 text-green-800"
+      : "bg-red-100 text-red-800";
 
     const mainRow = document.createElement("tr");
     mainRow.className =
@@ -442,30 +236,25 @@ function renderTable(data) {
     mainRow.dataset.torId = tor.tor_id;
 
     let mainRowHTML = `
-    <td class="p-4 text-center border-b border-gray-200">${index + 1}</td>
-    <td class="p-4 border-b border-gray-200">
-      <a class="tor-link cursor-pointer text-blue-600 hover:underline">${
-        tor.tor_name
-      }</a>
-    </td>
-    <td class="p-4 border-b border-gray-200 text-center">
-      <span class="px-3 py-1 text-sm font-semibold rounded-full ${statusColor}">
-        ${statusLabel || "N/A"}
-      </span>
-    </td>
-    <td class="p-4 border-b border-gray-200 text-center text-gray-600">
-      ${tor.tor_fixing?.option_label || ""}
-    </td>
-  `;
+            <td class="p-4 text-center border-b border-gray-200">${
+              index + 1
+            }</td>
+            <td class="p-4 border-b border-gray-200">
+                <a class="tor-link cursor-pointer text-blue-600 hover:underline">${
+                  tor.tor_name
+                }</a>
+            </td>
+            <td class="p-4 border-b border-gray-200 text-center">
+                <span class="px-3 py-1 text-sm font-semibold rounded-full ${statusColor}">${statusLabel}</span>
+            </td>
+            <td class="p-4 border-b border-gray-200 text-center text-gray-600">${
+              tor.tor_fixing_label
+            }</td>
+        `;
 
     if (isAdmin) {
-      mainRowHTML += `
-      <td class="p-4 border-b border-gray-200 text-center">
-        <a href="/torsedit.html?id=${tor.tor_id}" class="text-indigo-600 hover:text-indigo-900 font-semibold">[Edit]</a>
-      </td>
-    `;
+      mainRowHTML += `<td class="p-4 border-b border-gray-200 text-center"><a href="/torsedit.html?id=${tor.tor_id}" class="text-indigo-600 hover:text-indigo-900 font-semibold">[Edit]</a></td>`;
     }
-
     mainRow.innerHTML = mainRowHTML;
     tableBody.appendChild(mainRow);
 
@@ -487,29 +276,29 @@ function renderTable(data) {
     });
   });
 
-  latestDate = null;
-  data.forEach((tor) => {
-    tor.TORDetail?.forEach((detail) => {
-      detail.PresentationItems?.forEach((item) => {
-        const date = new Date(item.Presentation?.ptt_date);
-        if (!isNaN(date) && (!latestDate || date > latestDate)) {
-          latestDate = date;
-        }
-      });
-    });
-  });
-
-  if (latestDate) {
-    document.getElementById(
-      "last-updated"
-    ).textContent = `ข้อมูลอัปเดตล่าสุด: ${latestDate.toLocaleDateString(
-      "th-TH",
-      { year: "numeric", month: "long", day: "numeric" }
-    )}`;
-  }
-
   scrollToTorFromHash();
 }
+
+function scrollToTorFromHash() {
+  const hash = window.location.hash;
+  if (hash) {
+    const torId = hash.substring(1); // ตัดเครื่องหมาย # ออก
+    const targetRow = document.querySelector(`tr[data-tor-id="${torId}"]`);
+
+    if (targetRow) {
+      // เลื่อนหน้าจอไปที่แถวนั้น
+      targetRow.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      // เพิ่ม Highlight ชั่วคราวเพื่อให้สังเกตง่าย
+      targetRow.style.backgroundColor = "#fffde7"; // สีเหลืองอ่อน
+      setTimeout(() => {
+        targetRow.style.backgroundColor = ""; // เอากลับเป็นสีเดิม
+      }, 2500); // ค้างไว้ 2.5 วินาที
+    }
+  }
+}
+
+// --- 3. DETAIL VIEW FUNCTIONS ---
 
 async function toggleDetails(detailsRow, mainRow, torId) {
   const isOpen = detailsRow.classList.toggle("is-open");
@@ -528,15 +317,14 @@ async function toggleDetails(detailsRow, mainRow, torId) {
     detailCell.innerHTML = `<div class="bg-yellow-50/70 p-6">กำลังโหลด...</div>`;
     try {
       const res = await fetch(`https://pcsdata.onrender.com/api/tors/${torId}`);
+      if (!res.ok) throw new Error("Failed to fetch details");
       const details = await res.json();
-      detailCell.innerHTML = `
-      <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded shadow-sm">
-        ${createDetailContent(details)}
-      </div>
-    `;
+      detailCell.innerHTML = `<div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded shadow-sm">${createDetailContent(
+        details
+      )}</div>`;
       addDetailEventListeners(details);
     } catch (e) {
-      detailCell.innerHTML = `<div class="bg-red-100 text-red-800 p-4">เกิดข้อผิดพลาดในการโหลดรายละเอียด</div>`;
+      detailCell.innerHTML = `<div class="bg-red-100 text-red-800 p-4">เกิดข้อผิดพลาดในการโหลดรายละเอียด: ${e.message}</div>`;
     }
   }
 }
@@ -549,25 +337,22 @@ function createDetailContent(details) {
 
   const isAdmin = currentUserRole === "admin";
 
+  // --- แก้ไขในฟังก์ชัน createDetailContent ---
   const createItemList = (items, type) => {
-    if (!items || items.length === 0) {
-      return "<li>ไม่มีข้อมูล</li>";
-    }
+    if (!items || items.length === 0) return "<li>ไม่มีข้อมูล</li>";
+
     let itemsToDisplay = isAdmin
       ? items
       : items.filter((item) => item.status === 1);
-
-    itemsToDisplay.sort((a, b) => {
-      const dateA = new Date(a.feedback_date || a.worked_date);
-      const dateB = new Date(b.feedback_date || b.worked_date);
-      return dateB - dateA;
-    });
-
-    if (itemsToDisplay.length === 0) {
+    itemsToDisplay.sort(
+      (a, b) =>
+        new Date(b.feedback_date || b.worked_date) -
+        new Date(a.feedback_date || a.worked_date)
+    );
+    if (itemsToDisplay.length === 0)
       return isAdmin
         ? "<li>ยังไม่มีข้อมูล, คลิกปุ่ม +เพิ่ม เพื่อสร้างรายการแรก</li>"
         : "<li>ไม่มีรายการสำหรับแสดงผล</li>";
-    }
 
     return itemsToDisplay
       .map((item) => {
@@ -578,100 +363,93 @@ function createDetailContent(details) {
           month: "long",
           year: "numeric",
         });
-        const groupKey =
-          type === "feedback" ? "feedback_status" : "worked_status";
-        const label =
-          masterOptionsMap[groupKey]?.find(
-            (opt) => opt.option_id === item.status.toString()
-          )?.option_label || `(สถานะ ${item.status})`;
-        const statusText = label;
+
+        // ✅ แก้ไข groupKey ให้ถูกต้อง
+        const groupKey = type === "feedback" ? "status" : "fixing";
+        const statusId = item.feedback_status_id || item.worked_status_id;
+
+        // ✅ แก้ไขให้ใช้ตัวแปร masterOptions และหาจาก statusId
+        const statusObj = masterOptions[groupKey]?.find(
+          (opt) => opt.option_id === statusId
+        );
+        const statusLabel = statusObj?.option_label || `(ID: ${statusId})`;
+
         const statusColor =
           item.status === 1 ? "text-green-600" : "text-yellow-600";
         const recordId = item.feedback_id || item.worked_id;
 
         return `
-          <li class="flex justify-between items-start py-3" data-record-id="${recordId}">
-            <div class="flex-1 space-y-1">
-              <div class="prose prose-sm max-w-none">${message}</div>
-              <div class="text-xs text-gray-500">วันที่: ${formattedDate}</div>
-            </div>
-            <div class="flex items-center ml-4 flex-shrink-0">
-              ${
-                isAdmin
-                  ? `
-                  <div class="text-right">
-                    <span class="text-xs font-semibold mr-3 ${statusColor}">(${statusText})</span>
-                  </div>
-                  <div class="relative inline-block text-left dropdown ml-2">
-                    <button class="text-gray-400 hover:text-black p-1 text-xs dropdown-toggle">
-                      <i class="fas fa-ellipsis-v"></i>
-                    </button>
-                    <div class="dropdown-menu hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
-                      <div class="py-1" role="menu" aria-orientation="vertical">
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 edit-item-btn" data-type="${type}" data-record-id="${recordId}">แก้ไขรายการ</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-red-700 hover:bg-gray-100 delete-item-btn" data-type="${type}" data-record-id="${recordId}">ลบรายการนี้</a>
-                      </div>
-                    </div>
-                  </div>
-                `
-                  : ""
-              }
-            </div>
-          </li>
+            <li class="flex justify-between items-start py-3" data-record-id="${recordId}">
+                <div class="flex-1 space-y-1">
+                    <div class="prose prose-sm max-w-none">${message}</div>
+                    <div class="text-xs text-gray-500">วันที่: ${formattedDate}</div>
+                </div>
+                <div class="flex items-center ml-4 flex-shrink-0">
+                    ${
+                      isAdmin
+                        ? `
+                        <div class="text-right"><span class="text-xs font-semibold mr-3 ${statusColor}">(${statusLabel})</span></div>
+                        <div class="relative inline-block text-left dropdown ml-2">
+                            <button class="text-gray-400 hover:text-black p-1 text-xs dropdown-toggle"><i class="fas fa-ellipsis-v"></i></button>
+                            <div class="dropdown-menu hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
+                                <div class="py-1" role="menu">
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 edit-item-btn" data-type="${type}" data-record-id="${recordId}">แก้ไข</a>
+                                    <a href="#" class="block px-4 py-2 text-sm text-red-700 hover:bg-gray-100 delete-item-btn" data-type="${type}" data-record-id="${recordId}">ลบ</a>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                        : ""
+                    }
+                </div>
+            </li>
         `;
       })
       .join('<hr class="border-yellow-200/60 my-1">');
   };
 
   const createPresentationTable = (presentationItems) => {
-    // ถ้าไม่มีข้อมูล PresentationItems หรือไม่มีเลย ให้แสดงว่าไม่มีข้อมูล
-    if (!presentationItems || presentationItems.length === 0) {
+    if (!presentationItems || presentationItems.length === 0)
       return "<div class='text-gray-500'>ไม่มีข้อมูลการนำเสนอ</div>";
-    }
-
-    // สร้างแถวในตารางจากข้อมูลที่ได้
     const rows = presentationItems
       .map((item) => {
-        // ดึงข้อมูล Presentation หลักออกมา
         const p = item.Presentation;
-        if (!p) return ""; // ถ้าไม่มีข้อมูลหลัก ให้ข้ามไป
-
+        if (!p) return "";
         const date = new Date(p.ptt_date).toLocaleDateString("th-TH", {
           year: "numeric",
           month: "long",
           day: "numeric",
         });
-
         return `
-        <tr class="border-b">
-          <td class="p-2">${date}</td>
-          <td class="p-2">${p.ptt_type || "-"}</td>
-          <td class="p-2">${p.ptt_timerange || "-"}</td>
-          <td class="p-2">${p.ptt_remark || "-"}</td>
-          <td class="p-2">${p.ptt_by || "-"}</td>
-        </tr>
-      `;
+                <tr class="border-b">
+                    <td class="p-2">${date}</td>
+                    <td class="p-2">${p.ptt_type || "-"}</td>
+                    <td class="p-2">${p.ptt_timerange || "-"}</td>
+                    <td class="p-2">${p.ptt_remark || "-"}</td>
+                    <td class="p-2">${p.ptt_by || "-"}</td>
+                </tr>
+            `;
       })
       .join("");
 
-    // สร้างตารางทั้งหมด
     return `
-    <div class="overflow-x-auto">
-      <table class="table-auto w-full text-sm mb-4 border border-gray-300 rounded">
-        <thead class="bg-yellow-100">
-          <tr>
-            <th class="p-2 text-left">วันที่นำเสนอ</th>
-            <th class="p-2 text-left">เงื่อนไข</th>
-            <th class="p-2 text-left">ช่วงเวลา</th>
-            <th class="p-2 text-left">หมายเหตุ</th>
-            <th class="p-2 text-left">ผู้บันทึก</th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>
-  `;
+            <div class="overflow-x-auto">
+                <table class="table-auto w-full text-sm mb-4 border border-gray-300 rounded">
+                    <thead class="bg-yellow-100">
+                        <tr>
+                            <th class="p-2 text-left">วันที่นำเสนอ</th>
+                            <th class="p-2 text-left">เงื่อนไข</th>
+                            <th class="p-2 text-left">ช่วงเวลา</th>
+                            <th class="p-2 text-left">หมายเหตุ</th>
+                            <th class="p-2 text-left">ผู้บันทึก</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>
+        `;
   };
+
   const feedbackHtml = createItemList(detail.PATFeedback, "feedback");
   const workedHtml = createItemList(detail.PCSWorked, "worked");
   const presentationHtml = createPresentationTable(detail.PresentationItems);
@@ -682,77 +460,69 @@ function createDetailContent(details) {
     "prose prose-sm max-w-none text-gray-800 [&_a]:text-blue-600 [&_a:hover]:underline";
 
   return `
-    <div class="bg-yellow-50/70 border-l-4 border-yellow-400 p-6 space-y-5 text-base">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 pb-5 border-b"> 
-        <div class="${contentClass} mt-2">${
+        <div class="bg-yellow-50/70 border-l-4 border-yellow-400 p-6 space-y-5 text-base">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 pb-5 border-b">
+                <div><span class="${sectionTitleClass}">ทำได้:</span><div class="${contentClass} mt-2">${
     detail.tord_posible?.option_label || "(ไม่มีข้อมูล)"
   }</div></div>
-        <div><span class="${sectionTitleClass}">เล่มเอกสาร:</span><div class="${contentClass} mt-2">${
+                <div><span class="${sectionTitleClass}">เล่มเอกสาร:</span><div class="${contentClass} mt-2">${
     detail.tord_document || "(ไม่มีข้อมูล)"
   }</div></div>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 py-5 border-b">
-        <div><span class="${sectionTitleClass}">เอกสารอ้างอิง:</span><div class="${contentClass} mt-2">${
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 py-5 border-b">
+                <div><span class="${sectionTitleClass}">เอกสารอ้างอิง:</span><div class="${contentClass} mt-2">${
     detail.tord_reference || "(ไม่มีข้อมูล)"
   }</div></div>
-        <div><span class="${sectionTitleClass}">หัวข้อที่นำเสนอ:</span><div class="${contentClass} mt-2">${
+                <div><span class="${sectionTitleClass}">หัวข้อที่นำเสนอ:</span><div class="${contentClass} mt-2">${
     detail.tord_header || "(ไม่มีข้อมูล)"
   }</div></div>
-      </div>
-      <div class="py-5 border-b">
-        <span class="${sectionTitleClass}">Prototype:</span>
-        <div class="${contentClass} mt-2">${
+            </div>
+            <div class="py-5 border-b">
+                <span class="${sectionTitleClass}">Prototype:</span>
+                <div class="${contentClass} mt-2">${
     detail.tord_prototype || "(ไม่มีข้อมูล)"
   }</div>
-      </div>
-      <div class="pt-4">
-        <div class="flex justify-between items-center mb-2">
-          <span class="${sectionTitleClass}">ข้อเสนอแนะคณะกรรมการ:</span>
-          ${
-            isAdmin
-              ? `<button class="add-item-btn text-xs bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600" data-type="feedback" data-tord-id="${detail.tord_id}"><i class="fas fa-plus mr-1"></i>เพิ่ม</button>`
-              : ""
-          }
+            </div>
+            <div class="pt-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="${sectionTitleClass}">ข้อเสนอแนะคณะกรรมการ:</span>
+                    ${
+                      isAdmin
+                        ? `<button class="add-item-btn text-xs bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600" data-type="feedback" data-tord-id="${detail.tord_id}"><i class="fas fa-plus mr-1"></i>เพิ่ม</button>`
+                        : ""
+                    }
+                </div>
+                <ul class="pl-2 space-y-1">${feedbackHtml}</ul>
+            </div>
+            <div class="pt-2">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="${sectionTitleClass}">รายละเอียดการแก้ไข:</span>
+                    ${
+                      isAdmin
+                        ? `<button class="add-item-btn text-xs bg-blue-500 text-white py-1 px-3 rounded-md hover:bg-blue-600" data-type="worked" data-tord-id="${detail.tord_id}"><i class="fas fa-plus mr-1"></i>เพิ่ม</button>`
+                        : ""
+                    }
+                </div>
+                <ul class="pl-2 space-y-1">${workedHtml}</ul>
+            </div>
+            <div class="pt-2">
+                <span class="${sectionTitleClass}">การนำเสนอ TOR:</span>
+                <div class="${contentClass} mt-2">
+                    ${presentationHtml}
+                    ${
+                      isAdmin
+                        ? `
+                        <div class="text-center mt-4">
+                            <button class="presentation-btn bg-indigo-500 text-white py-1 px-3 rounded hover:bg-indigo-600 text-xs mr-2" data-tord-id="${detail.tord_id}" data-type="นำเสนอตามกำหนดปกติ">นำเสนอตามกำหนดปกติ</button>
+                            <button class="presentation-btn bg-orange-500 text-white py-1 px-3 rounded hover:bg-orange-600 text-xs" data-tord-id="${detail.tord_id}" data-type="นำเสนอแก้ไขเพิ่มเติม">นำเสนอแก้ไขเพิ่มเติม</button>
+                        </div>
+                    `
+                        : ""
+                    }
+                </div>
+            </div>
         </div>
-        <ul class="pl-2 space-y-1">${feedbackHtml}</ul>
-      </div>
-      <div class="pt-2">
-        <div class="flex justify-between items-center mb-2">
-          <span class="${sectionTitleClass}">รายละเอียดการแก้ไข:</span>
-          ${
-            isAdmin
-              ? `<button class="add-item-btn text-xs bg-blue-500 text-white py-1 px-3 rounded-md hover:bg-blue-600" data-type="worked" data-tord-id="${detail.tord_id}"><i class="fas fa-plus mr-1"></i>เพิ่ม</button>`
-              : ""
-          }
-        </div>
-        <ul class="pl-2 space-y-1">${workedHtml}</ul>
-      </div>
-      <div class="pt-2">
-  <span class="${sectionTitleClass}">การนำเสนอ TOR:</span>
-  <div class="${contentClass} mt-2">
-    ${presentationHtml}
-    
-    ${
-      isAdmin
-        ? `
-        <div class="text-center mt-4">
-          <button class="presentation-btn bg-indigo-500 text-white py-1 px-3 rounded hover:bg-indigo-600 text-xs mr-2" 
-                  data-tord-id="${detail.tord_id}" 
-                  data-type="นำเสนอตามกำหนดปกติ">
-            นำเสนอตามกำหนดปกติ
-          </button>
-          <button class="presentation-btn bg-orange-500 text-white py-1 px-3 rounded hover:bg-orange-600 text-xs"
-                  data-tord-id="${detail.tord_id}"
-                  data-type="นำเสนอแก้ไขเพิ่มเติม">
-            นำเสนอแก้ไขเพิ่มเติม
-          </button>
-        </div>`
-        : ""
-    }
-  </div>
-</div>
-
-    </div>`;
+    `;
 }
 
 function addDetailEventListeners(details) {
@@ -761,7 +531,7 @@ function addDetailEventListeners(details) {
 
   detailElement.querySelectorAll(".add-item-btn").forEach((button) => {
     button.onclick = () =>
-      openPopup(button.dataset.type, button.dataset.tordId);
+      openPopup(button.dataset.type, details.TORDetail[0].tord_id);
   });
 
   detailElement.querySelectorAll(".dropdown-toggle").forEach((button) => {
@@ -802,69 +572,9 @@ function addDetailEventListeners(details) {
       }
     };
   });
-
-  document.addEventListener("DOMContentLoaded", async () => {
-    await loadStatusOptions(); // ✅ โหลดสถานะ
-    await loadPresentationDates(); // ✅ โหลดวันที่นำเสนอ (ถ้ายังไม่ได้เรียกไว้ที่อื่น)
-    await loadTORs(); // ✅ โหลด TOR หลัก (คุณอาจมีอยู่แล้ว)
-
-    document
-      .getElementById("closePresentationModalBtn")
-      ?.addEventListener("click", closePresentationModal);
-    document
-      .getElementById("cancelPresentationModalBtn")
-      ?.addEventListener("click", closePresentationModal);
-    document
-      .getElementById("savePresentationBtn")
-      ?.addEventListener("click", handlePresentationSubmit);
-
-    populateTimeDropdowns(); // <-- **ย้ายการเรียกใช้ฟังก์ชันมาไว้ตรงนี้**
-
-    quillEditor = new Quill("#editor-container", {
-      modules: { toolbar: true },
-      theme: "snow",
-    });
-
-    document
-      .getElementById("module-filter")
-      .addEventListener("change", applyFilters);
-    document
-      .getElementById("status-filter")
-      .addEventListener("change", applyFilters);
-    document
-      .getElementById("search-box")
-      .addEventListener("input", applyFilters);
-    document
-      .getElementById("close-popup-btn")
-      .addEventListener("click", closePopup);
-    document
-      .getElementById("cancel-popup-btn")
-      .addEventListener("click", closePopup);
-
-    // --- เพิ่มโค้ดส่วนนี้เข้าไป ---
-    populateTimeDropdowns(); // << เรียกใช้ฟังก์ชันนี้เพื่อสร้างตัวเลือกเวลา
-
-    // เชื่อมปุ่มของ Presentation Modal
-    document
-      .getElementById("closePresentationModalBtn")
-      ?.addEventListener("click", closePresentationModal);
-    document
-      .getElementById("cancelPresentationModalBtn")
-      ?.addEventListener("click", closePresentationModal);
-    document
-      .getElementById("savePresentationBtn")
-      ?.addEventListener("click", handlePresentationSubmit);
-    // --- สิ้นสุดส่วนที่เพิ่ม ---
-
-    _supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
-        initPage(session);
-      } else {
-        window.location.href = "/login.html";
-      }
-    });
-  });
 }
+
+// --- 4. MODAL FUNCTIONS (Feedback, Worked, Presentation) ---
 
 function openPopup(type, tordId, existingData = null) {
   const modal = document.getElementById("popup-modal");
@@ -884,8 +594,10 @@ function openPopup(type, tordId, existingData = null) {
   }
 
   const statusSelect = document.getElementById("popup-status");
-  const groupKey = type === "feedback" ? "feedback_status" : "worked_status";
-  const options = masterOptionsMap[groupKey] || [];
+  const groupKey = type === "feedback" ? "status" : "fixing";
+
+  // ✅ แก้ไขให้ใช้ตัวแปร masterOptions
+  const options = masterOptions[groupKey] || [];
   statusSelect.innerHTML = options
     .map(
       (opt) => `<option value="${opt.option_id}">${opt.option_label}</option>`
@@ -897,23 +609,17 @@ function openPopup(type, tordId, existingData = null) {
       type === "feedback" ? "แก้ไขข้อเสนอแนะ" : "แก้ไขรายละเอียดการทำงาน";
     quillEditor.root.innerHTML =
       existingData.feedback_message || existingData.worked_message;
-    statusSelect.value = existingData.status.toString();
+    const statusId =
+      existingData.feedback_status_id || existingData.worked_status_id;
+    statusSelect.value = statusId;
   } else {
     title.textContent =
       type === "feedback"
         ? "เพิ่มข้อเสนอแนะใหม่"
         : "เพิ่มรายละเอียดการทำงานใหม่";
     quillEditor.root.innerHTML = "";
-    statusSelect.value = masterOptionsMap[groupKey]?.[0]?.option_id || 0;
+    statusSelect.value = options[0]?.option_id || "";
   }
-
-  modal.classList.remove("hidden");
-  setTimeout(() => modal.classList.remove("opacity-0"), 10);
-  modal.querySelector(".popup-content").classList.remove("scale-95");
-
-  document.getElementById("save-popup-btn").onclick = () => {
-    handleSave(type, tordId, existingData);
-  };
 
   modal.classList.remove("hidden");
   setTimeout(() => modal.classList.remove("opacity-0"), 10);
@@ -932,40 +638,30 @@ function closePopup() {
 }
 
 async function handleSave(type, tordId, existingData) {
-  //console.log("🧩 type =", type);
-  //console.log("🧩 tordId =", tordId);
-  //console.log("🧩 existingData =", existingData);
-
   const content = quillEditor.root.innerHTML;
-  const status = parseInt(document.getElementById("popup-status").value);
-
+  const statusId = document.getElementById("popup-status").value;
   const {
     data: { session },
   } = await _supabase.auth.getSession();
 
   let endpoint = "";
   let body = {};
-  let method = "";
   const recordId = existingData
     ? existingData.feedback_id || existingData.worked_id
     : null;
+  const method = existingData ? "PUT" : "POST";
 
   if (type === "feedback") {
     endpoint = existingData ? `/api/feedback/${recordId}` : "/api/feedback";
-    body = existingData
-      ? { feedback_message: content, status }
-      : { tord_id: tordId, feedback_message: content, status };
-    method = existingData ? "PUT" : "POST";
+    body = { feedback_message: content, feedback_status_id: statusId };
+    if (!existingData) body.tord_id = tordId;
   } else {
     endpoint = existingData ? `/api/worked/${recordId}` : "/api/worked";
-    body = existingData
-      ? { worked_message: content, status }
-      : { tord_id: tordId, worked_message: content, status };
-    method = existingData ? "PUT" : "POST";
+    body = { worked_message: content, worked_status_id: statusId };
+    if (!existingData) body.tord_id = tordId;
   }
 
   try {
-    console.log("📦 Final POST body:", body);
     const response = await fetch(`https://pcsdata.onrender.com${endpoint}`, {
       method: method,
       headers: {
@@ -986,8 +682,8 @@ async function handleSave(type, tordId, existingData) {
       const mainRow = openDetailsRow.previousElementSibling;
       const torId = mainRow.dataset.torId;
       if (torId) {
-        toggleDetails(openDetailsRow, mainRow, torId);
-        toggleDetails(openDetailsRow, mainRow, torId);
+        toggleDetails(openDetailsRow, mainRow, torId); // Close
+        toggleDetails(openDetailsRow, mainRow, torId); // Re-open to refresh
       }
     }
     alert("บันทึกข้อมูลสำเร็จ!");
@@ -1018,8 +714,8 @@ async function handleDelete(type, recordId) {
       const mainRow = openDetailsRow.previousElementSibling;
       const torId = mainRow.dataset.torId;
       if (torId) {
-        toggleDetails(openDetailsRow, mainRow, torId);
-        toggleDetails(openDetailsRow, mainRow, torId);
+        toggleDetails(openDetailsRow, mainRow, torId); // Close
+        toggleDetails(openDetailsRow, mainRow, torId); // Re-open
       }
     }
   } catch (error) {
@@ -1028,39 +724,121 @@ async function handleDelete(type, recordId) {
   }
 }
 
-function scrollToTorFromHash() {
-  const hash = window.location.hash;
-  if (hash) {
-    const torId = hash.substring(1); // ตัดเครื่องหมาย # ออก
-    const targetRow = document.querySelector(`tr[data-tor-id="${torId}"]`);
+function openPresentationModal(tord_id, ptt_type) {
+  const modal = document.getElementById("presentationModal");
+  const modalTitle = document.getElementById("presentationModalTitle");
+  const torData = allTorsData.find((tor) => tor.tor_id === tord_id);
+  const topicIdentifier = torData ? torData.tor_name.split(" ")[0] : tord_id;
 
-    if (targetRow) {
-      // เลื่อนหน้าจอไปที่แถวนั้น
-      targetRow.scrollIntoView({ behavior: "smooth", block: "center" });
+  modalTitle.textContent = `บันทึกข้อมูลการนำเสนอ : TOR หัวข้อ : ${topicIdentifier}`;
+  document.getElementById("presentationDate").value = new Date()
+    .toISOString()
+    .split("T")[0];
+  modal.querySelector("#modal_tord_id").value = tord_id;
+  modal.querySelector("#modal_display_type").textContent = ptt_type;
+  modal.querySelector("#presentationRemark").value = "";
+  document.getElementById("startTime").value = "09:00";
+  document.getElementById("endTime").value = "16:00";
 
-      // เพิ่ม Highlight ชั่วคราวเพื่อให้สังเกตง่าย
-      targetRow.style.backgroundColor = "#fffde7"; // สีเหลืองอ่อน
-      setTimeout(() => {
-        targetRow.style.backgroundColor = ""; // เอากลับเป็นสีเดิม
-      }, 2500); // ค้างไว้ 2.5 วินาที
+  modal.classList.remove("hidden");
+  setTimeout(() => modal.classList.remove("opacity-0"), 10);
+  modal.querySelector(".popup-content").classList.remove("scale-95");
+}
+
+function closePresentationModal() {
+  const modal = document.getElementById("presentationModal");
+  modal.classList.add("opacity-0");
+  modal.querySelector(".popup-content").classList.add("scale-95");
+  setTimeout(() => modal.classList.add("hidden"), 300);
+}
+
+async function handlePresentationSubmit() {
+  const modal = document.getElementById("presentationModal");
+  const payload = {
+    ptt_type: modal.querySelector("#modal_display_type").textContent,
+    ptt_date: document.getElementById("presentationDate").value,
+    ptt_timerange: `${modal.querySelector("#startTime").value} - ${
+      modal.querySelector("#endTime").value
+    }`,
+    ptt_remark: modal.querySelector("#presentationRemark").value,
+    selected_tors: [modal.querySelector("#modal_tord_id").value],
+  };
+
+  try {
+    const {
+      data: { session },
+    } = await _supabase.auth.getSession();
+    const response = await fetch(
+      "https://pcsdata.onrender.com/api/presentation",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error);
+
+    alert("บันทึกข้อมูลสำเร็จ!");
+    closePresentationModal();
+
+    const openDetailsRow = document.querySelector(".details-row.is-open");
+    if (openDetailsRow) {
+      const mainRow = openDetailsRow.previousElementSibling;
+      const tord_id = payload.selected_tors[0];
+      toggleDetails(openDetailsRow, mainRow, tord_id); // Close
+      toggleDetails(openDetailsRow, mainRow, tord_id); // Re-open
     }
+  } catch (error) {
+    alert(`เกิดขึ้นข้อผิดพลาด: ${error.message}`);
   }
 }
 
-// --- Initialization and Event Listeners ---
+function populateTimeDropdowns() {
+  const startTimeSelect = document.getElementById("startTime");
+  const endTimeSelect = document.getElementById("endTime");
+  if (!startTimeSelect || !endTimeSelect) return;
+
+  startTimeSelect.innerHTML = "";
+  endTimeSelect.innerHTML = "";
+
+  for (let i = 8; i <= 17; i++) {
+    const hour = i.toString().padStart(2, "0");
+    ["00", "30"].forEach((minute) => {
+      const time = `${hour}:${minute}`;
+      const option = `<option value="${time}">${time}</option>`;
+      startTimeSelect.innerHTML += option;
+      endTimeSelect.innerHTML += option;
+    });
+  }
+}
+
+// --- 5. INITIALIZATION AND EVENT LISTENERS ---
+
 document.addEventListener("DOMContentLoaded", () => {
+  // Setup Quill Editor
   quillEditor = new Quill("#editor-container", {
     modules: { toolbar: true },
     theme: "snow",
   });
 
+  // Setup Filter Event Listeners
   document
     .getElementById("module-filter")
     .addEventListener("change", applyFilters);
   document
     .getElementById("status-filter")
     .addEventListener("change", applyFilters);
+  document
+    .getElementById("presented-date-filter")
+    .addEventListener("change", applyFilters);
   document.getElementById("search-box").addEventListener("input", applyFilters);
+
+  // Setup Main Popup Listeners
   document
     .getElementById("close-popup-btn")
     .addEventListener("click", closePopup);
@@ -1068,10 +846,8 @@ document.addEventListener("DOMContentLoaded", () => {
     .getElementById("cancel-popup-btn")
     .addEventListener("click", closePopup);
 
-  // --- เพิ่มโค้ดส่วนนี้เข้าไป ---
-  populateTimeDropdowns(); // << เรียกใช้ฟังก์ชันนี้เพื่อสร้างตัวเลือกเวลา
-
-  // เชื่อมปุ่มของ Presentation Modal
+  // Setup Presentation Modal Listeners
+  populateTimeDropdowns();
   document
     .getElementById("closePresentationModalBtn")
     ?.addEventListener("click", closePresentationModal);
@@ -1081,8 +857,20 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("savePresentationBtn")
     ?.addEventListener("click", handlePresentationSubmit);
-  // --- สิ้นสุดส่วนที่เพิ่ม ---
 
+  // Setup Table-level event listener for dynamic content
+  document
+    .getElementById("tor-table-body")
+    .addEventListener("click", function (event) {
+      if (event.target.classList.contains("presentation-btn")) {
+        const button = event.target;
+        openPresentationModal(button.dataset.tordId, button.dataset.type);
+      }
+      // สามารถเพิ่ม event listener สำหรับปุ่มอื่นๆ ใน detail row ที่นี่ได้
+      // เช่น edit-item-btn, delete-item-btn
+    });
+
+  // Main Auth Listener - The single source of truth for starting the app
   _supabase.auth.onAuthStateChange((_event, session) => {
     if (session) {
       initPage(session);
@@ -1090,17 +878,4 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = "/login.html";
     }
   });
-});
-
-window.onload = async () => {
-  await fetchAndRenderData();
-  await loadLatestUpdateDate(); // <<-- แสดงวันที่ล่าสุดจาก Presentation
-};
-
-document.body.addEventListener("click", function (event) {
-  if (!event.target.closest(".dropdown")) {
-    document
-      .querySelectorAll(".dropdown-menu")
-      .forEach((menu) => menu.classList.add("hidden"));
-  }
 });
