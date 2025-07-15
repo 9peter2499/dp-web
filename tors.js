@@ -332,10 +332,14 @@ async function loadStatusOptions() {
   }
 
   try {
+    console.log("🔄 Loading status options...");
+
     const res = await fetch(
       "https://pcsdata.onrender.com/api/options?group=status"
     );
     const options = await res.json();
+
+    console.log("✅ Options loaded:", options);
 
     // 🔄 ล้าง options เดิม
     select.innerHTML = "";
