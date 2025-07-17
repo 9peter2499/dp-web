@@ -908,7 +908,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Setup Presentation Modal Listeners
   populateTimeDropdowns();
-  populatePresenterDropdown(); // <-- เพิ่มบรรทัดนี้ที่นี่
+  populatePresenterDropdown(); // ✅ --- เพิ่มการเรียกใช้ฟังก์ชันที่นี่ ---
   document
     .getElementById("closePresentationModalBtn")
     ?.addEventListener("click", closePresentationModal);
@@ -927,7 +927,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const button = event.target;
         openPresentationModal(button.dataset.tordId, button.dataset.type);
       }
-      // สามารถเพิ่ม event listener สำหรับปุ่มอื่นๆ ใน detail row ที่นี่ได้
+      // ... (เพิ่ม event listener สำหรับปุ่มอื่นๆ ใน detail row ที่นี่) ...
     });
 
   // Main Auth Listener - The single source of truth for starting the app
