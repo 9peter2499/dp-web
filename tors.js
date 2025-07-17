@@ -225,7 +225,7 @@ function applyFilters() {
       statusValue === "all" || item.tor_status_id === statusValue;
 
     // ✅ --- ส่วนที่แก้ไข ---
-    // ตรรกะการกรองวันที่ที่ทำงานกับข้อมูลใหม่
+    // ตรรกะการกรองวันที่ที่ทำงานกับข้อมูลใหม่ที่ได้มา
     const dateMatch =
       !dateValue ||
       (item.TORDetail &&
@@ -237,18 +237,12 @@ function applyFilters() {
             )
         ));
 
-    // ในฟังก์ชัน applyFilters()
-
     const searchString = `${item.tor_id || ""} ${
       item.Modules?.module_name || ""
     } ${item.tor_name || ""} ${item.tor_status_label || ""} ${
-      // ✅ ใช้ _label
-      item.tor_fixing_label || "" // ✅ ใช้ _label
+      item.tor_fixing_label || ""
     }`.toLowerCase();
-
-    //const searchMatch = !searchValue || searchString.includes(searchString);
-
-    const searchMatch = !searchValue || searchString.includes(searchValue);
+    const searchMatch = !searchValue || searchString.includes(searchString);
 
     return moduleMatch && statusMatch && searchMatch && dateMatch;
   });
