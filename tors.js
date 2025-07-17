@@ -57,10 +57,12 @@ async function initPage(session) {
     // ✅ แก้ไขส่วนนี้: แปลงข้อมูลและเก็บ ID/Label ให้ครบถ้วน
     allTorsData = rawData.map((item) => ({
       ...item,
-      tor_status_id: item.tor_status?.option_id,
-      tor_fixing_id: item.tor_fixing?.option_id,
-      tor_status_label: item.tor_status?.option_label || "N/A",
-      tor_fixing_label: item.tor_fixing?.option_label || "",
+      //tor_status_id: item.tor_status?.option_id,
+      //tor_fixing_id: item.tor_fixing?.option_id,
+      //tor_status_label: item.tor_status?.option_label || "N/A",
+      //tor_fixing_label: item.tor_fixing?.option_label || "",
+      tor_status_label: item.tor_status || "N/A",
+      tor_fixing_label: item.tor_fixing || "",
     }));
 
     apiStatus.textContent = `Success - Fetched ${allTorsData.length} records.`;
@@ -237,11 +239,19 @@ function applyFilters() {
             )
         ));
 
+    //const searchString = `${item.tor_id || ""} ${
+    //  item.Modules?.module_name || ""
+    //} ${item.tor_name || ""} ${item.tor_status_label || ""} ${
+    //  item.tor_fixing_label || ""
+    //}`.toLowerCase();
+
     const searchString = `${item.tor_id || ""} ${
       item.Modules?.module_name || ""
-    } ${item.tor_name || ""} ${item.tor_status_label || ""} ${
-      item.tor_fixing_label || ""
+    } ${item.tor_name || ""} ${item.tor_status || ""} ${
+      // ใช้ .tor_status โดยตรง
+      item.tor_fixing || "" // ใช้ .tor_fixing โดยตรง
     }`.toLowerCase();
+
     const searchMatch = !searchValue || searchString.includes(searchString);
 
     return moduleMatch && statusMatch && searchMatch && dateMatch;
