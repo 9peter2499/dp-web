@@ -37,6 +37,7 @@ async function initPage(session) {
       loadMasterOptions("fixing"),
       loadMasterOptions("posible"),
       loadMasterOptions("document"),
+      loadMasterOptions("presenter"),
       loadPresentationDates(),
     ]);
   } catch (e) {
@@ -147,6 +148,17 @@ async function loadLatestUpdateDate() {
   } catch (err) {
     console.error("Error loading latest update date:", err);
   }
+}
+
+function populatePresenterDropdown() {
+  const select = document.getElementById("presenterSelect");
+  if (!select) return;
+
+  const presenterOptions = masterOptions["presenter"] || [];
+  select.innerHTML = '<option value="">-- กรุณาเลือก --</option>'; // Reset
+  presenterOptions.forEach((opt) => {
+    select.innerHTML += `<option value="${opt.option_id}">${opt.option_label}</option>`;
+  });
 }
 
 // --- 2. FILTERING AND RENDERING ---
@@ -801,9 +813,16 @@ async function handlePresentationSubmit() {
     ptt_timerange: `${modal.querySelector("#startTime").value} - ${
       modal.querySelector("#endTime").value
     }`,
+    ptt_presenter_id: document.getElementById("presenterSelect").value, // ✅ เพิ่มบรรทัดนี้
     ptt_remark: modal.querySelector("#presentationRemark").value,
     selected_tors: [modal.querySelector("#modal_tord_id").value],
   };
+
+  // ตรวจสอบว่าผู้ใช้เลือกผู้นำเสนอหรือไม่
+  if (!payload.ptt_presenter_id) {
+    alert("กรุณาเลือกผู้นำเสนอ");
+    return;
+  }
 
   try {
     const {
@@ -889,6 +908,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Setup Presentation Modal Listeners
   populateTimeDropdowns();
+  populatePresenterDropdown(); // <-- เพิ่มบรรทัดนี้ที่นี่
   document
     .getElementById("closePresentationModalBtn")
     ?.addEventListener("click", closePresentationModal);
@@ -908,7 +928,6 @@ document.addEventListener("DOMContentLoaded", () => {
         openPresentationModal(button.dataset.tordId, button.dataset.type);
       }
       // สามารถเพิ่ม event listener สำหรับปุ่มอื่นๆ ใน detail row ที่นี่ได้
-      // เช่น edit-item-btn, delete-item-btn
     });
 
   // Main Auth Listener - The single source of truth for starting the app
