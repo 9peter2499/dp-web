@@ -474,13 +474,25 @@ function createDetailContent(details) {
           month: "long",
           day: "numeric",
         });
+
+        // --- ส่วนที่แก้ไข: ค้นหาชื่อผู้นำเสนอ ---
+        const presenterId = p.ptt_presenter_id;
+        const presenterOptions = masterOptions["presenter"] || [];
+        const presenterObject = presenterOptions.find(
+          (opt) => opt.option_id === presenterId
+        );
+        const presenterName = presenterObject
+          ? presenterObject.option_label
+          : "-"; // ถ้าหาไม่เจอให้แสดง "-"
+        // --- สิ้นสุดส่วนที่แก้ไข ---
+
         return `
                 <tr class="border-b">
                     <td class="p-2">${date}</td>
                     <td class="p-2">${p.ptt_type || "-"}</td>
                     <td class="p-2">${p.ptt_timerange || "-"}</td>
                     <td class="p-2">${p.ptt_remark || "-"}</td>
-                    <td class="p-2">${p.ptt_by || "-"}</td>
+                    <td class="p-2">${presenterName}</td> 
                 </tr>
             `;
       })
@@ -495,7 +507,7 @@ function createDetailContent(details) {
                             <th class="p-2 text-left">เงื่อนไข</th>
                             <th class="p-2 text-left">ช่วงเวลา</th>
                             <th class="p-2 text-left">หมายเหตุ</th>
-                            <th class="p-2 text-left">ผู้บันทึก</th>
+                            <th class="p-2 text-left">ผู้นำเสนอ</th>
                         </tr>
                     </thead>
                     <tbody>${rows}</tbody>
