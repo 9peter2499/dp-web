@@ -233,7 +233,9 @@ function applyFilters() {
       item.tor_fixing_label || "" // ✅ ใช้ _label
     }`.toLowerCase();
 
-    const searchMatch = !searchValue || searchString.includes(searchString);
+    //const searchMatch = !searchValue || searchString.includes(searchString);
+
+    const searchMatch = !searchValue || searchString.includes(searchValue);
 
     return moduleMatch && statusMatch && searchMatch && dateMatch;
   });
