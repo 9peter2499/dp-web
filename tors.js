@@ -36,6 +36,7 @@ async function initPage(session) {
       loadMasterOptions("status"),
       loadMasterOptions("fixing"),
       loadMasterOptions("posible"),
+      loadMasterOptions("document"),
       loadPresentationDates(),
     ]);
   } catch (e) {
@@ -226,8 +227,10 @@ function applyFilters() {
     const searchString = `${item.tor_id || ""} ${
       item.Modules?.module_name || ""
     } ${item.tor_name || ""} ${item.tor_status_label || ""} ${
-      item.tor_fixing_label || ""
+      // <-- แก้ไขตรงนี้
+      item.tor_fixing_label || "" // <-- และตรงนี้
     }`.toLowerCase();
+
     const searchMatch = !searchValue || searchString.includes(searchString);
 
     return moduleMatch && statusMatch && searchMatch && dateMatch;
@@ -628,7 +631,7 @@ function openPopup(type, tordId, existingData = null) {
   }
 
   const statusSelect = document.getElementById("popup-status");
-  const groupKey = type === "feedback" ? "status" : "fixing";
+  const groupKey = "document";
 
   // ✅ แก้ไขให้ใช้ตัวแปร masterOptions
   const options = masterOptions[groupKey] || [];
