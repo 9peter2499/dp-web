@@ -859,12 +859,42 @@ async function handlePresentationSubmit() {
     alert("บันทึกข้อมูลสำเร็จ!");
     closePresentationModal();
 
-    const openDetailsRow = document.querySelector(".details-row.is-open");
-    if (openDetailsRow) {
-      const mainRow = openDetailsRow.previousElementSibling;
-      const tord_id = payload.selected_tors[0];
-      toggleDetails(openDetailsRow, mainRow, tord_id); // Close
-      toggleDetails(openDetailsRow, mainRow, tord_id); // Re-open
+    // const openDetailsRow = document.querySelector(".details-row.is-open");
+    // if (openDetailsRow) {
+    //   const mainRow = openDetailsRow.previousElementSibling;
+    //   const tord_id = payload.selected_tors[0];
+    //   toggleDetails(openDetailsRow, mainRow, tord_id); // Close
+    //   toggleDetails(openDetailsRow, mainRow, tord_id); // Re-open
+    // }
+
+    // ค้นหา tor_id ที่ถูกต้องจาก tord_id เพื่อใช้รีเฟรช
+    const tord_id = payload.selected_tors[0];
+    const parentTor = allTorsData.find(
+      (tor) =>
+        tor.TORDetail &&
+        tor.TORDetail.some((detail) => detail.tord_id === tord_id)
+    );
+
+    if (parentTor) {
+      const torIdToRefresh = parentTor.tor_id;
+      const openDetailsRow = document.querySelector(
+        `.main-row[data-tor-id="${torIdToRefresh}"] + .details-row`
+      );
+      const mainRow = document.querySelector(
+        `.main-row[data-tor-id="${torIdToRefresh}"]`
+      );
+
+      if (openDetailsRow && mainRow) {
+        // บังคับให้โหลดใหม่โดยการปิดและเปิดอีกครั้ง
+        toggleDetails(openDetailsRow, mainRow, torIdToRefresh); // Close
+        setTimeout(() => {
+          toggleDetails(openDetailsRow, mainRow, torIdToRefresh); // Re-open
+        }, 100); // หน่วงเวลาเล็กน้อยเพื่อให้แน่ใจว่าปิดสนิทก่อนเปิด
+      }
+    } else {
+      // ถ้าหาไม่เจอ ให้โหลดหน้าใหม่ทั้งหมดเป็น fallback
+      console.warn("Could not find parent TOR to refresh, reloading page.");
+      location.reload();
     }
   } catch (error) {
     alert(`เกิดขึ้นข้อผิดพลาด: ${error.message}`);
