@@ -224,11 +224,13 @@ function applyFilters() {
             )
         ));
 
+    // ในฟังก์ชัน applyFilters()
+
     const searchString = `${item.tor_id || ""} ${
       item.Modules?.module_name || ""
     } ${item.tor_name || ""} ${item.tor_status_label || ""} ${
-      // <-- แก้ไขตรงนี้
-      item.tor_fixing_label || "" // <-- และตรงนี้
+      // ✅ ใช้ _label
+      item.tor_fixing_label || "" // ✅ ใช้ _label
     }`.toLowerCase();
 
     const searchMatch = !searchValue || searchString.includes(searchString);
