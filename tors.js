@@ -836,8 +836,13 @@ async function handlePresentationSubmit() {
   };
 
   // ตรวจสอบว่าผู้ใช้เลือกผู้นำเสนอหรือไม่
+  // if (!payload.ptt_presenter_id) {
+  //   alert("กรุณาเลือกผู้นำเสนอ");
+  //   return;
+  // }
+
   if (!payload.ptt_presenter_id) {
-    alert("กรุณาเลือกผู้นำเสนอ");
+    showNotification("กรุณาเลือกผู้นำเสนอ", null, false, true);
     return;
   }
 
@@ -860,15 +865,48 @@ async function handlePresentationSubmit() {
     const result = await response.json();
     if (!response.ok) throw new Error(result.error);
 
-    alert("บันทึกข้อมูลสำเร็จ!");
+    // alert("บันทึกข้อมูลสำเร็จ!");
+    // closePresentationModal();
+
+    showNotification("บันทึกข้อมูลสำเร็จ!");
     closePresentationModal();
 
-    const openDetailsRow = document.querySelector(".details-row.is-open");
-    if (openDetailsRow) {
-      const mainRow = openDetailsRow.previousElementSibling;
-      const tord_id = payload.selected_tors[0];
-      toggleDetails(openDetailsRow, mainRow, tord_id); // Close
-      toggleDetails(openDetailsRow, mainRow, tord_id); // Re-open
+    // const openDetailsRow = document.querySelector(".details-row.is-open");
+    // if (openDetailsRow) {
+    //   const mainRow = openDetailsRow.previousElementSibling;
+    //   const tord_id = payload.selected_tors[0];
+    //   toggleDetails(openDetailsRow, mainRow, tord_id); // Close
+    //   toggleDetails(openDetailsRow, mainRow, tord_id); // Re-open
+    // }
+
+    // ค้นหา tor_id ที่ถูกต้องจาก tord_id เพื่อใช้รีเฟรช
+    const tord_id = payload.selected_tors[0];
+    const parentTor = allTorsData.find(
+      (tor) =>
+        tor.TORDetail &&
+        tor.TORDetail.some((detail) => detail.tord_id === tord_id)
+    );
+
+    if (parentTor) {
+      const torIdToRefresh = parentTor.tor_id;
+      const openDetailsRow = document.querySelector(
+        `.main-row[data-tor-id="${torIdToRefresh}"] + .details-row`
+      );
+      const mainRow = document.querySelector(
+        `.main-row[data-tor-id="${torIdToRefresh}"]`
+      );
+
+      if (openDetailsRow && mainRow) {
+        // บังคับให้โหลดใหม่โดยการปิดและเปิดอีกครั้ง
+        toggleDetails(openDetailsRow, mainRow, torIdToRefresh); // Close
+        setTimeout(() => {
+          toggleDetails(openDetailsRow, mainRow, torIdToRefresh); // Re-open
+        }, 100); // หน่วงเวลาเล็กน้อยเพื่อให้แน่ใจว่าปิดสนิทก่อนเปิด
+      }
+    } else {
+      // ถ้าหาไม่เจอ ให้โหลดหน้าใหม่ทั้งหมดเป็น fallback
+      console.warn("Could not find parent TOR to refresh, reloading page.");
+      location.reload();
     }
   } catch (error) {
     alert(`เกิดขึ้นข้อผิดพลาด: ${error.message}`);
@@ -892,6 +930,47 @@ function populateTimeDropdowns() {
       endTimeSelect.innerHTML += option;
     });
   }
+}
+
+function showNotification(
+  message,
+  onConfirm = null,
+  isConfirmation = false,
+  isError = false
+) {
+  const modal = document.getElementById("notificationModal");
+  const messageEl = document.getElementById("notificationMessage");
+  const okBtn = document.getElementById("notificationOkBtn");
+  const confirmBtn = document.getElementById("notificationConfirmBtn");
+  const cancelBtn = document.getElementById("notificationCancelBtn");
+
+  messageEl.textContent = message;
+
+  if (isConfirmation) {
+    okBtn.classList.add("hidden");
+    confirmBtn.classList.remove("hidden");
+    cancelBtn.classList.remove("hidden");
+  } else {
+    okBtn.classList.remove("hidden");
+    confirmBtn.classList.add("hidden");
+    cancelBtn.classList.add("hidden");
+    okBtn.className = `w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white sm:ml-3 sm:w-auto sm:text-sm ${
+      isError
+        ? "bg-red-600 hover:bg-red-700 focus:ring-red-500"
+        : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500"
+    }`;
+  }
+
+  const close = () => modal.classList.add("hidden");
+
+  okBtn.onclick = close;
+  cancelBtn.onclick = close;
+  confirmBtn.onclick = () => {
+    close();
+    if (onConfirm) onConfirm();
+  };
+
+  modal.classList.remove("hidden");
 }
 
 // --- 5. INITIALIZATION AND EVENT LISTENERS ---
