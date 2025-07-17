@@ -71,6 +71,7 @@ async function initPage(session) {
     populateFilters(allTorsData);
     applyFilters();
     loadLatestUpdateDate();
+    populatePresenterDropdown();
   } catch (error) {
     apiStatus.textContent = `Error: ${error.message}`;
     apiStatus.className = "text-red-400";
@@ -908,7 +909,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Setup Presentation Modal Listeners
   populateTimeDropdowns();
-  populatePresenterDropdown(); // ✅ --- เพิ่มการเรียกใช้ฟังก์ชันที่นี่ ---
+  //populatePresenterDropdown(); // ✅ --- เพิ่มการเรียกใช้ฟังก์ชันที่นี่ ---
   document
     .getElementById("closePresentationModalBtn")
     ?.addEventListener("click", closePresentationModal);
