@@ -31,15 +31,34 @@ async function initPage(session) {
   }
 
   // Step 2: Load all necessary master options
+  // try {
+  //   await Promise.all([
+  //     loadMasterOptions("status"),
+  //     loadMasterOptions("fixing"),
+  //     loadMasterOptions("posible"),
+  //     loadMasterOptions("document"),
+  //     loadMasterOptions("presenter"),
+  //     loadPresentationDates(),
+  //   ]);
+  // } catch (e) {
+  //   console.error("Failed to load master options", e);
+  // }
+
+  // --- ✅ จุดที่แก้ไข: เปลี่ยนจากการโหลดพร้อมกันเป็นทีละรายการ ---
   try {
-    await Promise.all([
-      loadMasterOptions("status"),
-      loadMasterOptions("fixing"),
-      loadMasterOptions("posible"),
-      loadMasterOptions("document"),
-      loadMasterOptions("presenter"),
-      loadPresentationDates(),
-    ]);
+    console.log("Loading master data sequentially to avoid rate limits...");
+    const masterOptionGroups = [
+      "status",
+      "fixing",
+      "posible",
+      "document",
+      "presenter",
+    ];
+    for (const group of masterOptionGroups) {
+      await loadMasterOptions(group);
+    }
+    await loadPresentationDates(); // โหลดข้อมูลวันที่ต่อ
+    console.log("Master data loaded successfully.");
   } catch (e) {
     console.error("Failed to load master options", e);
   }
