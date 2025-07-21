@@ -135,14 +135,26 @@
           const modules = summaryData.modules;
 
           // Calculate grand totals for the main chart
+          //   const grandTotals = modules.reduce(
+          //     (acc, module) => {
+          //       acc.pass += module.stats.pass;
+          //       acc.fixed_pending_review += module.stats.fixed_pending_review;
+          //       acc.needs_guidance += module.stats.needs_guidance;
+          //       return acc;
+          //     },
+          //     { pass: 0, fixed_pending_review: 0, needs_guidance: 0 }
+          //   );
+
           const grandTotals = modules.reduce(
             (acc, module) => {
               acc.pass += module.stats.pass;
+              acc.done += module.stats.done; // เพิ่ม .done
               acc.fixed_pending_review += module.stats.fixed_pending_review;
               acc.needs_guidance += module.stats.needs_guidance;
               return acc;
             },
-            { pass: 0, fixed_pending_review: 0, needs_guidance: 0 }
+            // เพิ่ม done: 0 เข้าไปในค่าเริ่มต้น
+            { pass: 0, done: 0, fixed_pending_review: 0, needs_guidance: 0 }
           );
 
           // Render Main Summary Chart
@@ -179,17 +191,17 @@
         const target = 'target="_blank" rel="noopener noreferrer"';
 
         cardElement.innerHTML = `
-                <div class="bg-gray-50 p-4 border-b border-gray-200">
-                    <h2 class="text-lg font-semibold text-gray-800">
-                        <a href="${cardLink}" ${target} class="card-header-link hover:underline">${card.module_name}</a>
-                    </h2>
-                </div>
-                <div class="p-4 border-t border-gray-200 flex flex-col items-center gap-y-8">
-                    <div class="w-full max-w-xs">
-                        <canvas id="pie-chart-${index}"></canvas>
-                    </div>
-                </div>
-              `;
+                                <div class="bg-gray-50 p-4 border-b border-gray-200">
+                                    <h5 class="text-lg font-semibold text-gray-800">
+                                        ${card.module_name}
+                                    </h5>
+                                </div>
+                                <div class="p-4 border-t border-gray-200 flex flex-col items-center gap-y-8">
+                                    <div class="w-full max-w-xs">
+                                        <canvas id="pie-chart-${index}"></canvas>
+                                    </div>
+                                </div>
+                                `;
 
         container.appendChild(cardElement);
 
