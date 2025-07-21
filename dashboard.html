@@ -167,8 +167,12 @@
           "bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col";
 
         const stats = card.stats;
+        // ✅ เพิ่ม stats.done เข้าไปในการคำนวณ
         const totalItems =
-          stats.pass + stats.fixed_pending_review + stats.needs_guidance;
+          stats.pass +
+          stats.done +
+          stats.fixed_pending_review +
+          stats.needs_guidance;
 
         // Link to the main TORs page and filter by module
         const cardLink = `tors.html?module=${card.module_id}`;
@@ -189,7 +193,6 @@
 
         container.appendChild(cardElement);
 
-        // --- Create Individual Card Pie Chart ---
         const pieCtx = document
           .getElementById(`pie-chart-${index}`)
           .getContext("2d");
@@ -202,6 +205,12 @@
           chartLabels.push("ผ่าน");
           chartDataPoints.push(stats.pass);
           chartColors.push("#22c55e"); // Green
+        }
+        // ✅ เพิ่มเงื่อนไขสำหรับ 'DONE'
+        if (stats.done > 0) {
+          chartLabels.push("แก้ไขแล้ว");
+          chartDataPoints.push(stats.done);
+          chartColors.push("#3b82f6"); // Blue
         }
         if (stats.fixed_pending_review > 0) {
           chartLabels.push("แก้ไขแล้ว รอพิจารณา");
@@ -265,21 +274,34 @@
         const mainSummaryCtx = document
           .getElementById("main-summary-chart")
           .getContext("2d");
+
+        // ✅ เพิ่ม totals.done เข้าไปในการคำนวณ
         const grandTotal =
-          totals.pass + totals.fixed_pending_review + totals.needs_guidance;
+          totals.pass +
+          totals.done +
+          totals.fixed_pending_review +
+          totals.needs_guidance;
 
         const mainChart = new Chart(mainSummaryCtx, {
           type: "doughnut",
           data: {
-            labels: ["ผ่าน", "แก้ไขแล้ว รอพิจารณา", "ต้องการคำแนะนำ"],
+            // ✅ เพิ่ม Label ใหม่
+            labels: [
+              "ผ่าน",
+              "แก้ไขแล้ว",
+              "แก้ไขแล้ว รอพิจารณา",
+              "ต้องการคำแนะนำ",
+            ],
             datasets: [
               {
                 data: [
                   totals.pass,
+                  totals.done, // ✅ เพิ่ม Data ใหม่
                   totals.fixed_pending_review,
                   totals.needs_guidance,
                 ],
-                backgroundColor: ["#22c55e", "#facc15", "#ef4444"],
+                // ✅ เพิ่มสีใหม่ (เช่น สีฟ้า)
+                backgroundColor: ["#22c55e", "#3b82f6", "#facc15", "#ef4444"],
                 borderColor: "#ffffff",
                 borderWidth: 4,
               },
