@@ -154,10 +154,16 @@ async function initPage(session) {
 
     const rawData = await response.json();
 
+    // allTorsData = rawData.map((item) => ({
+    //   ...item,
+    //   tor_status_label: item.tor_status || "N/A",
+    //   tor_fixing_label: item.tor_fixing || "",
+    // }));
+
     allTorsData = rawData.map((item) => ({
       ...item,
-      tor_status_label: item.tor_status || "N/A",
-      tor_fixing_label: item.tor_fixing || "",
+      tor_status_label: item.tor_status?.option_label || "N/A",
+      tor_fixing_label: item.tor_fixing?.option_label || "",
     }));
 
     apiStatus.textContent = `Success - Fetched ${allTorsData.length} records.`;
