@@ -48,8 +48,7 @@
   <body>
     <div class="container mx-auto p-4 sm:p-6 lg:p-8">
       <h1 class="text-3xl font-bold text-gray-800 mb-2 text-center">
-        ภาพรวมสถานะการนำเสนอ Detail Design โครงการ Port Community System (PCS) |
-        งวดที่ 3
+        ภาพรวมสถานะการนำเสนอ Detail Design โครงการ Port Community System (PCS)
       </h1>
       <p id="last-updated" class="text-center text-gray-600 text-md mb-8">
         กำลังโหลดข้อมูล...
@@ -122,15 +121,15 @@
           cardContainer.innerHTML = "";
 
           // Update last updated date
-          if (summaryData.lastUpdated) {
-            const date = new Date(summaryData.lastUpdated);
-            lastUpdatedEl.textContent = `ข้อมูลอัพเดท วันที่ : ${date.toLocaleDateString(
-              "th-TH",
-              { year: "numeric", month: "long", day: "numeric" }
-            )}`;
-          } else {
-            lastUpdatedEl.textContent = "ไม่พบข้อมูลการอัปเดตล่าสุด";
-          }
+          //   if (summaryData.lastUpdated) {
+          //     const date = new Date(summaryData.lastUpdated);
+          //     lastUpdatedEl.textContent = `ข้อมูลอัพเดท วันที่ : ${date.toLocaleDateString(
+          //       "th-TH",
+          //       { year: "numeric", month: "long", day: "numeric" }
+          //     )}`;
+          //   } else {
+          //     lastUpdatedEl.textContent = "ไม่พบข้อมูลการอัปเดตล่าสุด";
+          //   }
 
           const modules = summaryData.modules;
 
@@ -368,8 +367,41 @@
         });
       }
 
+      async function loadLatestUpdateDate() {
+        try {
+          // หน่วงเวลาเล็กน้อย
+          await new Promise((resolve) => setTimeout(resolve, 250));
+          const res = await fetch(
+            "https://pcsdata.onrender.com/api/presentation/last-updated"
+          );
+          if (!res.ok) throw new Error("Response not OK");
+          const data = await res.json();
+          const updateBox = document.getElementById("last-updated");
+          if (updateBox && data.latestDate) {
+            const latestDate = new Date(data.latestDate);
+            const formatted = latestDate.toLocaleDateString("th-TH", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            });
+            // แก้ไขข้อความให้ตรงกับ tors.html
+            updateBox.textContent = `ข้อมูลอัปเดตล่าสุด: ${formatted}`;
+          }
+        } catch (err) {
+          console.error("Error loading latest update date:", err);
+          // กรณีโหลดไม่สำเร็จ ให้แสดงข้อความเดิม
+          const updateBox = document.getElementById("last-updated");
+          if (updateBox) {
+            updateBox.textContent = `ข้อมูลอัพเดท วันที่ : -`;
+          }
+        }
+      }
+
       // --- Run the initialization on page load ---
-      document.addEventListener("DOMContentLoaded", initializeDashboard);
+      document.addEventListener("DOMContentLoaded", () => {
+        initializeDashboard();
+        loadLatestUpdateDate(); // เรียกฟังก์ชันดึงข้อมูลวันที่
+      });
     </script>
   </body>
 </html>
