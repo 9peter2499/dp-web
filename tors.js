@@ -45,8 +45,26 @@ async function initPage(session) {
   // }
 
   // --- ✅ จุดที่แก้ไข: เปลี่ยนจากการโหลดพร้อมกันเป็นทีละรายการ ---
+  // try {
+  //   console.log("Loading master data sequentially to avoid rate limits...");
+  //   const masterOptionGroups = [
+  //     "status",
+  //     "fixing",
+  //     "posible",
+  //     "document",
+  //     "presenter",
+  //   ];
+  //   for (const group of masterOptionGroups) {
+  //     await loadMasterOptions(group);
+  //   }
+  //   await loadPresentationDates(); // โหลดข้อมูลวันที่ต่อ
+  //   console.log("Master data loaded successfully.");
+  // } catch (e) {
+  //   console.error("Failed to load master options", e);
+  // }
+
   try {
-    console.log("Loading master data sequentially to avoid rate limits...");
+    console.log("Loading master data sequentially with delay...");
     const masterOptionGroups = [
       "status",
       "fixing",
@@ -56,9 +74,11 @@ async function initPage(session) {
     ];
     for (const group of masterOptionGroups) {
       await loadMasterOptions(group);
+      // เพิ่มการหน่วงเวลา 200 มิลลิวินาทีหลังแต่ละ request
+      await new Promise((resolve) => setTimeout(resolve, 200));
     }
-    await loadPresentationDates(); // โหลดข้อมูลวันที่ต่อ
-    console.log("Master data loaded successfully.");
+    await loadPresentationDates();
+    console.log("Master data loaded.");
   } catch (e) {
     console.error("Failed to load master options", e);
   }
