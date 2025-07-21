@@ -392,9 +392,7 @@ async function toggleDetails(detailsRow, mainRow, torId) {
       const res = await fetch(`https://pcsdata.onrender.com/api/tors/${torId}`);
       if (!res.ok) throw new Error("Failed to fetch details");
       const details = await res.json();
-      detailCell.innerHTML = `<div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded shadow-sm">${createDetailContent(
-        details
-      )}</div>`;
+      detailCell.innerHTML = `${createDetailContent(details)}`;
       addDetailEventListeners(details);
     } catch (e) {
       detailCell.innerHTML = `<div class="bg-red-100 text-red-800 p-4">เกิดข้อผิดพลาดในการโหลดรายละเอียด: ${e.message}</div>`;
@@ -547,53 +545,65 @@ function createDetailContent(details) {
   return `
         <div class="bg-yellow-50/70 border-l-4 border-yellow-400 p-6 space-y-5 text-base">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 pb-5 border-b">
-                <div><span class="${sectionTitleClass}">ทำได้:</span><div class="${contentClass} mt-2">${
+              <div>
+                <span class="${sectionTitleClass}">ทำได้:</span>
+                <div class="${contentClass} mt-2">${
     detail.tord_posible?.option_label || "(ไม่มีข้อมูล)"
-  }</div></div>
-                <div><span class="${sectionTitleClass}">เล่มเอกสาร:</span><div class="${contentClass} mt-2">${
+  }</div>
+              </div>
+              <div>
+                <span class="${sectionTitleClass}">เล่มเอกสาร:</span>
+                <div class="${contentClass} mt-2">${
     detail.tord_document || "(ไม่มีข้อมูล)"
-  }</div></div>
+  }</div>
+              </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 py-5 border-b">
-                <div><span class="${sectionTitleClass}">เอกสารอ้างอิง:</span><div class="${contentClass} mt-2">${
-    detail.tord_reference || "(ไม่มีข้อมูล)"
-  }</div></div>
-                <div><span class="${sectionTitleClass}">หัวข้อที่นำเสนอ:</span><div class="${contentClass} mt-2">${
-    detail.tord_header || "(ไม่มีข้อมูล)"
-  }</div></div>
-            </div>
-            <div class="py-5 border-b">
-                <span class="${sectionTitleClass}">Prototype:</span>
+              <div>
+                <span class="${sectionTitleClass}">เอกสารอ้างอิง:</span>
                 <div class="${contentClass} mt-2">${
-    detail.tord_prototype || "(ไม่มีข้อมูล)"
+    detail.tord_reference || "(ไม่มีข้อมูล)"
+  }</div>
+              </div>
+            <div>
+                <span class="${sectionTitleClass}">หัวข้อที่นำเสนอ:</span>
+                <div class="${contentClass} mt-2">${
+    detail.tord_header || "(ไม่มีข้อมูล)"
   }</div>
             </div>
-            <div class="pt-4">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="${sectionTitleClass}">ข้อเสนอแนะคณะกรรมการ:</span>
-                    ${
-                      isAdmin
-                        ? `<button class="add-item-btn text-xs bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600" data-type="feedback" data-tord-id="${detail.tord_id}"><i class="fas fa-plus mr-1"></i>เพิ่ม</button>`
-                        : ""
-                    }
-                </div>
-                <ul class="pl-2 space-y-1">${feedbackHtml}</ul>
-            </div>
-            <div class="pt-2">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="${sectionTitleClass}">รายละเอียดการแก้ไข:</span>
-                    ${
-                      isAdmin
-                        ? `<button class="add-item-btn text-xs bg-blue-500 text-white py-1 px-3 rounded-md hover:bg-blue-600" data-type="worked" data-tord-id="${detail.tord_id}"><i class="fas fa-plus mr-1"></i>เพิ่ม</button>`
-                        : ""
-                    }
-                </div>
-                <ul class="pl-2 space-y-1">${workedHtml}</ul>
-            </div>
-            <div class="pt-2">
-                <span class="${sectionTitleClass}">การนำเสนอ TOR:</span>
-                <div class="${contentClass} mt-2">
-                    ${presentationHtml}
+        </div>
+        <div class="py-5 border-b">
+          <span class="${sectionTitleClass}">Prototype:</span>
+          <div class="${contentClass} mt-2">${
+    detail.tord_prototype || "(ไม่มีข้อมูล)"
+  }</div>
+        </div>
+        <div class="pt-4 border-b">
+          <div class="flex justify-between items-center mb-2">
+            <span class="${sectionTitleClass}">ข้อเสนอแนะคณะกรรมการ:</span>
+              ${
+                isAdmin
+                  ? `<button class="add-item-btn text-xs bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600" data-type="feedback" data-tord-id="${detail.tord_id}"><i class="fas fa-plus mr-1"></i>เพิ่ม</button>`
+                  : ""
+              }
+          </div>
+          <ul class="pl-2 space-y-1">${feedbackHtml}</ul>
+        </div>
+        <div class="pt-2 border-b">
+          <div class="flex justify-between items-center mb-2">
+            <span class="${sectionTitleClass}">รายละเอียดการแก้ไข:</span>
+              ${
+                isAdmin
+                  ? `<button class="add-item-btn text-xs bg-blue-500 text-white py-1 px-3 rounded-md hover:bg-blue-600" data-type="worked" data-tord-id="${detail.tord_id}"><i class="fas fa-plus mr-1"></i>เพิ่ม</button>`
+                  : ""
+              }
+          </div>
+          <ul class="pl-2 space-y-1">${workedHtml}</ul>
+        </div>
+        <div class="pt-2 border-b">
+          <span class="${sectionTitleClass}">การนำเสนอ TOR:</span>
+          <div class="${contentClass} mt-2">
+                ${presentationHtml}
                     ${
                       isAdmin
                         ? `
@@ -604,8 +614,8 @@ function createDetailContent(details) {
                     `
                         : ""
                     }
-                </div>
-            </div>
+          </div>
+        </div>
         </div>
     `;
 }
