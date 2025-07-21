@@ -610,6 +610,7 @@ function createDetailContent(details) {
                         <div class="text-center mt-4">
                             <button class="presentation-btn bg-indigo-500 text-white py-1 px-3 rounded hover:bg-indigo-600 text-xs mr-2" data-tord-id="${detail.tord_id}" data-type="นำเสนอตามกำหนดปกติ">นำเสนอตามกำหนดปกติ</button>
                             <button class="presentation-btn bg-orange-500 text-white py-1 px-3 rounded hover:bg-orange-600 text-xs" data-tord-id="${detail.tord_id}" data-type="นำเสนอแก้ไขเพิ่มเติม">นำเสนอแก้ไขเพิ่มเติม</button>
+                          <br>
                         </div>
                     `
                         : ""
