@@ -90,14 +90,16 @@
 
       // --- ✅ จุดที่แก้ไข: กำหนดค่า Config ที่นี่โดยตรง ---
       // กรุณาแทนที่ด้วย Supabase URL และ Anon Key ของคุณ
-      const SUPABASE_URL = "YOUR_SUPABASE_URL";
-      const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+      const SUPABASE_URL = "https://fhnprrlmlhleomfqqvpp.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZobnBycmxtbGhsZW9tZnFxdnBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA5MTAyMjIsImV4cCI6MjA2NjQ4NjIyMn0.WA-_yNFWxpFnJBA3oh5UlOtq89KBm5hqsb51oi04hMk";
       // ----------------------------------------------------
 
       // Check if placeholders are still there
       if (
-        SUPABASE_URL === "YOUR_SUPABASE_URL" ||
-        SUPABASE_ANON_KEY === "YOUR_SUPABASE_ANON_KEY"
+        SUPABASE_URL === "https://fhnprrlmlhleomfqqvpp.supabase.co" ||
+        SUPABASE_ANON_KEY ===
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZobnBycmxtbGhsZW9tZnFxdnBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA5MTAyMjIsImV4cCI6MjA2NjQ4NjIyMn0.WA-_yNFWxpFnJBA3oh5UlOtq89KBm5hqsb51oi04hMk"
       ) {
         const loadingState = document.getElementById("loading-state");
         if (loadingState) {
