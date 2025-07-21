@@ -94,22 +94,6 @@
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZobnBycmxtbGhsZW9tZnFxdnBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA5MTAyMjIsImV4cCI6MjA2NjQ4NjIyMn0.WA-_yNFWxpFnJBA3oh5UlOtq89KBm5hqsb51oi04hMk";
       // ----------------------------------------------------
 
-      // --- ✅ จุดที่แก้ไข: เปลี่ยนเงื่อนไขให้กลับไปเช็คกับค่าตัวอย่าง ---
-      // Check if placeholders are still there
-      if (
-        SUPABASE_URL === "https://fhnprrlmlhleomfqqvpp.supabase.co" ||
-        SUPABASE_ANON_KEY ===
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZobnBycmxtbGhsZW9tZnFxdnBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA5MTAyMjIsImV4cCI6MjA2NjQ4NjIyMn0.WA-_yNFWxpFnJBA3oh5UlOtq89KBm5hqsb51oi04hMk"
-      ) {
-        const loadingState = document.getElementById("loading-state");
-        if (loadingState) {
-          loadingState.innerHTML = `<p class="text-red-500 font-semibold">กรุณาตั้งค่า SUPABASE_URL และ SUPABASE_ANON_KEY ในไฟล์ dashboard.html</p>`;
-        }
-        // Stop execution if config is not set
-        throw new Error("Supabase configuration is not set.");
-      }
-      // --- สิ้นสุดจุดที่แก้ไข ---
-
       const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
       // Register the datalabels plugin globally
