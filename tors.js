@@ -11,6 +11,24 @@ let masterOptions = {};
 
 // --- 1. CORE FUNCTIONS ---
 
+// ✅ ฟังก์ชันใหม่สำหรับโหลด Master Data ทั้งหมดในครั้งเดียว
+async function loadAllMasterOptions() {
+  try {
+    const res = await fetch("https://pcsdata.onrender.com/api/options/all");
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    // masterOptions จะถูกเติมทั้งหมดในครั้งเดียว
+    masterOptions = await res.json();
+    console.log("✅ Successfully loaded all master options in one request.");
+  } catch (err) {
+    console.error("❌ Failed to load all master options:", err);
+    // ตั้งค่า default เป็น object ว่างหากโหลดล้มเหลว
+    masterOptions = {};
+    throw err; // ส่ง error ต่อไปให้ initPage จัดการ
+  }
+}
+
 async function initPage(session) {
   console.log("🚀 Initializing page...");
   const apiStatus = document.querySelector("#api-status span");
@@ -31,22 +49,9 @@ async function initPage(session) {
   }
 
   // Step 2: Load all necessary master options
-  // try {
-  //   await Promise.all([
-  //     loadMasterOptions("status"),
-  //     loadMasterOptions("fixing"),
-  //     loadMasterOptions("posible"),
-  //     loadMasterOptions("document"),
-  //     loadMasterOptions("presenter"),
-  //     loadPresentationDates(),
-  //   ]);
-  // } catch (e) {
-  //   console.error("Failed to load master options", e);
-  // }
 
-  // --- ✅ จุดที่แก้ไข: เปลี่ยนจากการโหลดพร้อมกันเป็นทีละรายการ ---
   // try {
-  //   console.log("Loading master data sequentially to avoid rate limits...");
+  //   console.log("Loading master data sequentially with delay...");
   //   const masterOptionGroups = [
   //     "status",
   //     "fixing",
@@ -56,31 +61,22 @@ async function initPage(session) {
   //   ];
   //   for (const group of masterOptionGroups) {
   //     await loadMasterOptions(group);
+  //     // เพิ่มการหน่วงเวลา 200 มิลลิวินาทีหลังแต่ละ request
+  //     await new Promise((resolve) => setTimeout(resolve, 200));
   //   }
-  //   await loadPresentationDates(); // โหลดข้อมูลวันที่ต่อ
-  //   console.log("Master data loaded successfully.");
+  //   await loadPresentationDates();
+  //   console.log("Master data loaded.");
   // } catch (e) {
   //   console.error("Failed to load master options", e);
   // }
 
   try {
-    console.log("Loading master data sequentially with delay...");
-    const masterOptionGroups = [
-      "status",
-      "fixing",
-      "posible",
-      "document",
-      "presenter",
-    ];
-    for (const group of masterOptionGroups) {
-      await loadMasterOptions(group);
-      // เพิ่มการหน่วงเวลา 200 มิลลิวินาทีหลังแต่ละ request
-      await new Promise((resolve) => setTimeout(resolve, 200));
-    }
-    await loadPresentationDates();
-    console.log("Master data loaded.");
+    console.log("Loading initial data efficiently...");
+    // ยิงแค่ 2 Requests พร้อมกัน ซึ่งปลอดภัยกว่าเดิมมาก
+    await Promise.all([loadAllMasterOptions(), loadPresentationDates()]);
+    console.log("Initial data loaded successfully.");
   } catch (e) {
-    console.error("Failed to load master options", e);
+    console.error("A critical error occurred during initial data load:", e);
   }
 
   // Step 3: Fetch main TOR data
@@ -156,17 +152,17 @@ async function loadPresentationDates() {
   }
 }
 
-async function loadMasterOptions(group) {
-  const res = await fetch(
-    `https://pcsdata.onrender.com/api/options?group=${group}`
-  );
-  if (!res.ok) {
-    console.error(`Failed to load options for group: ${group}`);
-    masterOptions[group] = [];
-    return;
-  }
-  masterOptions[group] = await res.json();
-}
+// async function loadMasterOptions(group) {
+//   const res = await fetch(
+//     `https://pcsdata.onrender.com/api/options?group=${group}`
+//   );
+//   if (!res.ok) {
+//     console.error(`Failed to load options for group: ${group}`);
+//     masterOptions[group] = [];
+//     return;
+//   }
+//   masterOptions[group] = await res.json();
+// }
 
 async function loadLatestUpdateDate() {
   try {
