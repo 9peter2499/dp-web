@@ -1,150 +1,356 @@
 <!DOCTYPE html>
 <html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ภาพรวมสถานะโครงการ</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ภาพรวมสถานะโครงการ PCS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body { font-family: 'Sarabun', sans-serif; }
+      body {
+        font-family: "Sarabun", sans-serif;
+        background-color: #f3f4f6;
+      }
+      .card-header-link {
+        transition: color 0.3s ease-in-out;
+      }
+      .card-header-link:hover {
+        color: #1d4ed8;
+      }
+      #main-summary-chart-container {
+        cursor: pointer;
+      }
+      .loading-spinner {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border-left-color: #09f;
+        animation: spin 1s ease infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
     </style>
-</head>
-<body class="bg-gray-100">
-
+  </head>
+  <body>
     <div class="container mx-auto p-4 sm:p-6 lg:p-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-2 text-center">ภาพรวมสถานะการนำเสนอ Detail Design โครงการ Port Community System (PCS)</h1>
-        <p id="last-updated" class="text-center text-gray-600 text-md mb-8">ข้อมูลอัพเดท วันที่: กำลังโหลด...</p>
-        
-        <div class="mb-12 mt-8 flex justify-center">
-            <div id="main-summary-chart-container" class="w-full max-w-lg p-6 bg-white rounded-xl shadow-lg">
-                <canvas id="main-summary-chart"></canvas>
-            </div>
-        </div>
+      <h1 class="text-3xl font-bold text-gray-800 mb-2 text-center">
+        ภาพรวมสถานะการนำเสนอ Detail Design โครงการ Port Community System (PCS) |
+        งวดที่ 3
+      </h1>
+      <p id="last-updated" class="text-center text-gray-600 text-md mb-8">
+        กำลังโหลดข้อมูล...
+      </p>
 
-        <div id="card-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-            <!-- Cards will be injected here -->
+      <!-- Main Summary Chart -->
+      <div class="mb-12 mt-8 flex justify-center">
+        <div
+          id="main-summary-chart-container"
+          class="w-full max-w-lg p-6 bg-white rounded-xl shadow-lg"
+        >
+          <canvas id="main-summary-chart"></canvas>
         </div>
+      </div>
+
+      <!-- Grid container for the cards -->
+      <div
+        id="card-grid"
+        class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"
+      >
+        <!-- Loading State -->
+        <div
+          id="loading-state"
+          class="col-span-full flex flex-col items-center justify-center p-16 bg-white rounded-xl shadow-md"
+        >
+          <div class="loading-spinner mb-4"></div>
+          <p class="text-gray-600 font-semibold">
+            กำลังดึงข้อมูลสรุปจากระบบ...
+          </p>
+        </div>
+        <!-- Cards will be injected here by JavaScript -->
+      </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            Chart.register(ChartDataLabels);
-            
-            try {
-                const response = await fetch('https://pcsdata.onrender.com/api/summary');
-                if (!response.ok) throw new Error('ไม่สามารถดึงข้อมูลสรุปได้');
-                const cardData = await response.json();
+    <script type="module">
+      // Import Supabase client
+      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm";
 
-                renderMainChart(cardData);
-                renderCards(cardData);
+      // --- ✅ จุดที่แก้ไข: กำหนดค่า Config ที่นี่โดยตรง ---
+      // กรุณาแทนที่ด้วย Supabase URL และ Anon Key ของคุณ
+      const SUPABASE_URL = "YOUR_SUPABASE_URL";
+      const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+      // ----------------------------------------------------
 
-                // ตั้งค่าวันที่อัปเดต
-                document.getElementById('last-updated').textContent = `ข้อมูลอัพเดท วันที่ : ${new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}`;
+      // Check if placeholders are still there
+      if (
+        SUPABASE_URL === "YOUR_SUPABASE_URL" ||
+        SUPABASE_ANON_KEY === "YOUR_SUPABASE_ANON_KEY"
+      ) {
+        const loadingState = document.getElementById("loading-state");
+        if (loadingState) {
+          loadingState.innerHTML = `<p class="text-red-500 font-semibold">กรุณาตั้งค่า SUPABASE_URL และ SUPABASE_ANON_KEY ในไฟล์ dashboard.html</p>`;
+        }
+        // Stop execution if config is not set
+        throw new Error("Supabase configuration is not set.");
+      }
 
-            } catch (error) {
-                console.error("Error fetching summary data:", error);
-                document.getElementById('card-grid').innerHTML = `<p class="text-red-500 text-center col-span-full">${error.message}</p>`;
-            }
-        });
+      const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        function renderMainChart(data) {
-            const mainCtx = document.getElementById('main-summary-chart').getContext('2d');
-            
-            const totalStats = data.reduce((acc, card) => {
-                acc.pass += card.stats.pass;
-                acc.fixed_pending_review += card.stats.fixed_pending_review;
-                acc.needs_guidance += card.stats.needs_guidance;
-                return acc;
-            }, { pass: 0, fixed_pending_review: 0, needs_guidance: 0 });
+      // Register the datalabels plugin globally
+      Chart.register(ChartDataLabels);
 
-            const grandTotal = totalStats.pass + totalStats.fixed_pending_review + totalStats.needs_guidance;
+      // --- Main function to fetch data and render the dashboard ---
+      async function initializeDashboard() {
+        const cardContainer = document.getElementById("card-grid");
+        const loadingState = document.getElementById("loading-state");
+        const lastUpdatedEl = document.getElementById("last-updated");
 
-            new Chart(mainCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['ผ่าน', 'ไม่ผ่าน (รอพิจารณา)', 'ไม่ผ่าน (ต้องการคำแนะนำ)'],
-                    datasets: [{
-                        data: [totalStats.pass, totalStats.fixed_pending_review, totalStats.needs_guidance],
-                        backgroundColor: ['#22c55e', '#facc15', '#ef4444'],
-                        borderColor: '#ffffff',
-                        borderWidth: 4,
-                    }]
+        try {
+          // Fetch summary data from the backend API
+          const response = await fetch(
+            "https://pcsdata.onrender.com/api/summary"
+          );
+          if (!response.ok) {
+            throw new Error(
+              `Network response was not ok: ${response.statusText}`
+            );
+          }
+          const summaryData = await response.json();
+
+          // Clear loading state if it exists
+          if (loadingState) {
+            loadingState.remove();
+          }
+          cardContainer.innerHTML = "";
+
+          // Update last updated date
+          if (summaryData.lastUpdated) {
+            const date = new Date(summaryData.lastUpdated);
+            lastUpdatedEl.textContent = `ข้อมูลอัพเดท วันที่ : ${date.toLocaleDateString(
+              "th-TH",
+              { year: "numeric", month: "long", day: "numeric" }
+            )}`;
+          } else {
+            lastUpdatedEl.textContent = "ไม่พบข้อมูลการอัปเดตล่าสุด";
+          }
+
+          const modules = summaryData.modules;
+
+          // Calculate grand totals for the main chart
+          const grandTotals = modules.reduce(
+            (acc, module) => {
+              acc.pass += module.stats.pass;
+              acc.fixed_pending_review += module.stats.fixed_pending_review;
+              acc.needs_guidance += module.stats.needs_guidance;
+              return acc;
+            },
+            { pass: 0, fixed_pending_review: 0, needs_guidance: 0 }
+          );
+
+          // Render Main Summary Chart
+          renderMainSummaryChart(grandTotals);
+
+          // Render each module card and its chart
+          modules.forEach((module, index) => {
+            renderModuleCard(module, index, cardContainer);
+          });
+        } catch (error) {
+          console.error("Failed to initialize dashboard:", error);
+          if (loadingState) {
+            loadingState.innerHTML = `<p class="text-red-500 font-semibold">เกิดข้อผิดพลาดในการโหลดข้อมูล: ${error.message}</p>`;
+          }
+        }
+      }
+
+      // --- Function to render a single module card ---
+      function renderModuleCard(card, index, container) {
+        const cardElement = document.createElement("div");
+        cardElement.className =
+          "bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col";
+
+        const stats = card.stats;
+        const totalItems =
+          stats.pass + stats.fixed_pending_review + stats.needs_guidance;
+
+        // Link to the main TORs page and filter by module
+        const cardLink = `tors.html?module=${card.module_id}`;
+        const target = 'target="_blank" rel="noopener noreferrer"';
+
+        cardElement.innerHTML = `
+                <div class="bg-gray-50 p-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-800">
+                        <a href="${cardLink}" ${target} class="card-header-link hover:underline">${card.module_name}</a>
+                    </h2>
+                </div>
+                <div class="p-4 border-t border-gray-200 flex flex-col items-center gap-y-8">
+                    <div class="w-full max-w-xs">
+                        <canvas id="pie-chart-${index}"></canvas>
+                    </div>
+                </div>
+            `;
+
+        container.appendChild(cardElement);
+
+        // --- Create Individual Card Pie Chart ---
+        const pieCtx = document
+          .getElementById(`pie-chart-${index}`)
+          .getContext("2d");
+
+        const chartLabels = [];
+        const chartDataPoints = [];
+        const chartColors = [];
+
+        if (stats.pass > 0) {
+          chartLabels.push("ผ่าน");
+          chartDataPoints.push(stats.pass);
+          chartColors.push("#22c55e"); // Green
+        }
+        if (stats.fixed_pending_review > 0) {
+          chartLabels.push("แก้ไขแล้ว รอพิจารณา");
+          chartDataPoints.push(stats.fixed_pending_review);
+          chartColors.push("#facc15"); // Yellow
+        }
+        if (stats.needs_guidance > 0) {
+          chartLabels.push("ต้องการคำแนะนำ");
+          chartDataPoints.push(stats.needs_guidance);
+          chartColors.push("#ef4444"); // Red
+        }
+
+        new Chart(pieCtx, {
+          type: "doughnut",
+          data: {
+            labels: chartLabels,
+            datasets: [
+              {
+                data: chartDataPoints,
+                backgroundColor: chartColors,
+                borderColor: ["#ffffff"],
+                borderWidth: 3,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: { padding: 15, boxWidth: 12 },
+              },
+              title: {
+                display: true,
+                text: `จำนวนข้อกำหนด(TOR) ทั้งหมด ${totalItems}`,
+                padding: { bottom: 10 },
+              },
+              datalabels: {
+                formatter: (value, ctx) => {
+                  if (value === 0) return "";
+                  const datapoints = ctx.chart.data.datasets[0].data;
+                  const total = datapoints.reduce(
+                    (total, datapoint) => total + datapoint,
+                    0
+                  );
+                  const percentage = ((value / total) * 100).toFixed(1);
+                  return `${value}\n(${percentage}%)`;
                 },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { padding: 20, font: { size: 14 } } },
-                        title: { display: true, text: `ภาพรวมสถานะทั้งหมด: ${grandTotal} ข้อ`, font: { size: 18, weight: 'bold' }, padding: { bottom: 20 } },
-                        datalabels: {
-                            formatter: (value, ctx) => {
-                                if (value === 0) return '';
-                                const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                                const percentage = (value / total * 100).toFixed(1);
-                                return `${value}\n(${percentage}%)`;
-                            },
-                            color: '#fff',
-                            font: { weight: 'bold', size: 16 },
-                            textAlign: 'center'
-                        }
-                    }
+                color: "#fff",
+                font: { weight: "bold", size: 12 },
+                textAlign: "center",
+              },
+            },
+          },
+        });
+      }
+
+      // --- Function to render the main summary chart ---
+      function renderMainSummaryChart(totals) {
+        const mainSummaryCtx = document
+          .getElementById("main-summary-chart")
+          .getContext("2d");
+        const grandTotal =
+          totals.pass + totals.fixed_pending_review + totals.needs_guidance;
+
+        const mainChart = new Chart(mainSummaryCtx, {
+          type: "doughnut",
+          data: {
+            labels: ["ผ่าน", "แก้ไขแล้ว รอพิจารณา", "ต้องการคำแนะนำ"],
+            datasets: [
+              {
+                data: [
+                  totals.pass,
+                  totals.fixed_pending_review,
+                  totals.needs_guidance,
+                ],
+                backgroundColor: ["#22c55e", "#facc15", "#ef4444"],
+                borderColor: "#ffffff",
+                borderWidth: 4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            onClick: (evt) => {
+              const activePoints = mainChart.getElementsAtEventForMode(
+                evt,
+                "nearest",
+                { intersect: true },
+                true
+              );
+              if (activePoints.length > 0) {
+                const clickedIndex = activePoints[0].index;
+                // Index 1 and 2 are the 'failed' categories
+                if (clickedIndex === 1 || clickedIndex === 2) {
+                  window.open("nopass.html", "_blank");
                 }
-            });
-        }
+              }
+            },
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: { padding: 20, font: { size: 14 } },
+              },
+              title: {
+                display: true,
+                text: `ภาพรวมสถานะทั้งหมด: ${grandTotal} ข้อ`,
+                font: { size: 18, weight: "bold" },
+                padding: { bottom: 20 },
+              },
+              datalabels: {
+                formatter: (value, ctx) => {
+                  if (value === 0) return "";
+                  const datapoints = ctx.chart.data.datasets[0].data;
+                  const total = datapoints.reduce(
+                    (total, datapoint) => total + datapoint,
+                    0
+                  );
+                  const percentage = ((value / total) * 100).toFixed(1);
+                  return `${value}\n(${percentage}%)`;
+                },
+                color: "#fff",
+                font: { weight: "bold", size: 16 },
+                textAlign: "center",
+              },
+            },
+          },
+        });
+      }
 
-        function renderCards(data) {
-            const container = document.getElementById('card-grid');
-            container.innerHTML = ''; // Clear loading state
-
-            data.forEach((card, index) => {
-                const cardElement = document.createElement('div');
-                cardElement.className = 'bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col';
-                
-                const stats = card.stats;
-                const totalItems = stats.pass + stats.fixed_pending_review + stats.needs_guidance;
-                
-                cardElement.innerHTML = `
-                    <div class="bg-gray-50 p-4 border-b border-gray-200">
-                        <h2 class="text-lg font-semibold text-gray-800">
-                            <a href="#" class="hover:underline">${card.title}</a>
-                        </h2>
-                    </div>
-                    <div class="p-4 flex flex-col items-center gap-y-8">
-                        <div class="w-full max-w-xs">
-                            <canvas id="pie-chart-${index}"></canvas>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(cardElement);
-
-                const pieCtx = document.getElementById(`pie-chart-${index}`).getContext('2d');
-                new Chart(pieCtx, {
-                    type: 'doughnut', 
-                    data: {
-                        labels: ['ผ่าน', 'ไม่ผ่าน (รอพิจารณา)', 'ไม่ผ่าน (ต้องการคำแนะนำ)'],
-                        datasets: [{
-                            data: [stats.pass, stats.fixed_pending_review, stats.needs_guidance],
-                            backgroundColor: ['#22c55e', '#facc15', '#ef4444'],
-                            borderColor: ['#ffffff'],
-                            borderWidth: 3
-                        }]
-                    },
-                    options: {
-                        plugins: {
-                            legend: { display: false },
-                            title: { display: true, text: `จำนวนข้อกำหนดทั้งหมด ${totalItems}` },
-                            datalabels: {
-                                formatter: (value) => value > 0 ? value : '',
-                                color: '#fff',
-                                font: { weight: 'bold', size: 12 },
-                            }
-                        }
-                    }
-                });
-            });
-        }
+      // --- Run the initialization on page load ---
+      document.addEventListener("DOMContentLoaded", initializeDashboard);
     </script>
-</body>
+  </body>
 </html>
