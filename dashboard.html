@@ -55,7 +55,6 @@
         กำลังโหลดข้อมูล...
       </p>
 
-      <!-- Main Summary Chart -->
       <div class="mb-12 mt-8 flex justify-center">
         <div
           id="main-summary-chart-container"
@@ -65,12 +64,10 @@
         </div>
       </div>
 
-      <!-- Grid container for the cards -->
       <div
         id="card-grid"
         class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"
       >
-        <!-- Loading State -->
         <div
           id="loading-state"
           class="col-span-full flex flex-col items-center justify-center p-16 bg-white rounded-xl shadow-md"
@@ -80,7 +77,6 @@
             กำลังดึงข้อมูลสรุปจากระบบ...
           </p>
         </div>
-        <!-- Cards will be injected here by JavaScript -->
       </div>
     </div>
 
@@ -93,6 +89,8 @@
       const SUPABASE_ANON_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZobnBycmxtbGhsZW9tZnFxdnBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA5MTAyMjIsImV4cCI6MjA2NjQ4NjIyMn0.WA-_yNFWxpFnJBA3oh5UlOtq89KBm5hqsb51oi04hMk";
       // ----------------------------------------------------
+
+      // ✅ --- ผมได้ลบโค้ดที่เช็ค Supabase Key ที่ไม่จำเป็นออกไปแล้ว ---
 
       const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -134,7 +132,7 @@
             lastUpdatedEl.textContent = "ไม่พบข้อมูลการอัปเดตล่าสุด";
           }
 
-          const modules = summaryData;
+          const modules = summaryData.modules;
 
           // Calculate grand totals for the main chart
           const grandTotals = modules.reduce(
@@ -187,7 +185,7 @@
                         <canvas id="pie-chart-${index}"></canvas>
                     </div>
                 </div>
-            `;
+              `;
 
         container.appendChild(cardElement);
 
