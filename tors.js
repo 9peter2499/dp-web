@@ -2,7 +2,20 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm";
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
 
-const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+//const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  global: {
+    headers: { "x-client-info": "supabase-js/2.x" },
+  },
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true,
+    revalidateOnFocus: false, // ✅ ปิดการรีเฟรชเมื่อกลับมาที่ Tab
+  },
+});
+
 let allTorsData = [];
 let currentUserRole = "viewer";
 let quillEditor;
