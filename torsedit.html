@@ -350,7 +350,8 @@
             throw new Error("เกิดข้อผิดพลาดในการบันทึก TORDetail");
 
           alert("บันทึกการเปลี่ยนแปลงสำเร็จ!");
-          window.location.href = `/tors.html#${torId}`;
+          //window.location.href = `/tors.html#${torId}`;
+          window.location.href = `/tors.html?editedId=${torId}`;
         } catch (error) {
           alert(`เกิดข้อผิดพลาด: ${error.message}`);
         }

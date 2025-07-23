@@ -49,6 +49,19 @@
       .ql-editor {
         min-height: 12rem;
       }
+      /* ใน <style> ของ tors.html */
+      .highlight-fade {
+        animation: highlight-animation 2.5s ease-out;
+      }
+
+      @keyframes highlight-animation {
+        0% {
+          background-color: #fef9c3;
+        } /* สีเหลืองอ่อน */
+        100% {
+          background-color: transparent;
+        }
+      }
     </style>
   </head>
   <body class="bg-gray-100 p-4 sm:p-8">

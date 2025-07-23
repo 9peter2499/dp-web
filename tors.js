@@ -42,6 +42,62 @@ async function loadAllMasterOptions() {
   }
 }
 
+// ใน tors.js
+
+function restorePageState() {
+  // 1. ดึงข้อมูลสถานะที่บันทึกไว้ออกมา
+  const savedStateJSON = sessionStorage.getItem("torsPageState");
+
+  // ตรวจสอบว่ามีข้อมูลที่บันทึกไว้หรือไม่
+  if (savedStateJSON) {
+    console.log("✅ Page state found, restoring...");
+    const savedState = JSON.parse(savedStateJSON);
+
+    // 2. กู้คืนค่า filter และ search ที่เคยเลือกไว้
+    document.getElementById("module-filter").value = savedState.filters.module;
+    document.getElementById("status-filter").value = savedState.filters.status;
+    document.getElementById("presented-date-filter").value =
+      savedState.filters.presentedDate;
+    document.getElementById("search-box").value = savedState.searchTerm;
+
+    // 3. สั่งให้ filter ข้อมูลอีกครั้งตามค่าที่กู้มา
+    // ฟังก์ชัน applyFilters() ของคุณจะ re-render ตารางให้เอง
+    applyFilters();
+
+    // 4. กู้คืนตำแหน่ง Scroll ของหน้า
+    // ใช้ setTimeout เพื่อให้แน่ใจว่า DOM แสดงผลเสร็จสมบูรณ์ก่อนจะเลื่อน
+    setTimeout(() => {
+      window.scrollTo(0, savedState.scrollTop);
+    }, 100);
+
+    // 5. ล้างข้อมูลที่บันทึกไว้ทิ้งไป เพื่อไม่ให้มีผลกับการรีเฟรชครั้งต่อไป
+    sessionStorage.removeItem("torsPageState");
+  }
+
+  // 6. ตรวจสอบและไฮไลท์แถวที่เพิ่งแก้ไขจาก URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const editedId = urlParams.get("editedId");
+
+  if (editedId) {
+    // เราใช้ data-tor-id ในการหาแถว
+    const row = document.querySelector(`tr[data-tor-id="${editedId}"]`);
+    if (row) {
+      console.log(`Highlighting row for TOR ID: ${editedId}`);
+      // ทำให้แถวที่แก้ไขเลื่อนมาอยู่ในสายตา
+      row.scrollIntoView({ behavior: "smooth", block: "center" });
+      // เพิ่ม class เพื่อให้เกิด animation
+      row.classList.add("highlight-fade");
+      // ลบ class ออกหลังจาก animation จบ (เผื่อมีการไฮไลท์ซ้ำ)
+      setTimeout(() => {
+        row.classList.remove("highlight-fade");
+      }, 2500);
+    }
+
+    // 7. ล้าง parameter ออกจาก URL เพื่อให้ URL สวยงามและไม่ไฮไลท์ซ้ำเมื่อผู้ใช้รีเฟรชเอง
+    history.replaceState(null, "", window.location.pathname);
+  }
+}
+
 async function initPage(session) {
   console.log("🚀 Initializing page...");
   const apiStatus = document.querySelector("#api-status span");
@@ -188,6 +244,7 @@ async function initPage(session) {
     applyFilters();
     loadLatestUpdateDate();
     populatePresenterDropdown();
+    restorePageState();
   } catch (error) {
     apiStatus.textContent = `Error: ${error.message}`;
     apiStatus.className = "text-red-400";
@@ -488,9 +545,15 @@ function renderTable(data) {
             }</td>
         `;
 
+    //if (isAdmin) {
+    //  mainRowHTML += `<td class="p-4 border-b border-gray-200 text-center"><a href="/torsedit.html?id=${tor.tor_id}" class="text-indigo-600 hover:text-indigo-900 font-semibold">[Edit]</a></td>`;
+    // }
+
     if (isAdmin) {
-      mainRowHTML += `<td class="p-4 border-b border-gray-200 text-center"><a href="/torsedit.html?id=${tor.tor_id}" class="text-indigo-600 hover:text-indigo-900 font-semibold">[Edit]</a></td>`;
+      // ✅ เพิ่ม class="... edit-link" เข้าไป
+      mainRowHTML += `<td class="p-4 border-b border-gray-200 text-center"><a href="/torsedit.html?id=${tor.tor_id}" class="text-indigo-600 hover:text-indigo-900 font-semibold edit-link">[Edit]</a></td>`;
     }
+
     mainRow.innerHTML = mainRowHTML;
     tableBody.appendChild(mainRow);
 
@@ -1163,6 +1226,37 @@ document.addEventListener("DOMContentLoaded", () => {
         openPresentationModal(button.dataset.tordId, button.dataset.type);
       }
       // ... (เพิ่ม event listener สำหรับปุ่มอื่นๆ ใน detail row ที่นี่) ...
+    });
+
+  document
+    .getElementById("tor-table-body")
+    .addEventListener("click", function (event) {
+      // เช็คว่าสิ่งที่ถูกคลิกคือลิงก์ Edit ของเราหรือไม่
+      if (event.target.classList.contains("edit-link")) {
+        // หยุดการเปลี่ยนหน้าเว็บทันที
+        event.preventDefault();
+
+        console.log("Edit link clicked, saving page state..."); // สำหรับ Debug
+
+        // --- นี่คือส่วนของ Step 1 ที่เราคุยกัน ---
+        // 1. รวบรวมสถานะปัจจุบันของหน้า
+        const currentState = {
+          scrollTop: window.scrollY,
+          filters: {
+            module: document.getElementById("module-filter").value,
+            status: document.getElementById("status-filter").value,
+            presentedDate: document.getElementById("presented-date-filter")
+              .value,
+          },
+          searchTerm: document.getElementById("search-box").value,
+        };
+
+        // 2. บันทึกสถานะลงใน sessionStorage
+        sessionStorage.setItem("torsPageState", JSON.stringify(currentState));
+
+        // 3. สั่งให้เปลี่ยนหน้าไปยังลิงก์ของปุ่ม Edit ด้วยตนเอง
+        window.location.href = event.target.href;
+      }
     });
 
   // // Main Auth Listener - The single source of truth for starting the app
