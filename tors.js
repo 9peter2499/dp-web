@@ -42,7 +42,13 @@ async function loadAllMasterOptions() {
   }
 }
 
-// ใน tors.js
+function showLoadingOverlay() {
+  document.getElementById("loading-overlay").classList.remove("hidden");
+}
+
+function hideLoadingOverlay() {
+  document.getElementById("loading-overlay").classList.add("hidden");
+}
 
 function restorePageState() {
   // 1. ดึงข้อมูลสถานะที่บันทึกไว้ออกมา
@@ -100,165 +106,95 @@ function restorePageState() {
 
 async function initPage(session) {
   console.log("🚀 Initializing page...");
-  const apiStatus = document.querySelector("#api-status span");
-
-  // Step 1: Fetch user role
-  try {
-    const { data: profile } = await _supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", session.user.id)
-      .single();
-    currentUserRole = profile?.role || "viewer";
-    document.querySelector(
-      "#render-mode span"
-    ).textContent = `User Role: ${currentUserRole}`;
-  } catch (e) {
-    console.error("Could not fetch user role", e);
-  }
-
-  // Step 2: Load all necessary master options
-
-  // try {
-  //   console.log("Loading master data sequentially with delay...");
-  //   const masterOptionGroups = [
-  //     "status",
-  //     "fixing",
-  //     "posible",
-  //     "document",
-  //     "presenter",
-  //   ];
-  //   for (const group of masterOptionGroups) {
-  //     await loadMasterOptions(group);
-  //     // เพิ่มการหน่วงเวลา 200 มิลลิวินาทีหลังแต่ละ request
-  //     await new Promise((resolve) => setTimeout(resolve, 200));
-  //   }
-  //   await loadPresentationDates();
-  //   console.log("Master data loaded.");
-  // } catch (e) {
-  //   console.error("Failed to load master options", e);
-  // }
-
-  // try {
-  //   console.log("Loading initial data efficiently...");
-  //   // ยิงแค่ 2 Requests พร้อมกัน ซึ่งปลอดภัยกว่าเดิมมาก
-  //   await Promise.all([loadAllMasterOptions(), loadPresentationDates()]);
-  //   console.log("Initial data loaded successfully.");
-  // } catch (e) {
-  //   console.error("A critical error occurred during initial data load:", e);
-  // }
-
-  // // Step 3: Fetch main TOR data
-  // try {
-  //   apiStatus.textContent = "Fetching from API...";
-  //   apiStatus.className = "text-yellow-400";
-  //   const response = await fetch("https://pcsdata.onrender.com/api/tors");
-  //   if (!response.ok)
-  //     throw new Error(`Network response was not ok (${response.status})`);
-
-  //   const rawData = await response.json();
-
-  //   // ✅ แก้ไขส่วนนี้: แปลงข้อมูลและเก็บ ID/Label ให้ครบถ้วน
-  //   allTorsData = rawData.map((item) => ({
-  //     ...item,
-  //     tor_status_id: item.tor_status?.option_id,
-  //     tor_fixing_id: item.tor_fixing?.option_id,
-  //     tor_status_label: item.tor_status?.option_label || "N/A",
-  //     tor_fixing_label: item.tor_fixing?.option_label || "",
-  //   }));
-
-  //   apiStatus.textContent = `Success - Fetched ${allTorsData.length} records.`;
-  //   apiStatus.className = "text-green-400";
-
-  //   // Step 4: Populate UI
-  //   allTorsData.sort((a, b) => a.tor_id.localeCompare(b.tor_id));
-  //   populateFilters(allTorsData);
-  //   applyFilters();
-  //   loadLatestUpdateDate();
-  //   populatePresenterDropdown();
-  // } catch (error) {
-  //   apiStatus.textContent = `Error: ${error.message}`;
-  //   apiStatus.className = "text-red-400";
-  //   document.getElementById(
-  //     "tor-table-body"
-  //   ).innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
-  // }
-
-  // // Step 5: Setup user panel
-  // const userInfoPanel = document.getElementById("user-info-panel");
-  // userInfoPanel.classList.remove("hidden");
-  // document.getElementById("user-display").textContent = session.user.email;
-  // document.getElementById("logout-btn").onclick = async () =>
-  //   await _supabase.auth.signOut();
+  showLoadingOverlay();
 
   try {
-    console.log("Loading initial data sequentially to avoid rate limits...");
+    const apiStatus = document.querySelector("#api-status span");
 
-    // หน่วงเวลาเล็กน้อยก่อนเริ่ม
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    await loadAllMasterOptions();
+    // Step 1: Fetch user role
+    try {
+      const { data: profile } = await _supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", session.user.id)
+        .single();
+      currentUserRole = profile?.role || "viewer";
+      document.querySelector(
+        "#render-mode span"
+      ).textContent = `User Role: ${currentUserRole}`;
+    } catch (e) {
+      console.error("Could not fetch user role", e);
+    }
 
-    // หน่วงเวลา 250ms ก่อนเรียก API ตัวต่อไป
-    await new Promise((resolve) => setTimeout(resolve, 250));
-    await loadPresentationDates();
+    // Step 2: Load all necessary master options
 
-    console.log("Initial data loaded successfully.");
-  } catch (e) {
-    console.error("A critical error occurred during initial data load:", e);
-    apiStatus.textContent = `Error: ${e.message}`;
-    apiStatus.className = "text-red-400";
-    // หยุดการทำงานส่วนที่เหลือถ้าข้อมูลพื้นฐานโหลดไม่ได้
-    return;
+    try {
+      console.log("Loading initial data sequentially to avoid rate limits...");
+
+      // หน่วงเวลาเล็กน้อยก่อนเริ่ม
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      await loadAllMasterOptions();
+
+      // หน่วงเวลา 250ms ก่อนเรียก API ตัวต่อไป
+      await new Promise((resolve) => setTimeout(resolve, 250));
+      await loadPresentationDates();
+
+      console.log("Initial data loaded successfully.");
+    } catch (e) {
+      console.error("A critical error occurred during initial data load:", e);
+      apiStatus.textContent = `Error: ${e.message}`;
+      apiStatus.className = "text-red-400";
+      // หยุดการทำงานส่วนที่เหลือถ้าข้อมูลพื้นฐานโหลดไม่ได้
+      return;
+    }
+
+    // Step 3: Fetch main TOR data
+    try {
+      // หน่วงเวลาอีกครั้งก่อนโหลดข้อมูลหลัก
+      await new Promise((resolve) => setTimeout(resolve, 250));
+      apiStatus.textContent = "Fetching from API...";
+      apiStatus.className = "text-yellow-400";
+      const response = await fetch("https://pcsdata.onrender.com/api/tors");
+      if (!response.ok)
+        throw new Error(`Network response was not ok (${response.status})`);
+
+      const rawData = await response.json();
+
+      allTorsData = rawData.map((item) => ({
+        ...item,
+        tor_status_label: item.tor_status?.option_label || "N/A",
+        tor_fixing_label: item.tor_fixing?.option_label || "",
+      }));
+
+      apiStatus.textContent = `Success - Fetched ${allTorsData.length} records.`;
+      apiStatus.className = "text-green-400";
+
+      // Step 4: Populate UI
+      allTorsData.sort((a, b) => a.tor_id.localeCompare(b.tor_id));
+      populateFilters(allTorsData);
+      applyFilters();
+      loadLatestUpdateDate();
+      populatePresenterDropdown();
+      restorePageState();
+    } catch (error) {
+      apiStatus.textContent = `Error: ${error.message}`;
+      apiStatus.className = "text-red-400";
+      document.getElementById(
+        "tor-table-body"
+      ).innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
+    }
+
+    // Step 5: Setup user panel
+    const userInfoPanel = document.getElementById("user-info-panel");
+    userInfoPanel.classList.remove("hidden");
+    document.getElementById("user-display").textContent = session.user.email;
+    document.getElementById("logout-btn").onclick = async () =>
+      await _supabase.auth.signOut();
+  } finally {
+    // 2. ซ่อน Popup ใน finally block
+    // ✅ ไม่ว่าจะสำเร็จหรือเกิด Error บล็อกนี้จะทำงานเสมอ
+    hideLoadingOverlay();
   }
-
-  // Step 3: Fetch main TOR data
-  try {
-    // หน่วงเวลาอีกครั้งก่อนโหลดข้อมูลหลัก
-    await new Promise((resolve) => setTimeout(resolve, 250));
-    apiStatus.textContent = "Fetching from API...";
-    apiStatus.className = "text-yellow-400";
-    const response = await fetch("https://pcsdata.onrender.com/api/tors");
-    if (!response.ok)
-      throw new Error(`Network response was not ok (${response.status})`);
-
-    const rawData = await response.json();
-
-    // allTorsData = rawData.map((item) => ({
-    //   ...item,
-    //   tor_status_label: item.tor_status || "N/A",
-    //   tor_fixing_label: item.tor_fixing || "",
-    // }));
-
-    allTorsData = rawData.map((item) => ({
-      ...item,
-      tor_status_label: item.tor_status?.option_label || "N/A",
-      tor_fixing_label: item.tor_fixing?.option_label || "",
-    }));
-
-    apiStatus.textContent = `Success - Fetched ${allTorsData.length} records.`;
-    apiStatus.className = "text-green-400";
-
-    // Step 4: Populate UI
-    allTorsData.sort((a, b) => a.tor_id.localeCompare(b.tor_id));
-    populateFilters(allTorsData);
-    applyFilters();
-    loadLatestUpdateDate();
-    populatePresenterDropdown();
-    restorePageState();
-  } catch (error) {
-    apiStatus.textContent = `Error: ${error.message}`;
-    apiStatus.className = "text-red-400";
-    document.getElementById(
-      "tor-table-body"
-    ).innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
-  }
-
-  // Step 5: Setup user panel
-  const userInfoPanel = document.getElementById("user-info-panel");
-  userInfoPanel.classList.remove("hidden");
-  document.getElementById("user-display").textContent = session.user.email;
-  document.getElementById("logout-btn").onclick = async () =>
-    await _supabase.auth.signOut();
 }
 
 async function loadPresentationDates() {
@@ -292,69 +228,6 @@ async function loadPresentationDates() {
   }
 }
 
-// async function loadPresentationDates() {
-//   const dateFilter = document.getElementById("presented-date-filter");
-//   if (!dateFilter) return;
-
-//   try {
-//     const res = await fetch(
-//       "https://pcsdata.onrender.com/api/presentation/dates"
-//     );
-//     if (!res.ok) throw new Error("Failed to fetch presentation dates");
-
-//     const dates = await res.json();
-
-//     dateFilter.innerHTML = '<option value="">-- เลือกวันที่ --</option>';
-//     dates.forEach((dateString) => {
-//       const date = new Date(dateString);
-//       const displayDate = date.toLocaleDateString("th-TH", {
-//         day: "numeric",
-//         month: "long",
-//         year: "numeric",
-//       });
-//       dateFilter.innerHTML += `<option value="${dateString}">${displayDate}</option>`;
-//     });
-//   } catch (err) {
-//     console.error("❌ Load presentation dates failed:", err);
-//     dateFilter.innerHTML =
-//       '<option value="">-- ไม่สามารถโหลดวันที่ --</option>';
-//   }
-// }
-
-// async function loadMasterOptions(group) {
-//   const res = await fetch(
-//     `https://pcsdata.onrender.com/api/options?group=${group}`
-//   );
-//   if (!res.ok) {
-//     console.error(`Failed to load options for group: ${group}`);
-//     masterOptions[group] = [];
-//     return;
-//   }
-//   masterOptions[group] = await res.json();
-// }
-
-// async function loadLatestUpdateDate() {
-//   try {
-//     const res = await fetch(
-//       "https://pcsdata.onrender.com/api/presentation/last-updated"
-//     );
-//     if (!res.ok) throw new Error("Response not OK");
-//     const data = await res.json();
-//     const updateBox = document.getElementById("last-updated");
-//     if (updateBox && data.latestDate) {
-//       const latestDate = new Date(data.latestDate);
-//       const formatted = latestDate.toLocaleDateString("th-TH", {
-//         day: "numeric",
-//         month: "long",
-//         year: "numeric",
-//       });
-//       updateBox.textContent = `ข้อมูลอัปเดตล่าสุด: ${formatted}`;
-//     }
-//   } catch (err) {
-//     console.error("Error loading latest update date:", err);
-//   }
-// }
-
 async function loadLatestUpdateDate() {
   try {
     // หน่วงเวลาเล็กน้อย
@@ -378,17 +251,6 @@ async function loadLatestUpdateDate() {
     console.error("Error loading latest update date:", err);
   }
 }
-
-// function populatePresenterDropdown() {
-//   const select = document.getElementById("presenterSelect");
-//   if (!select) return;
-
-//   const presenterOptions = masterOptions["presenter"] || [];
-//   select.innerHTML = '<option value="">-- กรุณาเลือก --</option>'; // Reset
-//   presenterOptions.forEach((opt) => {
-//     select.innerHTML += `<option value="${opt.option_id}">${opt.option_label}</option>`;
-//   });
-// }
 
 function populatePresenterDropdown() {
   const select = document.getElementById("presenterSelect");
@@ -428,24 +290,6 @@ function populateFilters(data) {
   (masterOptions["status"] || []).forEach((opt) => {
     statusFilter.innerHTML += `<option value="${opt.option_id}">${opt.option_label}</option>`;
   });
-
-  //   // Populate Presentation Dates
-  //   const presentationDates = new Set();
-  //   data.forEach((tor) => {
-  //     tor.TORDetail?.forEach((detail) => {
-  //       detail.PresentationItems?.forEach((item) => {
-  //         if (item.Presentation?.ptt_date) {
-  //           presentationDates.add(item.Presentation.ptt_date);
-  //         }
-  //       });
-  //     });
-  //   });
-  //   dateFilter.innerHTML = '<option value="">-- เลือกวันที่ --</option>';
-  //   [...presentationDates].sort().forEach((date) => {
-  //     dateFilter.innerHTML += `<option value="${date}">${new Date(
-  //       date
-  //     ).toLocaleDateString("th-TH")}</option>`;
-  //   });
 }
 
 function applyFilters() {
