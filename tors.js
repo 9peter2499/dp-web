@@ -1165,11 +1165,35 @@ document.addEventListener("DOMContentLoaded", () => {
       // ... (เพิ่ม event listener สำหรับปุ่มอื่นๆ ใน detail row ที่นี่) ...
     });
 
+  // // Main Auth Listener - The single source of truth for starting the app
+  // _supabase.auth.onAuthStateChange((_event, session) => {
+  //   if (session) {
+  //     initPage(session);
+  //   } else {
+  //     window.location.href = "/login.html";
+  //   }
+  // });
+
+  // ✅ 1. สร้าง "ธง" (flag) ขึ้นมาที่ด้านนอกของ listener
+  let isInitialized = false;
+
   // Main Auth Listener - The single source of truth for starting the app
-  _supabase.auth.onAuthStateChange((_event, session) => {
+  _supabase.auth.onAuthStateChange(async (event, session) => {
+    // ✅ 2. เพิ่มเงื่อนไขเพื่อเช็ค "ธง" เป็นอันดับแรก
+    // ถ้าเคยโหลดข้อมูลแล้ว และสถานะยังเป็นล็อกอินอยู่ (SIGNED_IN) ให้ออกจากฟังก์ชันทันที
+    if (isInitialized && event === "SIGNED_IN") {
+      return;
+    }
+
     if (session) {
-      initPage(session);
+      // โค้ดส่วนนี้จะทำงานแค่ครั้งแรกที่โหลดหน้าเว็บ
+      await initPage(session);
+
+      // ✅ 3. "ปักธง" ว่าได้โหลดข้อมูลเรียบร้อยแล้ว
+      isInitialized = true;
     } else {
+      // ถ้าไม่มี session หรือ logout ให้ reset ธง และไปหน้า login
+      isInitialized = false;
       window.location.href = "/login.html";
     }
   });
