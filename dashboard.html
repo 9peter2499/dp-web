@@ -120,29 +120,7 @@
           }
           cardContainer.innerHTML = "";
 
-          // Update last updated date
-          //   if (summaryData.lastUpdated) {
-          //     const date = new Date(summaryData.lastUpdated);
-          //     lastUpdatedEl.textContent = `ข้อมูลอัพเดท วันที่ : ${date.toLocaleDateString(
-          //       "th-TH",
-          //       { year: "numeric", month: "long", day: "numeric" }
-          //     )}`;
-          //   } else {
-          //     lastUpdatedEl.textContent = "ไม่พบข้อมูลการอัปเดตล่าสุด";
-          //   }
-
           const modules = summaryData.modules;
-
-          // Calculate grand totals for the main chart
-          //   const grandTotals = modules.reduce(
-          //     (acc, module) => {
-          //       acc.pass += module.stats.pass;
-          //       acc.fixed_pending_review += module.stats.fixed_pending_review;
-          //       acc.needs_guidance += module.stats.needs_guidance;
-          //       return acc;
-          //     },
-          //     { pass: 0, fixed_pending_review: 0, needs_guidance: 0 }
-          //   );
 
           const grandTotals = modules.reduce(
             (acc, module) => {
@@ -153,7 +131,8 @@
               return acc;
             },
             // เพิ่ม done: 0 เข้าไปในค่าเริ่มต้น
-            { pass: 0, done: 0, fixed_pending_review: 0, needs_guidance: 0 }
+            //{ pass: 0, done: 0, fixed_pending_review: 0, needs_guidance: 0 }
+            { pass: 0, fixed_pending_review: 0, needs_guidance: 0 }
           );
 
           // Render Main Summary Chart
@@ -179,11 +158,14 @@
 
         const stats = card.stats;
         // ✅ เพิ่ม stats.done เข้าไปในการคำนวณ
+        // const totalItems =
+        //   stats.pass +
+        //   stats.done +
+        //   stats.fixed_pending_review +
+        //   stats.needs_guidance;
+
         const totalItems =
-          stats.pass +
-          stats.done +
-          stats.fixed_pending_review +
-          stats.needs_guidance;
+          stats.pass + stats.fixed_pending_review + stats.needs_guidance;
 
         // Link to the main TORs page and filter by module
         const cardLink = `tors.html?module=${card.module_id}`;
@@ -218,11 +200,11 @@
           chartColors.push("#22c55e"); // Green
         }
         // ✅ เพิ่มเงื่อนไขสำหรับ 'DONE'
-        if (stats.done > 0) {
-          chartLabels.push("แก้ไขแล้ว");
-          chartDataPoints.push(stats.done);
-          chartColors.push("#3b82f6"); // Blue
-        }
+        // if (stats.done > 0) {
+        //   chartLabels.push("แก้ไขแล้ว");
+        //   chartDataPoints.push(stats.done);
+        //   chartColors.push("#3b82f6"); // Blue
+        // }
         if (stats.fixed_pending_review > 0) {
           chartLabels.push("แก้ไขแล้ว รอพิจารณา");
           chartDataPoints.push(stats.fixed_pending_review);
@@ -287,37 +269,57 @@
           .getContext("2d");
 
         // ✅ เพิ่ม totals.done เข้าไปในการคำนวณ
+        // const grandTotal =
+        //   totals.pass +
+        //   totals.done +
+        //   totals.fixed_pending_review +
+        //   totals.needs_guidance;
+
         const grandTotal =
-          totals.pass +
-          totals.done +
-          totals.fixed_pending_review +
-          totals.needs_guidance;
+          totals.pass + totals.fixed_pending_review + totals.needs_guidance;
 
         const mainChart = new Chart(mainSummaryCtx, {
           type: "doughnut",
           data: {
             // ✅ เพิ่ม Label ใหม่
-            labels: [
-              "ผ่าน",
-              "แก้ไขแล้ว",
-              "แก้ไขแล้ว รอพิจารณา",
-              "ต้องการคำแนะนำ",
-            ],
+            labels: ["ผ่าน", "แก้ไขแล้ว รอพิจารณา", "ต้องการคำแนะนำ"],
             datasets: [
               {
                 data: [
                   totals.pass,
-                  totals.done, // ✅ เพิ่ม Data ใหม่
                   totals.fixed_pending_review,
                   totals.needs_guidance,
                 ],
                 // ✅ เพิ่มสีใหม่ (เช่น สีฟ้า)
-                backgroundColor: ["#22c55e", "#3b82f6", "#facc15", "#ef4444"],
+                backgroundColor: ["#22c55e", "#facc15", "#ef4444"],
                 borderColor: "#ffffff",
                 borderWidth: 4,
               },
             ],
           },
+          // data: {
+          //   // ✅ เพิ่ม Label ใหม่
+          //   labels: [
+          //     "ผ่าน",
+          //     "แก้ไขแล้ว",
+          //     "แก้ไขแล้ว รอพิจารณา",
+          //     "ต้องการคำแนะนำ",
+          //   ],
+          //   datasets: [
+          //     {
+          //       data: [
+          //         totals.pass,
+          //         totals.done, // ✅ เพิ่ม Data ใหม่
+          //         totals.fixed_pending_review,
+          //         totals.needs_guidance,
+          //       ],
+          //       // ✅ เพิ่มสีใหม่ (เช่น สีฟ้า)
+          //       backgroundColor: ["#22c55e", "#3b82f6", "#facc15", "#ef4444"],
+          //       borderColor: "#ffffff",
+          //       borderWidth: 4,
+          //     },
+          //   ],
+          // },
           options: {
             responsive: true,
             maintainAspectRatio: true,
