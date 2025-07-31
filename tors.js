@@ -210,16 +210,49 @@ async function initPage(session) {
     }
 
     // Step 3: Fetch main TOR data
+    // try {
+    //   // หน่วงเวลาอีกครั้งก่อนโหลดข้อมูลหลัก
+    //   await new Promise((resolve) => setTimeout(resolve, 250));
+    //   apiStatus.textContent = "Fetching from API...";
+    //   apiStatus.className = "text-yellow-400";
+    //   const response = await apiFetch("https://pcsdata.onrender.com/api/tors");
+    //   // if (!response.ok)
+    //   //   throw new Error(`Network response was not ok (${response.status})`);
+
+    //   const rawData = await response.json();
+
+    //   allTorsData = rawData.map((item) => ({
+    //     ...item,
+    //     tor_status_label: item.tor_status?.option_label || "N/A",
+    //     tor_fixing_label: item.tor_fixing?.option_label || "",
+    //   }));
+
+    //   apiStatus.textContent = `Success - Fetched ${allTorsData.length} records.`;
+    //   apiStatus.className = "text-green-400";
+
+    //   // Step 4: Populate UI
+    //   allTorsData.sort((a, b) => a.tor_id.localeCompare(b.tor_id));
+    //   populateFilters(allTorsData);
+    //   applyFilters();
+    //   loadLatestUpdateDate();
+    //   populatePresenterDropdown();
+    //   restorePageState();
+    // } catch (error) {
+    //   apiStatus.textContent = `Error: ${error.message}`;
+    //   apiStatus.className = "text-red-400";
+    //   document.getElementById(
+    //     "tor-table-body"
+    //   ).innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
+    // }
+
     try {
       // หน่วงเวลาอีกครั้งก่อนโหลดข้อมูลหลัก
       await new Promise((resolve) => setTimeout(resolve, 250));
       apiStatus.textContent = "Fetching from API...";
       apiStatus.className = "text-yellow-400";
-      const response = await apiFetch("https://pcsdata.onrender.com/api/tors");
-      // if (!response.ok)
-      //   throw new Error(`Network response was not ok (${response.status})`);
 
-      const rawData = await response.json();
+      // ✅ แก้ไขตรงนี้ให้รับ rawData จาก apiFetch โดยตรง
+      const rawData = await apiFetch("https://pcsdata.onrender.com/api/tors");
 
       allTorsData = rawData.map((item) => ({
         ...item,
