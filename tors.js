@@ -46,7 +46,7 @@ async function apiFetch(url, options = {}) {
     },
   };
 
-  const response = await apiFetch(url, config);
+  const response = await fetch(url, config);
 
   if (response.status === 401) {
     // ถ้าบัตรหมดอายุ (Unauthorized)
