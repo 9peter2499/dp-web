@@ -258,17 +258,46 @@ async function initPage(session) {
   }
 }
 
+// async function loadPresentationDates() {
+//   const dateFilter = document.getElementById("presented-date-filter");
+//   if (!dateFilter) return;
+
+//   try {
+//     const res = await apiFetch(
+//       "https://pcsdata.onrender.com/api/presentation/dates"
+//     );
+//     // if (!res.ok) throw new Error("Failed to fetch presentation dates");
+
+//     const dates = await res.json();
+
+//     dateFilter.innerHTML = '<option value="">-- เลือกวันที่ --</option>';
+//     dates.forEach((dateString) => {
+//       const date = new Date(dateString);
+//       const displayDate = date.toLocaleDateString("th-TH", {
+//         day: "numeric",
+//         month: "long",
+//         year: "numeric",
+//       });
+//       dateFilter.innerHTML += `<option value="${dateString}">${displayDate}</option>`;
+//     });
+//     console.log("✅ Successfully loaded presentation dates.");
+//   } catch (err) {
+//     console.error("❌ Load presentation dates failed:", err);
+//     dateFilter.innerHTML =
+//       '<option value="">-- ไม่สามารถโหลดวันที่ --</option>';
+//     throw err;
+//   }
+// }
+
 async function loadPresentationDates() {
   const dateFilter = document.getElementById("presented-date-filter");
   if (!dateFilter) return;
 
   try {
-    const res = await apiFetch(
+    // ✅ รับข้อมูล dates ที่พร้อมใช้งานได้เลย
+    const dates = await apiFetch(
       "https://pcsdata.onrender.com/api/presentation/dates"
     );
-    // if (!res.ok) throw new Error("Failed to fetch presentation dates");
-
-    const dates = await res.json();
 
     dateFilter.innerHTML = '<option value="">-- เลือกวันที่ --</option>';
     dates.forEach((dateString) => {
