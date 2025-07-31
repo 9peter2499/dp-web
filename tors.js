@@ -72,20 +72,34 @@ async function apiFetch(url, options = {}) {
 // --- 1. CORE FUNCTIONS ---
 
 // ✅ ฟังก์ชันใหม่สำหรับโหลด Master Data ทั้งหมดในครั้งเดียว
+// async function loadAllMasterOptions() {
+//   try {
+//     const res = await apiFetch("https://pcsdata.onrender.com/api/options/all");
+//     // if (!res.ok) {
+//     //   throw new Error(`HTTP error! status: ${res.status}`);
+//     // }
+//     // masterOptions จะถูกเติมทั้งหมดในครั้งเดียว
+//     masterOptions = await res.json();
+//     console.log("✅ Successfully loaded all master options in one request.");
+//   } catch (err) {
+//     console.error("❌ Failed to load all master options:", err);
+//     // ตั้งค่า default เป็น object ว่างหากโหลดล้มเหลว
+//     masterOptions = {};
+//     throw err; // ส่ง error ต่อไปให้ initPage จัดการ
+//   }
+// }
+
 async function loadAllMasterOptions() {
   try {
-    const res = await apiFetch("https://pcsdata.onrender.com/api/options/all");
-    // if (!res.ok) {
-    //   throw new Error(`HTTP error! status: ${res.status}`);
-    // }
-    // masterOptions จะถูกเติมทั้งหมดในครั้งเดียว
-    masterOptions = await res.json();
+    // ✅ เรียกใช้แล้วรับข้อมูล JSON ได้เลย ง่ายกว่ามาก
+    masterOptions = await apiFetch(
+      "https://pcsdata.onrender.com/api/options/all"
+    );
     console.log("✅ Successfully loaded all master options in one request.");
   } catch (err) {
     console.error("❌ Failed to load all master options:", err);
-    // ตั้งค่า default เป็น object ว่างหากโหลดล้มเหลว
     masterOptions = {};
-    throw err; // ส่ง error ต่อไปให้ initPage จัดการ
+    throw err;
   }
 }
 
