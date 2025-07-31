@@ -75,9 +75,9 @@ async function apiFetch(url, options = {}) {
 async function loadAllMasterOptions() {
   try {
     const res = await apiFetch("https://pcsdata.onrender.com/api/options/all");
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
+    // if (!res.ok) {
+    //   throw new Error(`HTTP error! status: ${res.status}`);
+    // }
     // masterOptions จะถูกเติมทั้งหมดในครั้งเดียว
     masterOptions = await res.json();
     console.log("✅ Successfully loaded all master options in one request.");
@@ -202,8 +202,8 @@ async function initPage(session) {
       apiStatus.textContent = "Fetching from API...";
       apiStatus.className = "text-yellow-400";
       const response = await apiFetch("https://pcsdata.onrender.com/api/tors");
-      if (!response.ok)
-        throw new Error(`Network response was not ok (${response.status})`);
+      // if (!response.ok)
+      //   throw new Error(`Network response was not ok (${response.status})`);
 
       const rawData = await response.json();
 
@@ -252,7 +252,7 @@ async function loadPresentationDates() {
     const res = await apiFetch(
       "https://pcsdata.onrender.com/api/presentation/dates"
     );
-    if (!res.ok) throw new Error("Failed to fetch presentation dates");
+    // if (!res.ok) throw new Error("Failed to fetch presentation dates");
 
     const dates = await res.json();
 
@@ -282,7 +282,7 @@ async function loadLatestUpdateDate() {
     const res = await apiFetch(
       "https://pcsdata.onrender.com/api/presentation/last-updated"
     );
-    if (!res.ok) throw new Error("Response not OK");
+    // if (!res.ok) throw new Error("Response not OK");
     const data = await res.json();
     const updateBox = document.getElementById("last-updated");
     if (updateBox && data.latestDate) {
@@ -509,7 +509,7 @@ async function toggleDetails(detailsRow, mainRow, torId) {
       const res = await apiFetch(
         `https://pcsdata.onrender.com/api/tors/${torId}`
       );
-      if (!res.ok) throw new Error("Failed to fetch details");
+      // if (!res.ok) throw new Error("Failed to fetch details");
       const details = await res.json();
       detailCell.innerHTML = `${createDetailContent(details)}`;
       addDetailEventListeners(details);
