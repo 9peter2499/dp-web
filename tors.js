@@ -662,9 +662,18 @@ function createDetailContent(details) {
   const createItemList = (items, type) => {
     if (!items || items.length === 0) return "<li>ไม่มีข้อมูล</li>";
 
+    // let itemsToDisplay = isAdmin
+    //   ? items
+    //   : items.filter((item) => item.status === 1);
+
     let itemsToDisplay = isAdmin
       ? items
-      : items.filter((item) => item.status === 1);
+      : items.filter(
+          (item) =>
+            item.feedback_status_id === "REPORT" ||
+            item.worked_status_id === "REPORT"
+        );
+
     itemsToDisplay.sort(
       (a, b) =>
         new Date(b.feedback_date || b.worked_date) -
@@ -686,7 +695,8 @@ function createDetailContent(details) {
         });
 
         // ✅ แก้ไข groupKey ให้ถูกต้อง
-        const groupKey = type === "feedback" ? "status" : "fixing";
+        // const groupKey = type === "feedback" ? "status" : "fixing";
+        const groupKey = "document";
         const statusId = item.feedback_status_id || item.worked_status_id;
 
         // ✅ แก้ไขให้ใช้ตัวแปร masterOptions และหาจาก statusId
@@ -695,8 +705,12 @@ function createDetailContent(details) {
         );
         const statusLabel = statusObj?.option_label || `(ID: ${statusId})`;
 
+        // const statusColor =
+        //   item.status === 1 ? "text-green-600" : "text-yellow-600";
+
         const statusColor =
-          item.status === 1 ? "text-green-600" : "text-yellow-600";
+          statusId === "REPORT" ? "text-green-600" : "text-yellow-600";
+
         const recordId = item.feedback_id || item.worked_id;
 
         return `
@@ -1016,10 +1030,10 @@ async function handleSave(type, tordId, existingData) {
       body: JSON.stringify(body),
     });
 
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.error || "Failed to save data");
-    }
+    // if (!response.ok) {
+    //   const err = await response.json();
+    //   throw new Error(err.error || "Failed to save data");
+    // }
 
     closePopup();
     const openDetailsRow = document.querySelector(".details-row.is-open");
