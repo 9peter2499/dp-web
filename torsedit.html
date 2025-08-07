@@ -160,7 +160,7 @@
       const SUPABASE_URL = "https://fhnprrlmlhleomfqqvpp.supabase.co";
       const SUPABASE_ANON_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZobnBycmxtbGhsZW9tZnFxdnBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA5MTAyMjIsImV4cCI6MjA2NjQ4NjIyMn0.WA-_yNFWxpFnJBA3oh5UlOtq89KBm5hqsb51oi04hMk"; // ตัดเพื่อความปลอดภัย
-
+      const API_BASE_URL = "https://api.dp-web.online";
       const { createClient } = supabase;
       //const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -233,9 +233,7 @@
       }
 
       const loadMasterOptions = async (group) => {
-        const res = await fetch(
-          `https://pcsdata.onrender.com/api/options?group=${group}`
-        );
+        const res = await fetch(`${API_BASE_URL}/api/options?group=${group}`);
         if (!res.ok) {
           throw new Error(`โหลด MasterOptions ไม่สำเร็จ (${group})`);
         }
@@ -264,9 +262,7 @@
       async function loadData(torId) {
         try {
           // โหลดข้อมูลจาก API
-          const response = await fetch(
-            `https://pcsdata.onrender.com/api/tors/${torId}`
-          );
+          const response = await fetch(`${API_BASE_URL}/api/tors/${torId}`);
           if (!response.ok) throw new Error("ไม่สามารถดึงข้อมูล TOR ได้");
           const data = await response.json();
 
@@ -322,21 +318,18 @@
         };
 
         try {
-          const torRes = await fetch(
-            `https://pcsdata.onrender.com/api/tors/${torId}`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${session.access_token}`,
-              },
-              body: JSON.stringify(torData),
-            }
-          );
+          const torRes = await fetch(`${API_BASE_URL}/api/tors/${torId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session.access_token}`,
+            },
+            body: JSON.stringify(torData),
+          });
           if (!torRes.ok) throw new Error("เกิดข้อผิดพลาดในการบันทึก TORs");
 
           const detailRes = await fetch(
-            `https://pcsdata.onrender.com/api/tordetail/${tordId}`,
+            `${API_BASE_URL}/api/tordetail/${tordId}`,
             {
               method: "PUT",
               headers: {

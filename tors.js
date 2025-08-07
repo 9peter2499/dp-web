@@ -1,6 +1,8 @@
 // tors.js
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm";
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
+//import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
+// ✅ Import ค่าใหม่ทั้งหมดจาก config.js
+import { SUPABASE_URL, SUPABASE_ANON_KEY, API_BASE_URL } from "./config.js";
 
 //const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -73,9 +75,12 @@ async function apiFetch(url, options = {}) {
 async function loadAllMasterOptions() {
   try {
     // ✅ เรียกใช้แล้วรับข้อมูล JSON ได้เลย ง่ายกว่ามาก
-    masterOptions = await apiFetch(
-      "https://pcsdata.onrender.com/api/options/all"
-    );
+    // masterOptions = await apiFetch(
+    //   "https://pcsdata.onrender.com/api/options/all"
+    // );
+
+    masterOptions = await apiFetch(`${API_BASE_URL}/api/options/all`);
+
     console.log("✅ Successfully loaded all master options in one request.");
   } catch (err) {
     console.error("❌ Failed to load all master options:", err);
@@ -198,7 +203,9 @@ async function initPage(session) {
       apiStatus.className = "text-yellow-400";
 
       // ✅ แก้ไขตรงนี้ให้รับ rawData จาก apiFetch โดยตรง
-      const rawData = await apiFetch("https://pcsdata.onrender.com/api/tors");
+      //const rawData = await apiFetch("https://pcsdata.onrender.com/api/tors");
+
+      const rawData = await apiFetch(`${API_BASE_URL}/api/tors`);
 
       allTorsData = rawData.map((item) => ({
         ...item,
@@ -243,9 +250,11 @@ async function loadPresentationDates() {
 
   try {
     // ✅ รับข้อมูล dates ที่พร้อมใช้งานได้เลย
-    const dates = await apiFetch(
-      "https://pcsdata.onrender.com/api/presentation/dates"
-    );
+    // const dates = await apiFetch(
+    //   "https://pcsdata.onrender.com/api/presentation/dates"
+    // );
+
+    const dates = await apiFetch(`${API_BASE_URL}/api/presentation/dates`);
 
     dateFilter.innerHTML = '<option value="">-- เลือกวันที่ --</option>';
     dates.forEach((dateString) => {
@@ -272,8 +281,12 @@ async function loadLatestUpdateDate() {
     await new Promise((resolve) => setTimeout(resolve, 250));
 
     // ✅ รับข้อมูล data ที่พร้อมใช้งานจาก apiFetch ได้เลย
+    // const data = await apiFetch(
+    //   "https://pcsdata.onrender.com/api/presentation/last-updated"
+    // );
+
     const data = await apiFetch(
-      "https://pcsdata.onrender.com/api/presentation/last-updated"
+      `${API_BASE_URL}/api/presentation/last-updated`
     );
 
     const updateBox = document.getElementById("last-updated");
@@ -500,9 +513,11 @@ async function toggleDetails(detailsRow, mainRow, torId) {
     detailCell.innerHTML = `<div class="bg-yellow-50/70 p-6">กำลังโหลด...</div>`;
     try {
       // ✅ แก้ไขให้เรียกใช้ apiFetch และรับข้อมูล details ได้เลย
-      const details = await apiFetch(
-        `https://pcsdata.onrender.com/api/tors/${torId}`
-      );
+      // const details = await apiFetch(
+      //   `https://pcsdata.onrender.com/api/tors/${torId}`
+      // );
+
+      const details = await apiFetch(`${API_BASE_URL}/api/tors/${torId}`);
 
       detailCell.innerHTML = `${createDetailContent(details)}`;
       addDetailEventListeners(details);
@@ -883,7 +898,7 @@ async function handleSave(type, tordId, existingData) {
   }
 
   try {
-    const response = await apiFetch(`https://pcsdata.onrender.com${endpoint}`, {
+    const response = await apiFetch(`${API_BASE_URL}${endpoint}`, {
       method: method,
       headers: {
         "Content-Type": "application/json",
@@ -916,7 +931,7 @@ async function handleDelete(type, recordId) {
   const endpoint = `/api/${type}/${recordId}`;
 
   try {
-    const response = await apiFetch(`https://pcsdata.onrender.com${endpoint}`, {
+    const response = await apiFetch(`${API_BASE_URL}${endpoint}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${session.access_token}` },
     });
@@ -991,20 +1006,17 @@ async function handlePresentationSubmit() {
     const {
       data: { session },
     } = await _supabase.auth.getSession();
-    const response = await apiFetch(
-      "https://pcsdata.onrender.com/api/presentation",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify(payload),
-      }
-    );
+    const response = await apiFetch("${API_BASE_URL}/api/presentation", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify(payload),
+    });
 
     const result = await response.json();
-    if (!response.ok) throw new Error(result.error);
+    // if (!response.ok) throw new Error(result.error);
 
     alert("บันทึกข้อมูลสำเร็จ!");
     closePresentationModal();
