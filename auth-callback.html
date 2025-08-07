@@ -1,34 +1,36 @@
 <!DOCTYPE html>
 <html lang="th">
-<head>
-  <meta charset="UTF-8" />
-  <title>Authenticating...</title>
-</head>
-<body class="p-8">
-  <p>กำลังตรวจสอบสถานะการล็อคอิน, กรุณารอสักครู่...</p>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Authenticating...</title>
+  </head>
+  <body class="p-8">
+    <p>กำลังตรวจสอบสถานะการล็อคอิน, กรุณารอสักครู่...</p>
 
-  <script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm';
-  import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
+    <script type="module">
+      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm";
+      import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // (debug) ให้เรียกดูใน console
-  console.log('🔍 Checking persisted session…');
-  try {
-    const { data: { session }, error } = await supabase.auth.getSession();
-    console.log('👉 getSession →', session, error);
+      // (debug) ให้เรียกดูใน console
+      console.log("🔍 Checking persisted session…");
+      try {
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
+        console.log("👉 getSession →", session, error);
 
-    if (session) {
-      window.location.replace('/tors.html');
-    } else {
-      window.location.replace('/login.html');
-    }
-  } catch (err) {
-    console.error('❌ Error getting session:', err);
-    window.location.replace('/login.html');
-  }
-</script>
-
-</body>
+        if (session) {
+          window.location.replace("/tors.html");
+        } else {
+          window.location.replace("/login.html");
+        }
+      } catch (err) {
+        console.error("❌ Error getting session:", err);
+        window.location.replace("/login.html");
+      }
+    </script>
+  </body>
 </html>
