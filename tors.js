@@ -70,25 +70,6 @@ async function apiFetch(url, options = {}) {
 }
 
 // --- 1. CORE FUNCTIONS ---
-
-// ✅ ฟังก์ชันใหม่สำหรับโหลด Master Data ทั้งหมดในครั้งเดียว
-// async function loadAllMasterOptions() {
-//   try {
-//     const res = await apiFetch("https://pcsdata.onrender.com/api/options/all");
-//     // if (!res.ok) {
-//     //   throw new Error(`HTTP error! status: ${res.status}`);
-//     // }
-//     // masterOptions จะถูกเติมทั้งหมดในครั้งเดียว
-//     masterOptions = await res.json();
-//     console.log("✅ Successfully loaded all master options in one request.");
-//   } catch (err) {
-//     console.error("❌ Failed to load all master options:", err);
-//     // ตั้งค่า default เป็น object ว่างหากโหลดล้มเหลว
-//     masterOptions = {};
-//     throw err; // ส่ง error ต่อไปให้ initPage จัดการ
-//   }
-// }
-
 async function loadAllMasterOptions() {
   try {
     // ✅ เรียกใช้แล้วรับข้อมูล JSON ได้เลย ง่ายกว่ามาก
@@ -210,41 +191,6 @@ async function initPage(session) {
     }
 
     // Step 3: Fetch main TOR data
-    // try {
-    //   // หน่วงเวลาอีกครั้งก่อนโหลดข้อมูลหลัก
-    //   await new Promise((resolve) => setTimeout(resolve, 250));
-    //   apiStatus.textContent = "Fetching from API...";
-    //   apiStatus.className = "text-yellow-400";
-    //   const response = await apiFetch("https://pcsdata.onrender.com/api/tors");
-    //   // if (!response.ok)
-    //   //   throw new Error(`Network response was not ok (${response.status})`);
-
-    //   const rawData = await response.json();
-
-    //   allTorsData = rawData.map((item) => ({
-    //     ...item,
-    //     tor_status_label: item.tor_status?.option_label || "N/A",
-    //     tor_fixing_label: item.tor_fixing?.option_label || "",
-    //   }));
-
-    //   apiStatus.textContent = `Success - Fetched ${allTorsData.length} records.`;
-    //   apiStatus.className = "text-green-400";
-
-    //   // Step 4: Populate UI
-    //   allTorsData.sort((a, b) => a.tor_id.localeCompare(b.tor_id));
-    //   populateFilters(allTorsData);
-    //   applyFilters();
-    //   loadLatestUpdateDate();
-    //   populatePresenterDropdown();
-    //   restorePageState();
-    // } catch (error) {
-    //   apiStatus.textContent = `Error: ${error.message}`;
-    //   apiStatus.className = "text-red-400";
-    //   document.getElementById(
-    //     "tor-table-body"
-    //   ).innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
-    // }
-
     try {
       // หน่วงเวลาอีกครั้งก่อนโหลดข้อมูลหลัก
       await new Promise((resolve) => setTimeout(resolve, 250));
@@ -291,37 +237,6 @@ async function initPage(session) {
   }
 }
 
-// async function loadPresentationDates() {
-//   const dateFilter = document.getElementById("presented-date-filter");
-//   if (!dateFilter) return;
-
-//   try {
-//     const res = await apiFetch(
-//       "https://pcsdata.onrender.com/api/presentation/dates"
-//     );
-//     // if (!res.ok) throw new Error("Failed to fetch presentation dates");
-
-//     const dates = await res.json();
-
-//     dateFilter.innerHTML = '<option value="">-- เลือกวันที่ --</option>';
-//     dates.forEach((dateString) => {
-//       const date = new Date(dateString);
-//       const displayDate = date.toLocaleDateString("th-TH", {
-//         day: "numeric",
-//         month: "long",
-//         year: "numeric",
-//       });
-//       dateFilter.innerHTML += `<option value="${dateString}">${displayDate}</option>`;
-//     });
-//     console.log("✅ Successfully loaded presentation dates.");
-//   } catch (err) {
-//     console.error("❌ Load presentation dates failed:", err);
-//     dateFilter.innerHTML =
-//       '<option value="">-- ไม่สามารถโหลดวันที่ --</option>';
-//     throw err;
-//   }
-// }
-
 async function loadPresentationDates() {
   const dateFilter = document.getElementById("presented-date-filter");
   if (!dateFilter) return;
@@ -350,30 +265,6 @@ async function loadPresentationDates() {
     throw err;
   }
 }
-
-// async function loadLatestUpdateDate() {
-//   try {
-//     // หน่วงเวลาเล็กน้อย
-//     await new Promise((resolve) => setTimeout(resolve, 250));
-//     const res = await apiFetch(
-//       "https://pcsdata.onrender.com/api/presentation/last-updated"
-//     );
-//     // if (!res.ok) throw new Error("Response not OK");
-//     const data = await res.json();
-//     const updateBox = document.getElementById("last-updated");
-//     if (updateBox && data.latestDate) {
-//       const latestDate = new Date(data.latestDate);
-//       const formatted = latestDate.toLocaleDateString("th-TH", {
-//         day: "numeric",
-//         month: "long",
-//         year: "numeric",
-//       });
-//       updateBox.textContent = `ข้อมูลอัปเดตล่าสุด: ${formatted}`;
-//     }
-//   } catch (err) {
-//     console.error("Error loading latest update date:", err);
-//   }
-// }
 
 async function loadLatestUpdateDate() {
   try {
@@ -590,35 +481,6 @@ function scrollToTorFromHash() {
 }
 
 // --- 3. DETAIL VIEW FUNCTIONS ---
-
-// async function toggleDetails(detailsRow, mainRow, torId) {
-//   const isOpen = detailsRow.classList.toggle("is-open");
-//   mainRow.classList.toggle("is-active");
-
-//   document.querySelectorAll(".details-row").forEach((row) => {
-//     if (row !== detailsRow) {
-//       row.classList.remove("is-open");
-//       if (row.previousElementSibling)
-//         row.previousElementSibling.classList.remove("is-active");
-//     }
-//   });
-
-//   if (isOpen) {
-//     const detailCell = detailsRow.querySelector("td > div");
-//     detailCell.innerHTML = `<div class="bg-yellow-50/70 p-6">กำลังโหลด...</div>`;
-//     try {
-//       const res = await apiFetch(
-//         `https://pcsdata.onrender.com/api/tors/${torId}`
-//       );
-//       // if (!res.ok) throw new Error("Failed to fetch details");
-//       const details = await res.json();
-//       detailCell.innerHTML = `${createDetailContent(details)}`;
-//       addDetailEventListeners(details);
-//     } catch (e) {
-//       detailCell.innerHTML = `<div class="bg-red-100 text-red-800 p-4">เกิดข้อผิดพลาดในการโหลดรายละเอียด: ${e.message}</div>`;
-//     }
-//   }
-// }
 
 // ในฟังก์ชัน toggleDetails
 async function toggleDetails(detailsRow, mainRow, torId) {
@@ -1030,11 +892,6 @@ async function handleSave(type, tordId, existingData) {
       body: JSON.stringify(body),
     });
 
-    // if (!response.ok) {
-    //   const err = await response.json();
-    //   throw new Error(err.error || "Failed to save data");
-    // }
-
     closePopup();
     const openDetailsRow = document.querySelector(".details-row.is-open");
     if (openDetailsRow) {
@@ -1151,14 +1008,6 @@ async function handlePresentationSubmit() {
 
     alert("บันทึกข้อมูลสำเร็จ!");
     closePresentationModal();
-
-    // const openDetailsRow = document.querySelector(".details-row.is-open");
-    // if (openDetailsRow) {
-    //   const mainRow = openDetailsRow.previousElementSibling;
-    //   const tord_id = payload.selected_tors[0];
-    //   toggleDetails(openDetailsRow, mainRow, tord_id); // Close
-    //   toggleDetails(openDetailsRow, mainRow, tord_id); // Re-open
-    // }
 
     // ค้นหา tor_id ที่ถูกต้องจาก tord_id เพื่อใช้รีเฟรช
     const tord_id = payload.selected_tors[0];
@@ -1298,14 +1147,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
   // // Main Auth Listener - The single source of truth for starting the app
-  // _supabase.auth.onAuthStateChange((_event, session) => {
-  //   if (session) {
-  //     initPage(session);
-  //   } else {
-  //     window.location.href = "/login.html";
-  //   }
-  // });
-
   // ✅ 1. สร้าง "ธง" (flag) ขึ้นมาที่ด้านนอกของ listener
   let isInitialized = false;
 
