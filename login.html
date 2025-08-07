@@ -55,7 +55,7 @@
       </div>
     </div>
 
-    <script type="module">
+    <!-- <script type="module">
       import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm";
       import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
 
@@ -81,6 +81,35 @@
       //       alert("เกิดข้อผิดพลาดในการล็อกอิน: " + error.message);
       //     }
       //   }
+
+      googleLoginButton.addEventListener("click", signInWithGoogle);
+    </script> -->
+
+    <script type="module">
+      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm";
+      // ✅ แนะนำให้ใช้ config.js เพื่อให้แก้ไขง่ายในที่เดียว
+      import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
+
+      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: {
+          // ✅ เพิ่ม Option นี้เพื่อให้ทำงานบนมือถือได้ดีขึ้น
+          flowType: "pkce",
+        },
+      });
+
+      const googleLoginButton = document.getElementById("google-login-btn");
+
+      async function signInWithGoogle() {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          // ❌ ไม่ต้องมี options: { redirectTo: ... } อีกต่อไป
+        });
+
+        if (error) {
+          console.error("Error signing in with Google:", error);
+          alert("เกิดข้อผิดพลาดในการล็อกอิน: " + error.message);
+        }
+      }
 
       googleLoginButton.addEventListener("click", signInWithGoogle);
     </script>
