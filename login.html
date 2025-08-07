@@ -62,13 +62,24 @@
       const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       const googleLoginButton = document.getElementById("google-login-btn");
 
+      //   async function signInWithGoogle() {
+      //     await supabase.auth.signInWithOAuth({
+      //       provider: "google",
+      //       options: {
+      //         redirectTo: "https://app.dp-web.online/auth-callback.html",
+      //       },
+      //     });
+      //   }
+
       async function signInWithGoogle() {
-        await supabase.auth.signInWithOAuth({
+        const { error } = await supabase.auth.signInWithOAuth({
           provider: "google",
-          options: {
-            redirectTo: "https://app.dp-web.online/auth-callback.html",
-          },
         });
+
+        if (error) {
+          console.error("Error signing in with Google:", error);
+          alert("เกิดข้อผิดพลาดในการล็อกอิน: " + error.message);
+        }
       }
 
       googleLoginButton.addEventListener("click", signInWithGoogle);
