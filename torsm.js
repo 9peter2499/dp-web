@@ -424,85 +424,85 @@ function createPresentationTable(presentationItems) {
   `;
 }
 
-function createItemList(items) {
-  if (!items || items.length === 0) return "<li>ไม่มีข้อมูล</li>";
+// function createItemList(items) {
+//   if (!items || items.length === 0) return "<li>ไม่มีข้อมูล</li>";
 
-  // ✅ 2.1 & 2.2: กรองเอาเฉพาะสถานะ 'REPORT'
-  let itemsToDisplay = items.filter(
-    (item) =>
-      item.feedback_status_id === "REPORT" || item.worked_status_id === "REPORT"
-  );
+//   // ✅ 2.1 & 2.2: กรองเอาเฉพาะสถานะ 'REPORT'
+//   let itemsToDisplay = items.filter(
+//     (item) =>
+//       item.feedback_status_id === "REPORT" || item.worked_status_id === "REPORT"
+//   );
 
-  if (itemsToDisplay.length === 0) return "<li>ไม่มีรายการสำหรับแสดงผล</li>";
+//   if (itemsToDisplay.length === 0) return "<li>ไม่มีรายการสำหรับแสดงผล</li>";
 
-  // เรียงตามวันที่ล่าสุดขึ้นก่อน
-  itemsToDisplay.sort(
-    (a, b) =>
-      new Date(b.feedback_date || b.worked_date) -
-      new Date(a.feedback_date || a.worked_date)
-  );
+//   // เรียงตามวันที่ล่าสุดขึ้นก่อน
+//   itemsToDisplay.sort(
+//     (a, b) =>
+//       new Date(b.feedback_date || b.worked_date) -
+//       new Date(a.feedback_date || a.worked_date)
+//   );
 
-  return itemsToDisplay
-    .map((item) => {
-      const message = item.feedback_message || item.worked_message;
-      const date = new Date(item.feedback_date || item.worked_date);
-      const formattedDate = date.toLocaleDateString("th-TH", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      });
-      // ✅ ไม่ต้องแสดง (เอกสารรายงาน)
-      return `<li class="border-b border-gray-200 py-2">
-                <div class="prose prose-sm max-w-none">${message}</div>
-                <div class="text-xs text-gray-500 mt-1">วันที่: ${formattedDate}</div>
-              </li>`;
-    })
-    .join("");
-}
+//   return itemsToDisplay
+//     .map((item) => {
+//       const message = item.feedback_message || item.worked_message;
+//       const date = new Date(item.feedback_date || item.worked_date);
+//       const formattedDate = date.toLocaleDateString("th-TH", {
+//         day: "2-digit",
+//         month: "short",
+//         year: "numeric",
+//       });
+//       // ✅ ไม่ต้องแสดง (เอกสารรายงาน)
+//       return `<li class="border-b border-gray-200 py-2">
+//                 <div class="prose prose-sm max-w-none">${message}</div>
+//                 <div class="text-xs text-gray-500 mt-1">วันที่: ${formattedDate}</div>
+//               </li>`;
+//     })
+//     .join("");
+// }
 
-function createPresentationTable(presentationItems) {
-  if (!presentationItems || presentationItems.length === 0)
-    return "<div class='text-gray-500'>ไม่มีข้อมูลการนำเสนอ</div>";
+// function createPresentationTable(presentationItems) {
+//   if (!presentationItems || presentationItems.length === 0)
+//     return "<div class='text-gray-500'>ไม่มีข้อมูลการนำเสนอ</div>";
 
-  const rows = presentationItems
-    .map((item) => {
-      const p = item.Presentation;
-      if (!p) return "";
-      const date = new Date(p.ptt_date).toLocaleDateString("th-TH", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-      const presenterName = p.MasterOptions
-        ? p.MasterOptions.option_label
-        : "-";
-      return `
-        <tr class="border-b">
-          <td class="p-2">${date}</td>
-          <td class="p-2">${p.ptt_type || "-"}</td>
-          <td class="p-2">${p.ptt_timerange || "-"}</td>
-          <td class="p-2">${presenterName}</td> 
-        </tr>
-      `;
-    })
-    .join("");
+//   const rows = presentationItems
+//     .map((item) => {
+//       const p = item.Presentation;
+//       if (!p) return "";
+//       const date = new Date(p.ptt_date).toLocaleDateString("th-TH", {
+//         year: "numeric",
+//         month: "long",
+//         day: "numeric",
+//       });
+//       const presenterName = p.MasterOptions
+//         ? p.MasterOptions.option_label
+//         : "-";
+//       return `
+//         <tr class="border-b">
+//           <td class="p-2">${date}</td>
+//           <td class="p-2">${p.ptt_type || "-"}</td>
+//           <td class="p-2">${p.ptt_timerange || "-"}</td>
+//           <td class="p-2">${presenterName}</td>
+//         </tr>
+//       `;
+//     })
+//     .join("");
 
-  return `
-    <div class="overflow-x-auto">
-      <table class="table-auto w-full text-sm">
-        <thead class="bg-gray-100">
-          <tr>
-            <th class="p-2 text-left font-semibold">วันที่นำเสนอ</th>
-            <th class="p-2 text-left font-semibold">เงื่อนไข</th>
-            <th class="p-2 text-left font-semibold">ช่วงเวลา</th>
-            <th class="p-2 text-left font-semibold">ผู้นำเสนอ</th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>
-  `;
-}
+//   return `
+//     <div class="overflow-x-auto">
+//       <table class="table-auto w-full text-sm">
+//         <thead class="bg-gray-100">
+//           <tr>
+//             <th class="p-2 text-left font-semibold">วันที่นำเสนอ</th>
+//             <th class="p-2 text-left font-semibold">เงื่อนไข</th>
+//             <th class="p-2 text-left font-semibold">ช่วงเวลา</th>
+//             <th class="p-2 text-left font-semibold">ผู้นำเสนอ</th>
+//           </tr>
+//         </thead>
+//         <tbody>${rows}</tbody>
+//       </table>
+//     </div>
+//   `;
+// }
 
 // ใน torsm.js
 function renderTable(data) {
