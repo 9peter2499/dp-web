@@ -46,7 +46,7 @@ async function apiFetch(path, session, options = {}) {
   return response.status === 204 ? null : response.json();
 }
 
-// --- ฟังก์ชันหลัก ---
+// --- ฟังก์ชันหลัก --- //
 
 async function startAnonymousSession() {
   showLoadingOverlay();
