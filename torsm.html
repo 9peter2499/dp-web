@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>รายการข้อกำหนด (TOR)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <link
+      href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+    <!-- <script>
+      (function () {
+        const logContainer = document.getElementById("debug-log");
+        if (!logContainer) {
+          // สร้าง container ถ้ายังไม่มี
+          document.addEventListener("DOMContentLoaded", function () {
+            initializeDebugConsole();
+          });
+        } else {
+          initializeDebugConsole();
+        }
+
+        function initializeDebugConsole() {
+          const logContainer = document.getElementById("debug-log");
+          if (!logContainer) return;
+
+          function createLogMessage(message, level) {
+            const line = document.createElement("div");
+            line.className = "log-line " + (level ? "log-" + level : "");
+
+            if (typeof message === "object") {
+              try {
+                line.textContent = JSON.stringify(message, null, 2);
+              } catch (e) {
+                line.textContent = "Unserializable Object";
+              }
+            } else {
+              line.textContent = message;
+            }
+            logContainer.appendChild(line);
+            logContainer.scrollTop = logContainer.scrollHeight;
+          }
+
+          const originalConsole = {
+            log: console.log.bind(console),
+            error: console.error.bind(console),
+            warn: console.warn.bind(console),
+          };
+
+          console.log = function (...args) {
+            originalConsole.log(...args);
+            createLogMessage(args.join(" "));
+          };
+          console.error = function (...args) {
+            originalConsole.error(...args);
+            createLogMessage(args.join(" "), "error");
+          };
+          console.warn = function (...args) {
+            originalConsole.warn(...args);
+            createLogMessage(args.join(" "), "warn");
+          };
+
+          window.addEventListener("error", function (event) {
+            createLogMessage("UNCAUGHT ERROR: " + event.message, "error");
+          });
+          window.addEventListener("unhandledrejection", function (event) {
+            createLogMessage(
+              "UNHANDLED PROMISE REJECTION: " + event.reason,
+              "error"
+            );
+          });
+        }
+      })();
+    </script> -->
+
+    <style>
+      body {
+        font-family: "Sarabun", sans-serif;
+        font-size: 16px;
+        max-width: none !important;
+        width: 100%;
+      }
+      .container {
+        max-width: 100% !important;
+        width: 100%;
+      }
+      .details-row {
+        display: none;
+      }
+      .details-row.is-open {
+        display: table-row;
+      }
+      .main-row.is-active {
+        background-color: #f9fafb;
+        font-weight: 700;
+      }
+      .popup-overlay {
+        background-color: rgba(0, 0, 0, 0.5);
+        transition: opacity 0.3s ease;
+      }
+      .popup-content {
+        transition: transform 0.3s ease;
+      }
+      .ql-editor {
+        min-height: 12rem;
+      }
+      /* ใน <style> ของ tors.html */
+      .highlight-fade {
+        animation: highlight-animation 2.5s ease-out;
+      }
+
+      @keyframes highlight-animation {
+        0% {
+          background-color: #fef9c3;
+        } /* สีเหลืองอ่อน */
+        100% {
+          background-color: transparent;
+        }
+      }
+      /* ✅ CSS สำหรับ Loading Spinner */
+      .loading-spinner {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border-left-color: #4f46e5; /* สี indigo */
+        animation: spin 1s ease infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      #debug-console {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        height: 30%;
+        background-color: rgba(0, 0, 0, 0.85);
+        color: white;
+        font-family: monospace;
+        font-size: 12px;
+        z-index: 99999;
+        border: 1px solid #555;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+      }
+      #debug-header {
+        background-color: #333;
+        padding: 4px 8px;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      #debug-header button {
+        background-color: #555;
+        color: white;
+        border: none;
+        padding: 2px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      #debug-log {
+        overflow-y: scroll;
+        padding: 8px;
+        flex-grow: 1;
+      }
+      .log-line {
+        padding: 2px 0;
+        border-bottom: 1px solid #444;
+      }
+      .log-error {
+        color: #ff8a80; /* สีแดงสำหรับ Error */
+        background-color: rgba(255, 0, 0, 0.1);
+      }
+      .log-warn {
+        color: #ffd180; /* สีเหลืองสำหรับ Warning */
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 p-4 sm:p-8">
+    <div class="max-w-screen-xl mx-auto">
+      <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+        <!-- ซ้าย: ชื่อหัวเรื่อง -->
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">
+            รายการข้อกำหนด (TOR) ทั้งหมด
+          </h1>
+          <!-- <p id="last-updated" class="text-sm text-gray-500 mt-1">
+            ข้อมูลอัปเดตล่าสุด: กำลังโหลด...
+          </p> -->
+          <span id="last-updated">ข้อมูลอัปเดตล่าสุด: -</span>
+        </div>
+
+        <!-- กลาง: ปุ่มนำทางเพิ่มเติม -->
+        <div class="flex gap-2">
+          <a href="dashboard.html" target="_blank">
+            <button
+              class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-3 rounded text-sm shadow"
+            >
+              📊 สรุปผลการนำเสนอ
+            </button>
+          </a>
+        </div>
+
+        <!-- ขวา: ข้อมูลผู้ใช้และปุ่ม logout -->
+        <div id="user-info-panel" class="hidden flex items-center gap-4">
+          <span id="user-display" class="font-semibold text-gray-700"></span>
+          <button
+            id="logout-btn"
+            class="bg-red-600 text-white font-bold py-2 px-3 rounded hover:bg-red-700 transition-colors text-sm"
+          >
+            <i class="fas fa-sign-out-alt mr-2"></i>ออกจากระบบ
+          </button>
+        </div>
+      </div>
+
+      <div
+        id="debug-panel"
+        class="mb-6 p-4 bg-gray-800 text-white rounded-lg shadow-md text-sm font-mono"
+        style="display: none"
+      >
+        <h3 class="font-bold text-lg mb-2 text-yellow-300">
+          Debug Status Panel
+        </h3>
+        <div id="auth-status">
+          1. Auth Listener Status: <span class="text-gray-400">Waiting...</span>
+        </div>
+        <div id="session-status">
+          2. Session Found: <span class="text-gray-400">Waiting...</span>
+        </div>
+        <div id="api-status">
+          3. API Fetch Status: <span class="text-gray-400">Waiting...</span>
+        </div>
+        <div id="render-mode">
+          4. Rendering Mode: <span class="text-gray-400">Waiting...</span>
+        </div>
+      </div>
+
+      <div class="mb-6 p-4 bg-white rounded-lg shadow-sm">
+        <div class="flex flex-wrap md:flex-nowrap gap-4 items-end">
+          <!-- ระบบงาน 40% -->
+          <div class="w-full md:w-2/5">
+            <label
+              for="module-filter"
+              class="block text-sm font-bold text-gray-700"
+              >ระบบงาน</label
+            >
+            <select
+              id="module-filter"
+              class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 rounded-md"
+            >
+              <option value="all">ระบบงานทั้งหมด</option>
+            </select>
+          </div>
+
+          <!-- สถานะ 20% -->
+          <div class="w-full md:w-1/5">
+            <label
+              for="status-filter"
+              class="block text-sm font-bold text-gray-700"
+              >สถานะ</label
+            >
+            <select
+              id="status-filter"
+              class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 rounded-md"
+            >
+              <option value="all">ทุกสถานะ</option>
+            </select>
+          </div>
+
+          <!-- วันที่นำเสนอ 20% -->
+          <div class="w-full md:w-1/5">
+            <label
+              for="presented-date-filter"
+              class="block text-sm font-bold text-gray-700"
+              >วันที่นำเสนอ</label
+            >
+            <select
+              id="presented-date-filter"
+              class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 rounded-md"
+            >
+              <option value="">-- เลือกวันที่ --</option>
+              <!-- ตัวเลือกจะถูกสร้างจาก JavaScript -->
+            </select>
+          </div>
+
+          <!-- ค้นหา 20% -->
+          <div class="w-full md:w-1/5">
+            <label
+              for="search-box"
+              class="block text-sm font-bold text-gray-700"
+              >ค้นหา</label
+            >
+            <div class="mt-1 relative">
+              <input
+                type="text"
+                id="search-box"
+                class="block w-full pl-4 pr-10 py-2 text-base border-gray-300 rounded-md"
+                placeholder="ค้นหา..."
+              />
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+                <i class="fas fa-search text-gray-400"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="min-w-full w-full">
+            <thead class="bg-gray-200">
+              <tr>
+                <th
+                  class="p-4 text-center text-base font-bold text-gray-600 w-16"
+                >
+                  ลำดับ
+                </th>
+                <th class="p-4 text-left text-base font-bold text-gray-600">
+                  ข้อกำหนด(TOR)
+                </th>
+                <th
+                  class="p-4 text-left text-base font-bold text-gray-600 w-24"
+                >
+                  สถานะ
+                </th>
+                <th
+                  class="p-4 text-left text-base font-bold text-gray-600 w-48"
+                >
+                  การแก้ไข
+                </th>
+              </tr>
+            </thead>
+            <tbody id="tor-table-body" class="divide-y divide-gray-200"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="popup-modal"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden opacity-0 transition-opacity"
+    >
+      <div
+        class="popup-content bg-white rounded-lg shadow-xl transform scale-95 transition-transform w-full max-w-lg p-6"
+      >
+        <div class="flex justify-between items-center mb-4">
+          <h2 id="popup-title" class="text-lg font-bold"></h2>
+          <button
+            id="close-popup-btn"
+            class="text-gray-500 hover:text-gray-700"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <!-- ช่องให้ Quill สร้าง editor -->
+        <div id="editor-container" style="height: 200px"></div>
+        <div class="mt-4 flex items-center">
+          <label for="popup-status" class="mr-2">สถานะ:</label>
+          <select id="popup-status" class="border rounded p-2">
+            <option value="1">แสดงในรายงาน</option>
+            <option value="0">ร่าง</option>
+          </select>
+        </div>
+        <div class="mt-6 flex justify-end space-x-3">
+          <button
+            id="cancel-popup-btn"
+            class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded"
+          >
+            ยกเลิก
+          </button>
+          <button
+            id="save-popup-btn"
+            class="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded"
+          >
+            บันทึก
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Presentation Modal (Tailwind CSS Version) -->
+    <div
+      id="presentationModal"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden opacity-0 transition-opacity"
+    >
+      <div
+        class="popup-content bg-white rounded-lg shadow-xl transform scale-95 transition-transform w-full max-w-lg p-6"
+      >
+        <div class="flex justify-between items-center mb-4">
+          <h5 id="presentationModalTitle" class="text-lg font-bold">
+            บันทึกข้อมูลการนำเสนอ
+          </h5>
+          <!-- ✅ เพิ่ม ID ให้ปุ่มปิด -->
+          <button
+            id="closePresentationModalBtn"
+            class="text-gray-500 hover:text-gray-700"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form id="presentationForm">
+            <!-- Hidden inputs to store data -->
+            <input type="hidden" id="modal_tord_id" />
+
+            <!-- แถวที่ 1: วันที่ และ เงื่อนไข -->
+            <div class="flex gap-x-6 mb-5">
+              <div class="w-1/2">
+                <label
+                  for="presentationDate"
+                  class="font-semibold text-gray-700"
+                  >วันที่:</label
+                >
+                <input
+                  type="date"
+                  id="presentationDate"
+                  name="presentationDate"
+                  class="mt-1 block w-full pl-3 pr-2 py-2 text-base border-gray-300 rounded-md"
+                />
+              </div>
+              <div class="w-1/2">
+                <label class="font-semibold text-gray-700">เงื่อนไข:</label>
+                <p id="modal_display_type" class="mt-1">------</p>
+              </div>
+            </div>
+
+            <!-- แถวที่ 2: เวลาเริ่มและสิ้นสุด -->
+            <div class="flex gap-x-6 mb-5">
+              <div class="w-1/2">
+                <label
+                  for="startTime"
+                  class="block text-sm font-medium text-gray-700"
+                  >เริ่มนำเสนอ</label
+                >
+                <select
+                  id="startTime"
+                  class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                ></select>
+              </div>
+              <div class="w-1/2">
+                <label
+                  for="endTime"
+                  class="block text-sm font-medium text-gray-700"
+                  >สิ้นสุดนำเสนอ</label
+                >
+                <select
+                  id="endTime"
+                  class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                ></select>
+              </div>
+            </div>
+
+            <!-- แถวที่ 3: ผู้นำเสนอ -->
+            <div class="mb-5">
+              <label
+                for="presenterSelect"
+                class="block text-sm font-medium text-gray-700"
+                >ผู้นำเสนอ</label
+              >
+              <select
+                id="presenterSelect"
+                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 rounded-md"
+              >
+                <option value="">-- กรุณาเลือก --</option>
+                <!-- รายการจะถูกสร้างจาก JavaScript -->
+              </select>
+            </div>
+
+            <!-- แถวที่ 4: หมายเหตุ -->
+            <div>
+              <label
+                for="presentationRemark"
+                class="block text-sm font-medium text-gray-700"
+                >หมายเหตุ</label
+              >
+              <textarea
+                id="presentationRemark"
+                rows="3"
+                class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+              ></textarea>
+            </div>
+          </form>
+        </div>
+
+        <div class="mt-6 flex justify-end space-x-3">
+          <!-- ✅ เพิ่ม ID ให้ปุ่มยกเลิกและบันทึก -->
+          <button
+            id="cancelPresentationModalBtn"
+            class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded"
+          >
+            ยกเลิก
+          </button>
+          <button
+            id="savePresentationBtn"
+            class="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded"
+          >
+            บันทึก
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./tors.js"></script>
+
+    <div
+      id="loading-overlay"
+      class="fixed inset-0 z-50 flex items-center justify-center hidden"
+    >
+      <div class="absolute inset-0 bg-black opacity-50"></div>
+      <div
+        class="relative flex flex-col items-center justify-center bg-white p-8 rounded-lg shadow-xl"
+      >
+        <div class="loading-spinner mb-4"></div>
+        <p class="text-gray-700 font-semibold">
+          กำลังโหลดข้อมูล กรุณารอสักครู่...
+        </p>
+      </div>
+    </div>
+
+    <!-- <div id="debug-console">
+      <div id="debug-header">
+        <span>Mobile Console</span>
+        <button
+          onclick="document.getElementById('debug-console').style.display='none'"
+        >
+          Close
+        </button>
+      </div>
+      <div id="debug-log"></div>
+    </div> -->
+  </body>
+</html>
