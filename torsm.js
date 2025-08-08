@@ -392,7 +392,7 @@ function createDetailContent(details) {
   }</div>
         </div>
         <div>
-          <span class="${sectionTitleClass}">หัวข้อที่นำเสนอ:</span>
+          <span class="${sectionTitleClass}">ตรงกับหัวข้อในเอกสารเรื่อง:</span>
           <div class="${contentClass} mt-2">${
     detail.tord_header || "(ไม่มีข้อมูล)"
   }</div>
