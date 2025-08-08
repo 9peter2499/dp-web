@@ -94,10 +94,22 @@ async function initPage(session) {
     }));
 
     // ✅ แก้ไขการเรียงลำดับที่นี่ด้วย
+    // allTorsData.sort((a, b) => {
+    //   const moduleCompare = a.module_id.localeCompare(b.module_id);
+    //   if (moduleCompare !== 0) return moduleCompare;
+    //   return a.tor_id.localeCompare(b.tor_id);
+    // });
+
     allTorsData.sort((a, b) => {
-      const moduleCompare = a.module_id.localeCompare(b.module_id);
+      // ✅ ป้องกัน Error กรณี module_id หรือ tor_id เป็นค่าว่าง (null)
+      const moduleA = a.module_id || "";
+      const moduleB = b.module_id || "";
+      const torA = a.tor_id || "";
+      const torB = b.tor_id || "";
+
+      const moduleCompare = moduleA.localeCompare(moduleB);
       if (moduleCompare !== 0) return moduleCompare;
-      return a.tor_id.localeCompare(b.tor_id);
+      return torA.localeCompare(torB);
     });
 
     populateFilters(allTorsData);
