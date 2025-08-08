@@ -79,14 +79,26 @@ async function startAnonymousSession() {
 async function initPage(session) {
   console.log("🚀 Initializing page for public view...");
   try {
-    await loadAllMasterOptions(session); // ส่ง session ต่อไป
-    const rawData = await apiFetch("/api/tors", session); // ส่ง session ต่อไป
+    // ✅ เรียกโหลดข้อมูลพื้นฐาน 2 อย่างพร้อมกัน
+    await Promise.all([
+      loadAllMasterOptions(session),
+      loadPresentationDates(session),
+    ]);
+
+    const rawData = await apiFetch("/api/tors", session);
 
     allTorsData = rawData.map((item) => ({
       ...item,
       tor_status_label: item.tor_status?.option_label || "N/A",
       tor_fixing_label: item.tor_fixing?.option_label || "",
     }));
+
+    // ✅ แก้ไขการเรียงลำดับที่นี่ด้วย
+    allTorsData.sort((a, b) => {
+      const moduleCompare = a.module_id.localeCompare(b.module_id);
+      if (moduleCompare !== 0) return moduleCompare;
+      return a.tor_id.localeCompare(b.tor_id);
+    });
 
     populateFilters(allTorsData);
     applyFilters();
@@ -95,6 +107,28 @@ async function initPage(session) {
     document.getElementById(
       "tor-table-body"
     ).innerHTML = `<tr><td colspan="4" class="p-4 text-center text-red-500">เกิดข้อผิดพลาดในการโหลดข้อมูล: ${error.message}</td></tr>`;
+  }
+}
+
+async function loadPresentationDates(session) {
+  const dateFilter = document.getElementById("presented-date-filter");
+  if (!dateFilter) return;
+  try {
+    const dates = await apiFetch("/api/presentation/dates", session);
+    dateFilter.innerHTML = '<option value="">-- เลือกวันที่ --</option>';
+    dates.forEach((dateString) => {
+      const date = new Date(dateString);
+      const displayDate = date.toLocaleDateString("th-TH", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+      dateFilter.innerHTML += `<option value="${dateString}">${displayDate}</option>`;
+    });
+  } catch (err) {
+    console.error("❌ Load presentation dates failed:", err);
+    dateFilter.innerHTML =
+      '<option value="">-- ไม่สามารถโหลดวันที่ --</option>';
   }
 }
 
@@ -217,7 +251,9 @@ function renderTable(data) {
 
     mainRow.innerHTML = `
       <td class="p-4 text-center border-b border-gray-200">${index + 1}</td>
-      <td class="p-4 border-b border-gray-200">${tor.tor_name}</td>
+      <td class="p-4 border-b border-gray-200"><a class="text-blue-600 hover:underline">${
+        tor.tor_name
+      }</a></td>
       <td class="p-4 border-b border-gray-200 text-center">
         <span class="px-3 py-1 text-sm font-semibold rounded-full ${statusColor}">${statusLabel}</span>
       </td>
