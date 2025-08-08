@@ -1,11 +1,9 @@
 // torsm.js
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm";
 
-// --- ค่าคงที่ ---
 const SUPABASE_URL = "https://supabase.dp-web.online";
 const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZobnBycmxtbGhsZW9tZnFxdnBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA5MTAyMjIsImV4cCI6MjA2NjQ4NjIyMn0.WA-_yNFWxpFnJBA3oh5UlOtq89KBm5hqsb51oi04hMk";
-// ✅ แก้ไข Typo ที่นี่
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZobnBycmxtbGhsZW9tZnFxdnBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA5MTAyMjIsImV4cCI6MjA2NjQ8NjIyMn0.WA-_yNFWxpFnJBA3oh5UlOtq89KBm5hqsb51oi04hMk";
 const API_BASE_URL = "https://api.dp-web.online";
 
 const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -17,16 +15,12 @@ const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 let allTorsData = [];
 let masterOptions = {};
 
-// --- ฟังก์ชันตัวกลางสำหรับเรียก API ---
-async function apiFetch(path, options = {}) {
+// ✅ 1. แก้ไข apiFetch ให้รับ session เข้ามาโดยตรง
+async function apiFetch(path, session, options = {}) {
   const url = `${API_BASE_URL}${path}`;
-  const {
-    data: { session },
-  } = await _supabase.auth.getSession();
 
   if (!session) {
-    // ในหน้านี้ session จะถูกสร้างจาก anonymous login เสมอ
-    throw new Error("No active session. Anonymous login might have failed.");
+    throw new Error("Cannot make API call without a session.");
   }
 
   const defaultHeaders = {
@@ -57,25 +51,19 @@ async function apiFetch(path, options = {}) {
 async function startAnonymousSession() {
   showLoadingOverlay();
   try {
-    const {
+    let {
       data: { session },
     } = await _supabase.auth.getSession();
-    if (session && !session.user.is_anonymous) {
-      console.log(
-        "Existing session for a real user found, initializing page..."
-      );
-      await initPage(session);
-    } else {
-      console.log(
-        "No session or anonymous session, ensuring anonymous sign-in..."
-      );
-      const {
-        data: { session: anonSession },
-        error,
-      } = await _supabase.auth.signInAnonymously();
+
+    if (!session) {
+      console.log("No session, signing in anonymously...");
+      const { data: anonData, error } =
+        await _supabase.auth.signInAnonymously();
       if (error) throw error;
-      await initPage(anonSession);
+      session = anonData.session; // ใช้ session ของ guest ที่เพิ่งสร้าง
     }
+
+    await initPage(session); // ✅ ส่ง session ที่มีอยู่แน่นอนไปให้ initPage
   } catch (error) {
     console.error("Critical error during session initialization:", error);
     document.body.innerHTML = `<h1>เกิดข้อผิดพลาดในการเข้าถึงข้อมูล: ${error.message}</h1>`;
@@ -84,11 +72,13 @@ async function startAnonymousSession() {
   }
 }
 
+// ✅ 2. แก้ไข initPage ให้รับ session และส่งต่อไปยังฟังก์ชันลูก
 async function initPage(session) {
   console.log("🚀 Initializing page for public view...");
   try {
-    await loadAllMasterOptions();
-    const rawData = await apiFetch("/api/tors");
+    await loadAllMasterOptions(session); // ส่ง session ต่อไป
+    const rawData = await apiFetch("/api/tors", session); // ส่ง session ต่อไป
+
     allTorsData = rawData.map((item) => ({
       ...item,
       tor_status_label: item.tor_status?.option_label || "N/A",
@@ -96,7 +86,7 @@ async function initPage(session) {
     }));
 
     populateFilters(allTorsData);
-    applyFilters(); // This will call renderTable
+    applyFilters();
   } catch (error) {
     console.error("Failed to initialize page data:", error);
     document.getElementById(
@@ -105,11 +95,10 @@ async function initPage(session) {
   }
 }
 
-// --- ฟังก์ชันย่อยสำหรับโหลดและแสดงผล (Read-Only) ---
-
-async function loadAllMasterOptions() {
+// ✅ 3. แก้ไข loadAllMasterOptions ให้รับ session
+async function loadAllMasterOptions(session) {
   try {
-    masterOptions = await apiFetch("/api/options/all");
+    masterOptions = await apiFetch("/api/options/all", session); // ส่ง session ให้ apiFetch
     console.log("✅ Successfully loaded all master options.");
   } catch (err) {
     console.error("❌ Failed to load master options:", err);
@@ -117,7 +106,6 @@ async function loadAllMasterOptions() {
     throw err;
   }
 }
-
 function renderTable(data) {
   const tableBody = document.getElementById("tor-table-body");
   tableBody.innerHTML = "";
