@@ -194,6 +194,18 @@
       .log-warn {
         color: #ffd180; /* สีเหลืองสำหรับ Warning */
       }
+
+      /* ✅ เพิ่ม CSS สำหรับแถวรายละเอียด */
+      .details-row {
+        display: none;
+      }
+      .details-row.is-open {
+        display: table-row;
+      }
+      .main-row.is-active {
+        background-color: #f9fafb; /* สีพื้นหลังเมื่อแถวถูกเลือก */
+        font-weight: 600;
+      }
     </style>
   </head>
   <body class="bg-gray-100 p-4 sm:p-8">

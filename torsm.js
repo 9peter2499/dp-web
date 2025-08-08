@@ -109,6 +109,87 @@ async function loadAllMasterOptions(session) {
     throw err;
   }
 }
+
+// ใน torsm.js
+
+// ✅ เพิ่ม 2 ฟังก์ชันนี้เข้าไป
+
+async function toggleDetails(detailsRow, mainRow, torId) {
+  const isOpen = detailsRow.classList.toggle("is-open");
+  mainRow.classList.toggle("is-active");
+
+  // ปิดแถวรายละเอียดอื่นๆ ที่เคยเปิดไว้
+  document.querySelectorAll(".details-row").forEach((row) => {
+    if (row !== detailsRow) {
+      row.classList.remove("is-open");
+      if (row.previousElementSibling)
+        row.previousElementSibling.classList.remove("is-active");
+    }
+  });
+
+  if (isOpen) {
+    const detailCell = detailsRow.querySelector("td > div");
+    detailCell.innerHTML = `<div class="bg-yellow-50/70 p-6">กำลังโหลด...</div>`;
+    try {
+      const {
+        data: { session },
+      } = await _supabase.auth.getSession();
+      const details = await apiFetch(`/api/tors/${torId}`, session);
+      detailCell.innerHTML = createDetailContent(details);
+    } catch (e) {
+      detailCell.innerHTML = `<div class="bg-red-100 text-red-800 p-4">เกิดข้อผิดพลาดในการโหลดรายละเอียด: ${e.message}</div>`;
+    }
+  }
+}
+
+function createDetailContent(details) {
+  const detail =
+    details.TORDetail && details.TORDetail[0] ? details.TORDetail[0] : null;
+  if (!detail)
+    return '<div class="p-6 bg-gray-50">ไม่มีข้อมูลรายละเอียดเพิ่มเติม</div>';
+
+  const sectionTitleClass =
+    "text-sm font-bold text-gray-700 bg-yellow-200/80 px-3 py-1 rounded-full inline-block mb-2";
+  const contentClass = "prose prose-sm max-w-none text-gray-800";
+
+  return `
+    <div class="bg-yellow-50/70 border-l-4 border-yellow-400 p-6 space-y-5 text-base">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+          <div>
+            <span class="${sectionTitleClass}">ทำได้:</span>
+            <div class="${contentClass} mt-2">${
+    detail.tord_posible?.option_label || "(ไม่มีข้อมูล)"
+  }</div>
+          </div>
+          <div>
+            <span class="${sectionTitleClass}">เล่มเอกสาร:</span>
+            <div class="${contentClass} mt-2">${
+    detail.tord_document || "(ไม่มีข้อมูล)"
+  }</div>
+          </div>
+        </div>
+        <div>
+          <span class="${sectionTitleClass}">หัวข้อที่นำเสนอ:</span>
+          <div class="${contentClass} mt-2">${
+    detail.tord_header || "(ไม่มีข้อมูล)"
+  }</div>
+        </div>
+        <div class="pt-2">
+          <span class="${sectionTitleClass}">รายละเอียดการแก้ไข:</span>
+          <ul class="pl-2 space-y-1">${
+            detail.PCSWorked && detail.PCSWorked.length > 0
+              ? detail.PCSWorked.map(
+                  (item) =>
+                    `<li><div class="prose prose-sm max-w-none">${item.worked_message}</div></li>`
+                ).join("")
+              : "<li>ไม่มีข้อมูล</li>"
+          }</ul>
+        </div>
+    </div>
+  `;
+}
+
+// ใน torsm.js
 function renderTable(data) {
   const tableBody = document.getElementById("tor-table-body");
   tableBody.innerHTML = "";
@@ -118,7 +199,6 @@ function renderTable(data) {
     return;
   }
 
-  // ✅ ปรับ Header ให้ไม่มีคอลัมน์ "จัดการ"
   const headerRow = document.querySelector("thead tr");
   headerRow.innerHTML = `<th class="p-4 text-center text-base font-bold text-gray-600 w-16">ลำดับ</th><th class="p-4 text-left text-base font-bold text-gray-600 w-3/5">ข้อกำหนด(TOR)</th><th class="p-4 text-center text-base font-bold text-gray-600 w-32">สถานะ</th><th class="p-4 text-center text-base font-bold text-gray-600 w-48">การแก้ไข</th>`;
 
@@ -130,10 +210,11 @@ function renderTable(data) {
         : "bg-red-100 text-red-800";
 
     const mainRow = document.createElement("tr");
-    mainRow.className = "main-row";
+    // ✅ ทำให้แถวมี cursor เป็นรูปมือเมื่อลากผ่าน
+    mainRow.className =
+      "main-row hover:bg-yellow-50 transition-colors duration-150 cursor-pointer";
     mainRow.dataset.torId = tor.tor_id;
 
-    // ✅ ลบปุ่ม [Edit] ออก เหลือแค่การแสดงผล
     mainRow.innerHTML = `
       <td class="p-4 text-center border-b border-gray-200">${index + 1}</td>
       <td class="p-4 border-b border-gray-200">${tor.tor_name}</td>
@@ -145,8 +226,20 @@ function renderTable(data) {
       }</td>
     `;
     tableBody.appendChild(mainRow);
+
+    // ✅ สร้างแถวว่างสำหรับแสดงรายละเอียด
+    const detailsRow = document.createElement("tr");
+    detailsRow.className = "details-row";
+    detailsRow.innerHTML = `<td colspan="4" class="p-0"><div class="details-content"></div></td>`;
+    tableBody.appendChild(detailsRow);
+
+    // ✅ เพิ่ม Event Listener ให้กับแถวหลัก
+    mainRow.addEventListener("click", () => {
+      toggleDetails(detailsRow, mainRow, tor.tor_id);
+    });
   });
 }
+
 function populateFilters(data) {
   const moduleFilter = document.getElementById("module-filter");
   const statusFilter = document.getElementById("status-filter");
@@ -227,5 +320,23 @@ function showLoadingOverlay() {
 function hideLoadingOverlay() {
   document.getElementById("loading-overlay").classList.add("hidden");
 }
+
+// ใน torsm.js
+
 // --- เริ่มการทำงาน ---
-document.addEventListener("DOMContentLoaded", startAnonymousSession);
+document.addEventListener("DOMContentLoaded", () => {
+  // ✅ เพิ่ม Event Listeners สำหรับ Filters ทั้ง 4 ตัว
+  document
+    .getElementById("module-filter")
+    .addEventListener("change", applyFilters);
+  document
+    .getElementById("status-filter")
+    .addEventListener("change", applyFilters);
+  document
+    .getElementById("presented-date-filter")
+    .addEventListener("change", applyFilters);
+  document.getElementById("search-box").addEventListener("input", applyFilters);
+
+  // เรียกใช้ฟังก์ชันหลักเพื่อเริ่มโหลดข้อมูล
+  startAnonymousSession();
+});
