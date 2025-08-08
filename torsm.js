@@ -291,24 +291,86 @@ async function toggleDetails(detailsRow, mainRow, torId) {
 
 // ใน torsm.js (นำ 3 ฟังก์ชันนี้ไปวางแทนที่ของเดิม)
 
+// function createDetailContent(details) {
+//   const detail =
+//     details.TORDetail && details.TORDetail[0] ? details.TORDetail[0] : null;
+//   if (!detail)
+//     return '<div class="p-6 bg-gray-50">ไม่มีข้อมูลรายละเอียดเพิ่มเติม</div>';
+
+//   // เรียกใช้ฟังก์ชันลูกเพื่อสร้างส่วนของ List ต่างๆ
+//   const feedbackHtml = createItemList(detail.PATFeedback);
+//   const workedHtml = createItemList(detail.PCSWorked);
+//   const presentationHtml = createPresentationTable(detail.PresentationItems);
+
+//   const sectionTitleClass =
+//     "text-sm font-bold text-gray-700 bg-gray-200 px-3 py-1 rounded-full inline-block mb-3";
+//   const contentClass = "prose prose-sm max-w-none text-gray-800";
+
+//   // รวม HTML ทั้งหมดเข้าด้วยกัน
+//   return `
+//     <div class="bg-gray-50 border-l-4 border-gray-300 p-6 space-y-6 text-base">
+
+//       <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+//         <div>
+//           <span class="${sectionTitleClass}">ทำได้:</span>
+//           <div class="${contentClass} mt-2">${
+//     detail.tord_posible?.option_label || "(ไม่มีข้อมูล)"
+//   }</div>
+//         </div>
+//         <div>
+//           <span class="${sectionTitleClass}">เล่มเอกสาร:</span>
+//           <div class="${contentClass} mt-2">${
+//     detail.tord_document || "(ไม่มีข้อมูล)"
+//   }</div>
+//         </div>
+//       </div>
+//       <div>
+//         <span class="${sectionTitleClass}">หัวข้อที่นำเสนอ:</span>
+//         <div class="${contentClass} mt-2">${
+//     detail.tord_header || "(ไม่มีข้อมูล)"
+//   }</div>
+//       </div>
+
+//       <div class="pt-4 border-t border-gray-200">
+//         <span class="${sectionTitleClass}">ข้อเสนอแนะคณะกรรมการ:</span>
+//         <ul class="pl-2 space-y-2 mt-2">${feedbackHtml}</ul>
+//       </div>
+//       <div class="pt-4 border-t border-gray-200">
+//         <span class="${sectionTitleClass}">รายละเอียดการแก้ไข:</span>
+//         <ul class="pl-2 space-y-2 mt-2">${workedHtml}</ul>
+//       </div>
+//       <div class="pt-4 border-t border-gray-200">
+//         <span class="${sectionTitleClass}">การนำเสนอ TOR:</span>
+//         <div class="mt-2">${presentationHtml}</div>
+//       </div>
+//     </div>
+//   `;
+// }
+
+// ใน torsm.js (นำฟังก์ชันนี้ไปวางทับของเดิม)
+
 function createDetailContent(details) {
   const detail =
     details.TORDetail && details.TORDetail[0] ? details.TORDetail[0] : null;
   if (!detail)
     return '<div class="p-6 bg-gray-50">ไม่มีข้อมูลรายละเอียดเพิ่มเติม</div>';
 
-  // เรียกใช้ฟังก์ชันลูกเพื่อสร้างส่วนของ List ต่างๆ
+  // ✅ ข้อ 2: แก้ไขสีของ Badge ให้เป็นสีเหลือง
+  const sectionTitleClass =
+    "text-sm font-bold text-yellow-800 bg-yellow-200 px-3 py-1 rounded-full inline-block mb-2";
+
+  // ✅ ข้อ 1: แก้ไขให้ Link เป็นสีฟ้าและมีขีดเส้นใต้เมื่อ hover
+  const contentClass =
+    "prose prose-sm max-w-none text-gray-800 [&_a]:text-blue-600 [&_a:hover]:underline";
+
+  // --- ส่วนนี้จะเหมือนเดิม ---
   const feedbackHtml = createItemList(detail.PATFeedback);
   const workedHtml = createItemList(detail.PCSWorked);
   const presentationHtml = createPresentationTable(detail.PresentationItems);
+  // ---
 
-  const sectionTitleClass =
-    "text-sm font-bold text-gray-700 bg-gray-200 px-3 py-1 rounded-full inline-block mb-3";
-  const contentClass = "prose prose-sm max-w-none text-gray-800";
-
-  // รวม HTML ทั้งหมดเข้าด้วยกัน
   return `
-    <div class="bg-gray-50 border-l-4 border-gray-300 p-6 space-y-6 text-base">
+    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 space-y-6 text-base">
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
         <div>
@@ -323,23 +385,36 @@ function createDetailContent(details) {
     detail.tord_document || "(ไม่มีข้อมูล)"
   }</div>
         </div>
-      </div>
-      <div>
-        <span class="${sectionTitleClass}">หัวข้อที่นำเสนอ:</span>
-        <div class="${contentClass} mt-2">${
+        <div>
+            <span class="${sectionTitleClass}">เอกสารอ้างอิง:</span>
+            <div class="${contentClass} mt-2">${
+    detail.tord_reference || "(ไม่มีข้อมูล)"
+  }</div>
+        </div>
+        <div>
+          <span class="${sectionTitleClass}">หัวข้อที่นำเสนอ:</span>
+          <div class="${contentClass} mt-2">${
     detail.tord_header || "(ไม่มีข้อมูล)"
   }</div>
+        </div>
       </div>
 
-      <div class="pt-4 border-t border-gray-200">
+      <div class="py-5 border-t border-b border-yellow-200/60">
+        <span class="${sectionTitleClass}">Prototype:</span>
+        <div class="${contentClass} mt-2">${
+    detail.tord_prototype || "(ไม่มีข้อมูล)"
+  }</div>
+      </div>
+      
+      <div class="pt-4 border-t border-yellow-200/60">
         <span class="${sectionTitleClass}">ข้อเสนอแนะคณะกรรมการ:</span>
         <ul class="pl-2 space-y-2 mt-2">${feedbackHtml}</ul>
       </div>
-      <div class="pt-4 border-t border-gray-200">
+      <div class="pt-4 border-t border-yellow-200/60">
         <span class="${sectionTitleClass}">รายละเอียดการแก้ไข:</span>
         <ul class="pl-2 space-y-2 mt-2">${workedHtml}</ul>
       </div>
-      <div class="pt-4 border-t border-gray-200">
+      <div class="pt-4 border-t border-yellow-200/60">
         <span class="${sectionTitleClass}">การนำเสนอ TOR:</span>
         <div class="mt-2">${presentationHtml}</div>
       </div>
@@ -380,6 +455,50 @@ function createItemList(items) {
     .join("");
 }
 
+// function createPresentationTable(presentationItems) {
+//   if (!presentationItems || presentationItems.length === 0)
+//     return "<div class='text-gray-500'>ไม่มีข้อมูลการนำเสนอ</div>";
+
+//   const rows = presentationItems
+//     .map((item) => {
+//       const p = item.Presentation;
+//       if (!p) return "";
+//       const date = new Date(p.ptt_date).toLocaleDateString("th-TH", {
+//         year: "numeric",
+//         month: "long",
+//         day: "numeric",
+//       });
+//       const presenterName = p.MasterOptions
+//         ? p.MasterOptions.option_label
+//         : "-";
+//       return `
+//         <tr class="border-b">
+//           <td class="p-2">${date}</td>
+//           <td class="p-2">${p.ptt_type || "-"}</td>
+//           <td class="p-2">${p.ptt_timerange || "-"}</td>
+//           <td class="p-2">${presenterName}</td>
+//         </tr>
+//       `;
+//     })
+//     .join("");
+
+//   return `
+//     <div class="overflow-x-auto">
+//       <table class="table-auto w-full text-sm">
+//         <thead class="bg-gray-100">
+//           <tr>
+//             <th class="p-2 text-left font-semibold">วันที่นำเสนอ</th>
+//             <th class="p-2 text-left font-semibold">เงื่อนไข</th>
+//             <th class="p-2 text-left font-semibold">ช่วงเวลา</th>
+//             <th class="p-2 text-left font-semibold">ผู้นำเสนอ</th>
+//           </tr>
+//         </thead>
+//         <tbody>${rows}</tbody>
+//       </table>
+//     </div>
+//   `;
+// }
+
 function createPresentationTable(presentationItems) {
   if (!presentationItems || presentationItems.length === 0)
     return "<div class='text-gray-500'>ไม่มีข้อมูลการนำเสนอ</div>";
@@ -396,11 +515,14 @@ function createPresentationTable(presentationItems) {
       const presenterName = p.MasterOptions
         ? p.MasterOptions.option_label
         : "-";
+
+      // ✅ เพิ่มคอลัมน์ "หมายเหตุ" เข้ามาในแถวข้อมูล
       return `
         <tr class="border-b">
           <td class="p-2">${date}</td>
           <td class="p-2">${p.ptt_type || "-"}</td>
           <td class="p-2">${p.ptt_timerange || "-"}</td>
+          <td class="p-2">${p.ptt_remark || "-"}</td> 
           <td class="p-2">${presenterName}</td> 
         </tr>
       `;
@@ -415,7 +537,7 @@ function createPresentationTable(presentationItems) {
             <th class="p-2 text-left font-semibold">วันที่นำเสนอ</th>
             <th class="p-2 text-left font-semibold">เงื่อนไข</th>
             <th class="p-2 text-left font-semibold">ช่วงเวลา</th>
-            <th class="p-2 text-left font-semibold">ผู้นำเสนอ</th>
+            <th class="p-2 text-left font-semibold">หมายเหตุ</th>  <th class="p-2 text-left font-semibold">ผู้นำเสนอ</th>
           </tr>
         </thead>
         <tbody>${rows}</tbody>
