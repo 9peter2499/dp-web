@@ -1170,22 +1170,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // // Main Auth Listener - The single source of truth for starting the app
   // ✅ 1. สร้าง "ธง" (flag) ขึ้นมาที่ด้านนอกของ listener
+  // let isInitialized = false;
+
+  // // Main Auth Listener - The single source of truth for starting the app
+  // _supabase.auth.onAuthStateChange(async (event, session) => {
+  //   // ✅ 2. เพิ่มเงื่อนไขเพื่อเช็ค "ธง" เป็นอันดับแรก
+  //   // ถ้าเคยโหลดข้อมูลแล้ว และสถานะยังเป็นล็อกอินอยู่ (SIGNED_IN) ให้ออกจากฟังก์ชันทันที
+  //   if (isInitialized && event === "SIGNED_IN") {
+  //     return;
+  //   }
+
+  //   if (session) {
+  //     // โค้ดส่วนนี้จะทำงานแค่ครั้งแรกที่โหลดหน้าเว็บ
+  //     await initPage(session);
+
+  //     // ✅ 3. "ปักธง" ว่าได้โหลดข้อมูลเรียบร้อยแล้ว
+  //     isInitialized = true;
+  //   } else {
+  //     // ถ้าไม่มี session หรือ logout ให้ reset ธง และไปหน้า login
+  //     isInitialized = false;
+  //     window.location.href = "/login.html";
+  //   }
+  // });
+
+  // ใน tors.js (ท้ายไฟล์)
+
   let isInitialized = false;
 
-  // Main Auth Listener - The single source of truth for starting the app
   _supabase.auth.onAuthStateChange(async (event, session) => {
-    // ✅ 2. เพิ่มเงื่อนไขเพื่อเช็ค "ธง" เป็นอันดับแรก
-    // ถ้าเคยโหลดข้อมูลแล้ว และสถานะยังเป็นล็อกอินอยู่ (SIGNED_IN) ให้ออกจากฟังก์ชันทันที
-    if (isInitialized && event === "SIGNED_IN") {
+    // ✅ ตรวจสอบธงก่อนเป็นอันดับแรกเสมอ
+    // เราจะสนใจแค่ event ครั้งแรกที่เจอ session เท่านั้น
+    if (isInitialized) {
       return;
     }
 
     if (session) {
-      // โค้ดส่วนนี้จะทำงานแค่ครั้งแรกที่โหลดหน้าเว็บ
-      await initPage(session);
-
-      // ✅ 3. "ปักธง" ว่าได้โหลดข้อมูลเรียบร้อยแล้ว
+      // ✅ ปักธงทันที! ก่อนที่จะเริ่มโหลดข้อมูล
       isInitialized = true;
+
+      // เรียกใช้ initPage (ซึ่งจะใช้เวลาสักพัก)
+      await initPage(session);
     } else {
       // ถ้าไม่มี session หรือ logout ให้ reset ธง และไปหน้า login
       isInitialized = false;
