@@ -161,95 +161,167 @@ function restorePageState() {
   }
 }
 
+// async function initPage(session) {
+//   console.log("🚀 Initializing page...");
+//   showLoadingOverlay();
+
+//   try {
+//     const apiStatus = document.querySelector("#api-status span");
+
+//     // Step 1: Fetch user role
+//     try {
+//       const { data: profile } = await _supabase
+//         .from("profiles")
+//         .select("role")
+//         .eq("id", session.user.id)
+//         .single();
+//       currentUserRole = profile?.role || "viewer";
+//       document.querySelector(
+//         "#render-mode span"
+//       ).textContent = `User Role: ${currentUserRole}`;
+//     } catch (e) {
+//       console.error("Could not fetch user role", e);
+//     }
+
+//     // Step 2: Load all necessary master options
+
+//     try {
+//       console.log("Loading initial data sequentially to avoid rate limits...");
+
+//       // หน่วงเวลาเล็กน้อยก่อนเริ่ม
+//       await new Promise((resolve) => setTimeout(resolve, 100));
+//       await loadAllMasterOptions();
+
+//       // หน่วงเวลา 250ms ก่อนเรียก API ตัวต่อไป
+//       await new Promise((resolve) => setTimeout(resolve, 250));
+//       await loadPresentationDates();
+
+//       console.log("Initial data loaded successfully.");
+//     } catch (e) {
+//       console.error("A critical error occurred during initial data load:", e);
+//       apiStatus.textContent = `Error: ${e.message}`;
+//       apiStatus.className = "text-red-400";
+//       // หยุดการทำงานส่วนที่เหลือถ้าข้อมูลพื้นฐานโหลดไม่ได้
+//       return;
+//     }
+
+//     // Step 3: Fetch main TOR data
+//     try {
+//       // หน่วงเวลาอีกครั้งก่อนโหลดข้อมูลหลัก
+//       await new Promise((resolve) => setTimeout(resolve, 250));
+//       apiStatus.textContent = "Fetching from API...";
+//       apiStatus.className = "text-yellow-400";
+
+//       // ✅ แก้ไขตรงนี้ให้รับ rawData จาก apiFetch โดยตรง
+//       //const rawData = await apiFetch("https://pcsdata.onrender.com/api/tors");
+
+//       const rawData = await apiFetch(`${API_BASE_URL}/api/tors`);
+
+//       allTorsData = rawData.map((item) => ({
+//         ...item,
+//         tor_status_label: item.tor_status?.option_label || "N/A",
+//         tor_fixing_label: item.tor_fixing?.option_label || "",
+//       }));
+
+//       apiStatus.textContent = `Success - Fetched ${allTorsData.length} records.`;
+//       apiStatus.className = "text-green-400";
+
+//       // Step 4: Populate UI
+//       allTorsData.sort((a, b) => a.tor_id.localeCompare(b.tor_id));
+//       populateFilters(allTorsData);
+//       applyFilters();
+//       loadLatestUpdateDate();
+//       populatePresenterDropdown();
+//       restorePageState();
+//     } catch (error) {
+//       apiStatus.textContent = `Error: ${error.message}`;
+//       apiStatus.className = "text-red-400";
+//       document.getElementById(
+//         "tor-table-body"
+//       ).innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
+//     }
+
+//     // Step 5: Setup user panel
+//     const userInfoPanel = document.getElementById("user-info-panel");
+//     userInfoPanel.classList.remove("hidden");
+//     document.getElementById("user-display").textContent = session.user.email;
+//     document.getElementById("logout-btn").onclick = async () =>
+//       await _supabase.auth.signOut();
+//   } finally {
+//     // 2. ซ่อน Popup ใน finally block
+//     // ✅ ไม่ว่าจะสำเร็จหรือเกิด Error บล็อกนี้จะทำงานเสมอ
+//     hideLoadingOverlay();
+//   }
+// }
+
+// ใน tors.js
+
 async function initPage(session) {
   console.log("🚀 Initializing page...");
   showLoadingOverlay();
-
   try {
     const apiStatus = document.querySelector("#api-status span");
 
-    // Step 1: Fetch user role
-    try {
-      const { data: profile } = await _supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", session.user.id)
-        .single();
-      currentUserRole = profile?.role || "viewer";
-      document.querySelector(
-        "#render-mode span"
-      ).textContent = `User Role: ${currentUserRole}`;
-    } catch (e) {
-      console.error("Could not fetch user role", e);
-    }
+    // --- DEBUG STEP 1 ---
+    console.log("DEBUG: 1. Attempting to fetch user role...");
+    const { data: profile } = await _supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", session.user.id)
+      .single();
+    currentUserRole = profile?.role || "viewer";
+    document.querySelector(
+      "#render-mode span"
+    ).textContent = `User Role: ${currentUserRole}`;
+    console.log("DEBUG: 1. SUCCESS - Role is:", currentUserRole);
+    // --- END DEBUG STEP 1 ---
 
-    // Step 2: Load all necessary master options
+    // --- DEBUG STEP 2 ---
+    console.log("DEBUG: 2. Attempting to load master data...");
+    // แก้ไขจาก sequential เป็น Promise.all เพื่อความเร็ว
+    await Promise.all([
+      loadAllMasterOptions(),
+      loadPresentationDates(),
+      loadLatestUpdateDate(),
+    ]);
+    console.log("DEBUG: 2. SUCCESS - Master data loaded.");
+    // --- END DEBUG STEP 2 ---
 
-    try {
-      console.log("Loading initial data sequentially to avoid rate limits...");
+    // --- DEBUG STEP 3 ---
+    console.log("DEBUG: 3. Attempting to fetch main TORs data...");
+    const rawData = await apiFetch(`${API_BASE_URL}/api/tors`);
+    console.log("DEBUG: 3. SUCCESS - Fetched", rawData.length, "TORs.");
+    // --- END DEBUG STEP 3 ---
 
-      // หน่วงเวลาเล็กน้อยก่อนเริ่ม
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      await loadAllMasterOptions();
+    allTorsData = rawData.map((item) => ({
+      ...item,
+      tor_status_label: item.tor_status?.option_label || "N/A",
+      tor_fixing_label: item.tor_fixing?.option_label || "",
+    }));
 
-      // หน่วงเวลา 250ms ก่อนเรียก API ตัวต่อไป
-      await new Promise((resolve) => setTimeout(resolve, 250));
-      await loadPresentationDates();
+    apiStatus.textContent = `Success - Fetched ${allTorsData.length} records.`;
+    apiStatus.className = "text-green-400";
 
-      console.log("Initial data loaded successfully.");
-    } catch (e) {
-      console.error("A critical error occurred during initial data load:", e);
-      apiStatus.textContent = `Error: ${e.message}`;
-      apiStatus.className = "text-red-400";
-      // หยุดการทำงานส่วนที่เหลือถ้าข้อมูลพื้นฐานโหลดไม่ได้
-      return;
-    }
+    allTorsData.sort((a, b) => a.tor_id.localeCompare(b.tor_id));
+    populateFilters(allTorsData);
+    applyFilters();
+    populatePresenterDropdown();
+    restorePageState();
 
-    // Step 3: Fetch main TOR data
-    try {
-      // หน่วงเวลาอีกครั้งก่อนโหลดข้อมูลหลัก
-      await new Promise((resolve) => setTimeout(resolve, 250));
-      apiStatus.textContent = "Fetching from API...";
-      apiStatus.className = "text-yellow-400";
-
-      // ✅ แก้ไขตรงนี้ให้รับ rawData จาก apiFetch โดยตรง
-      //const rawData = await apiFetch("https://pcsdata.onrender.com/api/tors");
-
-      const rawData = await apiFetch(`${API_BASE_URL}/api/tors`);
-
-      allTorsData = rawData.map((item) => ({
-        ...item,
-        tor_status_label: item.tor_status?.option_label || "N/A",
-        tor_fixing_label: item.tor_fixing?.option_label || "",
-      }));
-
-      apiStatus.textContent = `Success - Fetched ${allTorsData.length} records.`;
-      apiStatus.className = "text-green-400";
-
-      // Step 4: Populate UI
-      allTorsData.sort((a, b) => a.tor_id.localeCompare(b.tor_id));
-      populateFilters(allTorsData);
-      applyFilters();
-      loadLatestUpdateDate();
-      populatePresenterDropdown();
-      restorePageState();
-    } catch (error) {
-      apiStatus.textContent = `Error: ${error.message}`;
-      apiStatus.className = "text-red-400";
-      document.getElementById(
-        "tor-table-body"
-      ).innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
-    }
-
-    // Step 5: Setup user panel
     const userInfoPanel = document.getElementById("user-info-panel");
     userInfoPanel.classList.remove("hidden");
     document.getElementById("user-display").textContent = session.user.email;
     document.getElementById("logout-btn").onclick = async () =>
       await _supabase.auth.signOut();
+  } catch (error) {
+    console.error("Failed to initialize page data:", error);
+    const apiStatus = document.querySelector("#api-status span");
+    apiStatus.textContent = `Error: ${error.message}`;
+    apiStatus.className = "text-red-400";
+    document.getElementById(
+      "tor-table-body"
+    ).innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
   } finally {
-    // 2. ซ่อน Popup ใน finally block
-    // ✅ ไม่ว่าจะสำเร็จหรือเกิด Error บล็อกนี้จะทำงานเสมอ
     hideLoadingOverlay();
   }
 }
