@@ -55,7 +55,7 @@
       </div>
     </div>
 
-    <!-- <script type="module">
+    <script type="module">
       import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm";
       import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
 
@@ -71,21 +71,21 @@
         });
       }
 
-      //   async function signInWithGoogle() {
-      //     const { error } = await supabase.auth.signInWithOAuth({
-      //       provider: "google",
-      //     });
+      async function signInWithGoogle() {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+        });
 
-      //     if (error) {
-      //       console.error("Error signing in with Google:", error);
-      //       alert("เกิดข้อผิดพลาดในการล็อกอิน: " + error.message);
-      //     }
-      //   }
+        if (error) {
+          console.error("Error signing in with Google:", error);
+          alert("เกิดข้อผิดพลาดในการล็อกอิน: " + error.message);
+        }
+      }
 
       googleLoginButton.addEventListener("click", signInWithGoogle);
-    </script> -->
+    </script>
 
-    <script type="module">
+    <!-- <script type="module">
       import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm";
       // ✅ แนะนำให้ใช้ config.js เพื่อให้แก้ไขง่ายในที่เดียว
       import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
@@ -112,6 +112,6 @@
       }
 
       googleLoginButton.addEventListener("click", signInWithGoogle);
-    </script>
+    </script> -->
   </body>
 </html>
