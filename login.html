@@ -15,92 +15,103 @@
       }
     </style>
   </head>
-  <body>
-    <div class="flex items-center justify-center min-h-screen bg-gray-100">
-      <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-        <div>
-          <h2 class="text-2xl font-bold text-center">ยินดีต้อนรับ</h2>
-          <p class="text-center text-gray-600">กรุณาเข้าสู่ระบบเพื่อใช้งาน</p>
-        </div>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-md p-8 space-y-8 bg-white rounded-xl shadow-lg">
+      <div>
+        <h2 class="mt-6 text-center text-3xl font-bold text-gray-900">
+          ยินดีต้อนรับ
+        </h2>
+        <p class="mt-2 text-center text-base text-gray-600">
+          กรุณาลงชื่อเข้าสู่ระบบเพื่อใช้งาน
+        </p>
+      </div>
 
-        <form id="login-form" class="space-y-6">
-          <div>
-            <label for="email-input" class="text-sm font-medium">อีเมล</label>
-            <input
-              id="email-input"
-              type="email"
-              required
-              class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md"
-              placeholder="you@example.com"
-            />
-          </div>
-          <div>
-            <label for="password-input" class="text-sm font-medium"
-              >รหัสผ่าน</label
-            >
-            <input
-              id="password-input"
-              type="password"
-              required
-              class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md"
-              placeholder="••••••••"
-            />
-          </div>
-
-          <p id="error-message" class="text-sm text-red-600"></p>
-
-          <div>
-            <button
-              type="submit"
-              class="w-full px-4 py-2 font-bold text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
-            >
-              เข้าสู่ระบบ
-            </button>
-          </div>
-        </form>
-
-        <!-- <p class="text-sm text-center text-gray-600">
-          ยังไม่มีบัญชี?
-          <a href="/signup.html" class="text-indigo-600 hover:underline"
-            >สมัครสมาชิก</a
-          >
-        </p> -->
+      <div>
+        <button
+          id="google-login-btn"
+          type="button"
+          class="w-full inline-flex justify-center items-center py-3 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+        >
+          <svg class="w-5 h-5 mr-3" viewBox="0 0 48 48">
+            <path
+              fill="#FFC107"
+              d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
+            ></path>
+            <path
+              fill="#FF3D00"
+              d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
+            ></path>
+            <path
+              fill="#4CAF50"
+              d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.223,0-9.651-3.358-11.297-7.962l-6.571,4.819C9.656,39.663,16.318,44,24,44z"
+            ></path>
+            <path
+              fill="#1976D2"
+              d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571l6.19,5.238C39.971,36.213,44,30.607,44,24C44,22.659,43.862,21.35,43.611,20.083z"
+            ></path>
+          </svg>
+          Sign in with Google
+        </button>
       </div>
     </div>
 
-    <script type="module">
+    <!-- <script type="module">
       import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm";
       import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
 
-      const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const googleLoginButton = document.getElementById("google-login-btn");
 
-      const loginForm = document.getElementById("login-form");
-      const emailInput = document.getElementById("email-input");
-      const passwordInput = document.getElementById("password-input");
-      const errorMessage = document.getElementById("error-message");
+      async function signInWithGoogle() {
+        await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: "https://app.dp-web.online/auth-callback.html",
+          },
+        });
+      }
 
-      loginForm.addEventListener("submit", async (event) => {
-        event.preventDefault(); // หยุดการ submit ฟอร์มแบบปกติ
+      //   async function signInWithGoogle() {
+      //     const { error } = await supabase.auth.signInWithOAuth({
+      //       provider: "google",
+      //     });
 
-        const email = emailInput.value;
-        const password = passwordInput.value;
+      //     if (error) {
+      //       console.error("Error signing in with Google:", error);
+      //       alert("เกิดข้อผิดพลาดในการล็อกอิน: " + error.message);
+      //     }
+      //   }
 
-        // เรียกใช้ฟังก์ชัน signInWithPassword ของ Supabase
-        const { data, error } = await _supabase.auth.signInWithPassword({
-          email: email,
-          password: password,
+      googleLoginButton.addEventListener("click", signInWithGoogle);
+    </script> -->
+
+    <script type="module">
+      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm";
+      // ✅ แนะนำให้ใช้ config.js เพื่อให้แก้ไขง่ายในที่เดียว
+      import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
+
+      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: {
+          // ✅ เพิ่ม Option นี้เพื่อให้ทำงานบนมือถือได้ดีขึ้น
+          flowType: "pkce",
+        },
+      });
+
+      const googleLoginButton = document.getElementById("google-login-btn");
+
+      async function signInWithGoogle() {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          redirectTo: "https://app.dp-web.online/auth-callback.html",
         });
 
         if (error) {
-          // ถ้าเกิด Error ให้แสดงข้อความ
-          errorMessage.textContent = "อีเมลหรือรหัสผ่านไม่ถูกต้อง";
-          console.error("Login Error:", error);
-        } else {
-          // ถ้าสำเร็จ ให้ไปยังหน้า tors.html
-          console.log("Login successful:", data);
-          window.location.href = "/tors.html";
+          console.error("Error signing in with Google:", error);
+          alert("เกิดข้อผิดพลาดในการล็อกอิน: " + error.message);
         }
-      });
+      }
+
+      googleLoginButton.addEventListener("click", signInWithGoogle);
     </script>
   </body>
 </html>
