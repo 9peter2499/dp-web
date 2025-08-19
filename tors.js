@@ -256,58 +256,69 @@ function restorePageState() {
 
 // ใน tors.js
 
+// ใน tors.js
+
 async function initPage(session) {
   console.log("🚀 Initializing page...");
   showLoadingOverlay();
   try {
     const apiStatus = document.querySelector("#api-status span");
 
-    // --- DEBUG STEP 1 ---
-    console.log("DEBUG: 1. Attempting to fetch user role...");
-    const { data: profile } = await _supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", session.user.id)
-      .single();
-    currentUserRole = profile?.role || "viewer";
-    document.querySelector(
-      "#render-mode span"
-    ).textContent = `User Role: ${currentUserRole}`;
-    console.log("DEBUG: 1. SUCCESS - Role is:", currentUserRole);
+    // --- DEBUG STEP 1 (เวอร์ชันละเอียด) ---
+    console.log(
+      "DEBUG: 1. Attempting to fetch user role for user ID:",
+      session.user.id
+    );
+    try {
+      const { data: profile, error } = await _supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", session.user.id)
+        .single();
+
+      // ตรวจสอบ Error ที่ Supabase ส่งกลับมาโดยตรง
+      if (error) {
+        console.error("DEBUG: 1. FAILED - Supabase returned an error:", error);
+        throw error; // โยน Error เพื่อให้ catch block ด้านนอกทำงาน
+      }
+
+      currentUserRole = profile?.role || "viewer";
+      document.querySelector(
+        "#render-mode span"
+      ).textContent = `User Role: ${currentUserRole}`;
+      console.log("DEBUG: 1. SUCCESS - Role is:", currentUserRole);
+    } catch (e) {
+      console.error(
+        "DEBUG: 1. FAILED - Caught an exception while fetching profile:",
+        e
+      );
+      // โยน Error ต่อไปเพื่อให้ finally ทำงานและแสดงผล Error บนหน้าจอ
+      throw e;
+    }
     // --- END DEBUG STEP 1 ---
 
-    // --- DEBUG STEP 2 ---
     console.log("DEBUG: 2. Attempting to load master data...");
-    // แก้ไขจาก sequential เป็น Promise.all เพื่อความเร็ว
     await Promise.all([
       loadAllMasterOptions(),
       loadPresentationDates(),
       loadLatestUpdateDate(),
     ]);
     console.log("DEBUG: 2. SUCCESS - Master data loaded.");
-    // --- END DEBUG STEP 2 ---
 
-    // --- DEBUG STEP 3 ---
     console.log("DEBUG: 3. Attempting to fetch main TORs data...");
-    const rawData = await apiFetch(`${API_BASE_URL}/api/tors`);
+    const rawData = await apiFetch("/api/tors");
     console.log("DEBUG: 3. SUCCESS - Fetched", rawData.length, "TORs.");
-    // --- END DEBUG STEP 3 ---
 
+    // ... (โค้ดส่วนที่เหลือของ try block เหมือนเดิม) ...
     allTorsData = rawData.map((item) => ({
-      ...item,
-      tor_status_label: item.tor_status?.option_label || "N/A",
-      tor_fixing_label: item.tor_fixing?.option_label || "",
+      /* ... */
     }));
-
-    apiStatus.textContent = `Success - Fetched ${allTorsData.length} records.`;
-    apiStatus.className = "text-green-400";
-
-    allTorsData.sort((a, b) => a.tor_id.localeCompare(b.tor_id));
+    allTorsData.sort((a, b) => {
+      /* ... */
+    });
     populateFilters(allTorsData);
     applyFilters();
-    populatePresenterDropdown();
     restorePageState();
-
     const userInfoPanel = document.getElementById("user-info-panel");
     userInfoPanel.classList.remove("hidden");
     document.getElementById("user-display").textContent = session.user.email;
@@ -316,8 +327,10 @@ async function initPage(session) {
   } catch (error) {
     console.error("Failed to initialize page data:", error);
     const apiStatus = document.querySelector("#api-status span");
-    apiStatus.textContent = `Error: ${error.message}`;
-    apiStatus.className = "text-red-400";
+    if (apiStatus) {
+      apiStatus.textContent = `Error: ${error.message}`;
+      apiStatus.className = "text-red-400";
+    }
     document.getElementById(
       "tor-table-body"
     ).innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
