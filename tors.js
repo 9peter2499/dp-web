@@ -1,27 +1,32 @@
-// tors.js
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm";
-//import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
-// ✅ Import ค่าใหม่ทั้งหมดจาก config.js
-import { SUPABASE_URL, SUPABASE_ANON_KEY, API_BASE_URL } from "./config.js";
+// // tors.js
+// import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm";
+// //import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
+// // ✅ Import ค่าใหม่ทั้งหมดจาก config.js
+// import { SUPABASE_URL, SUPABASE_ANON_KEY, API_BASE_URL } from "./config.js";
 
-// ✅ 1. Import client ที่สร้างไว้จากไฟล์กลาง
+// // ✅ 1. Import client ที่สร้างไว้จากไฟล์กลาง
+// import { _supabase } from "./supabaseClient.js";
+// // ✅ 2. Import แค่ API_BASE_URL ก็พอ
+// import { API_BASE_URL } from "./config.js";
+
+// //const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// // const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+// //   global: {
+// //     headers: { "x-client-info": "supabase-js/2.x" },
+// //   },
+// //   auth: {
+// //     autoRefreshToken: true,
+// //     persistSession: true,
+// //     detectSessionInUrl: true,
+// //     revalidateOnFocus: false, // ✅ ปิดการรีเฟรชเมื่อกลับมาที่ Tab
+// //   },
+// // });
+
+// ที่ส่วนบนสุดของไฟล์ tors.js
+
 import { _supabase } from "./supabaseClient.js";
-// ✅ 2. Import แค่ API_BASE_URL ก็พอ
 import { API_BASE_URL } from "./config.js";
-
-//const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-//   global: {
-//     headers: { "x-client-info": "supabase-js/2.x" },
-//   },
-//   auth: {
-//     autoRefreshToken: true,
-//     persistSession: true,
-//     detectSessionInUrl: true,
-//     revalidateOnFocus: false, // ✅ ปิดการรีเฟรชเมื่อกลับมาที่ Tab
-//   },
-// });
 
 let allTorsData = [];
 let currentUserRole = "viewer";
