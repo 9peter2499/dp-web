@@ -56,17 +56,17 @@
     </div>
 
     <script type="module">
-      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm";
-      import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
+      // ✅ 1. Import client ที่สร้างไว้จากไฟล์กลาง
+      import { _supabase } from "./supabaseClient.js";
 
-      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       const googleLoginButton = document.getElementById("google-login-btn");
 
       async function signInWithGoogle() {
-        await supabase.auth.signInWithOAuth({
+        // ✅ 2. แก้ไข Bug โดยการเพิ่ม const { error }
+        const { error } = await _supabase.auth.signInWithOAuth({
           provider: "google",
           options: {
-            redirectTo: "https://app.dp-web.online/tors.html",
+            redirectTo: window.location.origin + "/tors.html",
           },
         });
 
@@ -76,41 +76,7 @@
         }
       }
 
-      // async function signInWithGoogle() {
-      //   const { error } = await supabase.auth.signInWithOAuth({
-      //     provider: "google",
-      //   });
-
       googleLoginButton.addEventListener("click", signInWithGoogle);
     </script>
-
-    <!-- <script type="module">
-      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm";
-      // ✅ แนะนำให้ใช้ config.js เพื่อให้แก้ไขง่ายในที่เดียว
-      import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
-
-      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-        auth: {
-          // ✅ เพิ่ม Option นี้เพื่อให้ทำงานบนมือถือได้ดีขึ้น
-          flowType: "pkce",
-        },
-      });
-
-      const googleLoginButton = document.getElementById("google-login-btn");
-
-      async function signInWithGoogle() {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: "google",
-          redirectTo: "https://app.dp-web.online/auth-callback.html",
-        });
-
-        if (error) {
-          console.error("Error signing in with Google:", error);
-          alert("เกิดข้อผิดพลาดในการล็อกอิน: " + error.message);
-        }
-      }
-
-      googleLoginButton.addEventListener("click", signInWithGoogle);
-    </script> -->
   </body>
 </html>
