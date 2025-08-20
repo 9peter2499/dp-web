@@ -1,13 +1,16 @@
+// tors_admin.js (Final Version)
+
 // --- IMPORTS & SETUP ---
 import { _supabase } from "./supabaseClient.js";
 import { API_BASE_URL } from "./config.js";
 
+// --- GLOBAL VARIABLES ---
 let allTorsData = [];
-let currentUserRole = "viewer"; // Default role
+let currentUserRole = "viewer";
+let quillEditor;
 let masterOptions = {};
 
 // --- API FETCH HELPER ---
-// (Copy ฟังก์ชัน apiFetch ทั้งหมดมาจาก tors.js หรือ torsm.js ที่ทำงานได้ดีของคุณ)
 async function apiFetch(url, options = {}) {
   const {
     data: { session },
@@ -15,7 +18,7 @@ async function apiFetch(url, options = {}) {
 
   if (!session) {
     alert("Session หมดอายุ กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
-    window.location.href = "/login.html";
+    window.location.href = "/login_admin.html";
     throw new Error("User not authenticated");
   }
 
@@ -38,7 +41,7 @@ async function apiFetch(url, options = {}) {
     // ถ้าบัตรหมดอายุ (Unauthorized)
     alert("Session หมดอายุ กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
     _supabase.auth.signOut(); // สั่ง Logout เพื่อเคลียร์ค่า
-    window.location.href = "/login.html";
+    window.location.href = "/login_admin.html";
     throw new Error("Session expired");
   }
 
@@ -58,11 +61,6 @@ async function apiFetch(url, options = {}) {
 // --- 1. CORE FUNCTIONS ---
 async function loadAllMasterOptions() {
   try {
-    // ✅ เรียกใช้แล้วรับข้อมูล JSON ได้เลย ง่ายกว่ามาก
-    // masterOptions = await apiFetch(
-    //   "https://pcsdata.onrender.com/api/options/all"
-    // );
-
     masterOptions = await apiFetch(`${API_BASE_URL}/api/options/all`);
 
     console.log("✅ Successfully loaded all master options in one request.");
@@ -140,22 +138,20 @@ async function initPage(session) {
   console.log("🚀 Initializing ADMIN page...");
   showLoadingOverlay();
   try {
-    // โหลดข้อมูลพื้นฐานทั้งหมด
+    // โหลดข้อมูลพื้นฐานและข้อมูลหลัก
     await Promise.all([
-      loadAllMasterOptions(session),
-      loadPresentationDates(session),
-      loadLatestUpdateDate(session),
+      loadAllMasterOptions(),
+      loadPresentationDates(),
+      loadLatestUpdateDate(),
     ]);
+    const rawData = await apiFetch("/api/tors");
 
-    // โหลดข้อมูล TORs หลัก
-    const rawData = await apiFetch("/api/tors", session);
     allTorsData = rawData.map((item) => ({
       ...item,
       tor_status_label: item.tor_status?.option_label || "N/A",
       tor_fixing_label: item.tor_fixing?.option_label || "",
     }));
 
-    // จัดเรียงข้อมูล
     allTorsData.sort((a, b) => {
       const moduleA = a.module_id || "";
       const moduleB = b.module_id || "";
@@ -169,6 +165,7 @@ async function initPage(session) {
     // แสดงผล UI
     populateFilters(allTorsData);
     applyFilters();
+    restorePageState(); // ถ้าต้องการใช้ฟีเจอร์จำสถานะ
 
     // แสดง User Panel
     const userInfoPanel = document.getElementById("user-info-panel");
@@ -176,16 +173,46 @@ async function initPage(session) {
     document.getElementById("user-display").textContent = session.user.email;
     document.getElementById("logout-btn").onclick = async () => {
       await _supabase.auth.signOut();
-      window.location.href = "/login_admin.html"; // กลับไปหน้า Admin Login
+      window.location.href = "/login_admin.html";
     };
+
+    // ✅ สร้าง Quill Editor และติดตั้ง Event Listeners ทั้งหมดที่นี่
+    setupEventListenersAndQuill();
   } catch (error) {
     console.error("Failed to initialize admin page data:", error);
-    document.getElementById(
-      "tor-table-body"
-    ).innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
   } finally {
     hideLoadingOverlay();
   }
+}
+
+function setupEventListenersAndQuill() {
+  console.log("Setting up event listeners and Quill editor...");
+
+  // Setup Quill Editor
+  if (!quillEditor) {
+    // ป้องกันการสร้างซ้ำ
+    quillEditor = new Quill("#editor-container", {
+      modules: { toolbar: true },
+      theme: "snow",
+    });
+  }
+
+  // Setup Filter Event Listeners
+  document
+    .getElementById("module-filter")
+    ?.addEventListener("change", applyFilters);
+  document
+    .getElementById("status-filter")
+    ?.addEventListener("change", applyFilters);
+  document
+    .getElementById("presented-date-filter")
+    ?.addEventListener("change", applyFilters);
+  document
+    .getElementById("search-box")
+    ?.addEventListener("input", applyFilters);
+
+  // Setup Popup & Modal Listeners...
+  // (Copy Event Listener อื่นๆ ที่เคยอยู่ใน DOMContentLoaded มาไว้ที่นี่)
 }
 
 // --- AUTHENTICATION & AUTHORIZATION ---
@@ -205,9 +232,8 @@ _supabase.auth.onAuthStateChange(async (event, session) => {
       alert("เกิดข้อผิดพลาดในการตรวจสอบสิทธิ์");
       window.location.href = "/login_admin.html";
       return;
-    }
+    } // 2. ถ้า Role คือ 'admin' ให้เริ่มโหลดหน้าเว็บ
 
-    // 2. ถ้า Role คือ 'admin' ให้เริ่มโหลดหน้าเว็บ
     if (profile && profile.role === "admin") {
       currentUserRole = "admin"; // กำหนด Role ให้ถูกต้อง
       await initPage(session);
@@ -985,7 +1011,7 @@ async function handlePresentationSubmit() {
     const {
       data: { session },
     } = await _supabase.auth.getSession();
-    const response = await apiFetch("${API_BASE_URL}/api/presentation", {
+    const response = await apiFetch(`${API_BASE_URL}/api/presentation`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -1055,134 +1081,109 @@ function populateTimeDropdowns() {
 
 // --- 5. INITIALIZATION AND EVENT LISTENERS ---
 
-document.addEventListener("DOMContentLoaded", () => {
-  // Setup Quill Editor
-  quillEditor = new Quill("#editor-container", {
-    modules: { toolbar: true },
-    theme: "snow",
-  });
+// document.addEventListener("DOMContentLoaded", () => {
+//   // Setup Quill Editor
+//   quillEditor = new Quill("#editor-container", {
+//     modules: { toolbar: true },
+//     theme: "snow",
+//   });
 
-  // Setup Filter Event Listeners
-  document
-    .getElementById("module-filter")
-    .addEventListener("change", applyFilters);
-  document
-    .getElementById("status-filter")
-    .addEventListener("change", applyFilters);
-  document
-    .getElementById("presented-date-filter")
-    .addEventListener("change", applyFilters);
-  document.getElementById("search-box").addEventListener("input", applyFilters);
+//   // Setup Filter Event Listeners
+//   document
+//     .getElementById("module-filter")
+//     .addEventListener("change", applyFilters);
+//   document
+//     .getElementById("status-filter")
+//     .addEventListener("change", applyFilters);
+//   document
+//     .getElementById("presented-date-filter")
+//     .addEventListener("change", applyFilters);
+//   document.getElementById("search-box").addEventListener("input", applyFilters);
 
-  // Setup Main Popup Listeners
-  document
-    .getElementById("close-popup-btn")
-    .addEventListener("click", closePopup);
-  document
-    .getElementById("cancel-popup-btn")
-    .addEventListener("click", closePopup);
+//   // Setup Main Popup Listeners
+//   document
+//     .getElementById("close-popup-btn")
+//     .addEventListener("click", closePopup);
+//   document
+//     .getElementById("cancel-popup-btn")
+//     .addEventListener("click", closePopup);
 
-  // Setup Presentation Modal Listeners
-  populateTimeDropdowns();
-  //populatePresenterDropdown(); // ✅ --- เพิ่มการเรียกใช้ฟังก์ชันที่นี่ ---
-  document
-    .getElementById("closePresentationModalBtn")
-    ?.addEventListener("click", closePresentationModal);
-  document
-    .getElementById("cancelPresentationModalBtn")
-    ?.addEventListener("click", closePresentationModal);
-  document
-    .getElementById("savePresentationBtn")
-    ?.addEventListener("click", handlePresentationSubmit);
+//   // Setup Presentation Modal Listeners
+//   populateTimeDropdowns();
+//   //populatePresenterDropdown(); // ✅ --- เพิ่มการเรียกใช้ฟังก์ชันที่นี่ ---
+//   document
+//     .getElementById("closePresentationModalBtn")
+//     ?.addEventListener("click", closePresentationModal);
+//   document
+//     .getElementById("cancelPresentationModalBtn")
+//     ?.addEventListener("click", closePresentationModal);
+//   document
+//     .getElementById("savePresentationBtn")
+//     ?.addEventListener("click", handlePresentationSubmit);
 
-  // Setup Table-level event listener for dynamic content
-  document
-    .getElementById("tor-table-body")
-    .addEventListener("click", function (event) {
-      if (event.target.classList.contains("presentation-btn")) {
-        const button = event.target;
-        openPresentationModal(button.dataset.tordId, button.dataset.type);
-      }
-      // ... (เพิ่ม event listener สำหรับปุ่มอื่นๆ ใน detail row ที่นี่) ...
-    });
+//   // Setup Table-level event listener for dynamic content
+//   document
+//     .getElementById("tor-table-body")
+//     .addEventListener("click", function (event) {
+//       if (event.target.classList.contains("presentation-btn")) {
+//         const button = event.target;
+//         openPresentationModal(button.dataset.tordId, button.dataset.type);
+//       }
+//       // ... (เพิ่ม event listener สำหรับปุ่มอื่นๆ ใน detail row ที่นี่) ...
+//     });
 
-  document
-    .getElementById("tor-table-body")
-    .addEventListener("click", function (event) {
-      // เช็คว่าสิ่งที่ถูกคลิกคือลิงก์ Edit ของเราหรือไม่
-      if (event.target.classList.contains("edit-link")) {
-        // หยุดการเปลี่ยนหน้าเว็บทันที
-        event.preventDefault();
+//   document
+//     .getElementById("tor-table-body")
+//     .addEventListener("click", function (event) {
+//       // เช็คว่าสิ่งที่ถูกคลิกคือลิงก์ Edit ของเราหรือไม่
+//       if (event.target.classList.contains("edit-link")) {
+//         // หยุดการเปลี่ยนหน้าเว็บทันที
+//         event.preventDefault();
 
-        console.log("Edit link clicked, saving page state..."); // สำหรับ Debug
+//         console.log("Edit link clicked, saving page state..."); // สำหรับ Debug
 
-        // --- นี่คือส่วนของ Step 1 ที่เราคุยกัน ---
-        // 1. รวบรวมสถานะปัจจุบันของหน้า
-        const currentState = {
-          scrollTop: window.scrollY,
-          filters: {
-            module: document.getElementById("module-filter").value,
-            status: document.getElementById("status-filter").value,
-            presentedDate: document.getElementById("presented-date-filter")
-              .value,
-          },
-          searchTerm: document.getElementById("search-box").value,
-        };
+//         // --- นี่คือส่วนของ Step 1 ที่เราคุยกัน ---
+//         // 1. รวบรวมสถานะปัจจุบันของหน้า
+//         const currentState = {
+//           scrollTop: window.scrollY,
+//           filters: {
+//             module: document.getElementById("module-filter").value,
+//             status: document.getElementById("status-filter").value,
+//             presentedDate: document.getElementById("presented-date-filter")
+//               .value,
+//           },
+//           searchTerm: document.getElementById("search-box").value,
+//         };
 
-        // 2. บันทึกสถานะลงใน sessionStorage
-        sessionStorage.setItem("torsPageState", JSON.stringify(currentState));
+//         // 2. บันทึกสถานะลงใน sessionStorage
+//         sessionStorage.setItem("torsPageState", JSON.stringify(currentState));
 
-        // 3. สั่งให้เปลี่ยนหน้าไปยังลิงก์ของปุ่ม Edit ด้วยตนเอง
-        window.location.href = event.target.href;
-      }
-    });
+//         // 3. สั่งให้เปลี่ยนหน้าไปยังลิงก์ของปุ่ม Edit ด้วยตนเอง
+//         window.location.href = event.target.href;
+//       }
+//     });
 
-  // // Main Auth Listener - The single source of truth for starting the app
-  // ✅ 1. สร้าง "ธง" (flag) ขึ้นมาที่ด้านนอกของ listener
-  // let isInitialized = false;
+//   // ใน tors.js (ท้ายไฟล์)
 
-  // // Main Auth Listener - The single source of truth for starting the app
-  // _supabase.auth.onAuthStateChange(async (event, session) => {
-  //   // ✅ 2. เพิ่มเงื่อนไขเพื่อเช็ค "ธง" เป็นอันดับแรก
-  //   // ถ้าเคยโหลดข้อมูลแล้ว และสถานะยังเป็นล็อกอินอยู่ (SIGNED_IN) ให้ออกจากฟังก์ชันทันที
-  //   if (isInitialized && event === "SIGNED_IN") {
-  //     return;
-  //   }
+//   //let isInitialized = false;
 
-  //   if (session) {
-  //     // โค้ดส่วนนี้จะทำงานแค่ครั้งแรกที่โหลดหน้าเว็บ
-  //     await initPage(session);
+//   //   _supabase.auth.onAuthStateChange(async (event, session) => {
+//   //     // ✅ ตรวจสอบธงก่อนเป็นอันดับแรกเสมอ
+//   //     // เราจะสนใจแค่ event ครั้งแรกที่เจอ session เท่านั้น
+//   //     if (isInitialized) {
+//   //       return;
+//   //     }
 
-  //     // ✅ 3. "ปักธง" ว่าได้โหลดข้อมูลเรียบร้อยแล้ว
-  //     isInitialized = true;
-  //   } else {
-  //     // ถ้าไม่มี session หรือ logout ให้ reset ธง และไปหน้า login
-  //     isInitialized = false;
-  //     window.location.href = "/login.html";
-  //   }
-  // });
+//   //     if (session) {
+//   //       // ✅ ปักธงทันที! ก่อนที่จะเริ่มโหลดข้อมูล
+//   //       isInitialized = true;
 
-  // ใน tors.js (ท้ายไฟล์)
-
-  let isInitialized = false;
-
-  _supabase.auth.onAuthStateChange(async (event, session) => {
-    // ✅ ตรวจสอบธงก่อนเป็นอันดับแรกเสมอ
-    // เราจะสนใจแค่ event ครั้งแรกที่เจอ session เท่านั้น
-    if (isInitialized) {
-      return;
-    }
-
-    if (session) {
-      // ✅ ปักธงทันที! ก่อนที่จะเริ่มโหลดข้อมูล
-      isInitialized = true;
-
-      // เรียกใช้ initPage (ซึ่งจะใช้เวลาสักพัก)
-      await initPage(session);
-    } else {
-      // ถ้าไม่มี session หรือ logout ให้ reset ธง และไปหน้า login
-      isInitialized = false;
-      window.location.href = "/login.html";
-    }
-  });
-});
+//   //       // เรียกใช้ initPage (ซึ่งจะใช้เวลาสักพัก)
+//   //       await initPage(session);
+//   //     } else {
+//   //       // ถ้าไม่มี session หรือ logout ให้ reset ธง และไปหน้า login
+//   //       isInitialized = false;
+//   //       window.location.href = "/login_admin.html";
+//   //     }
+//   //   });
+// });
