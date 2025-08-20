@@ -161,184 +161,6 @@ function restorePageState() {
   }
 }
 
-// async function initPage(session) {
-//   console.log("🚀 Initializing page...");
-//   showLoadingOverlay();
-
-//   try {
-//     const apiStatus = document.querySelector("#api-status span");
-
-//     // Step 1: Fetch user role
-//     try {
-//       const { data: profile } = await _supabase
-//         .from("profiles")
-//         .select("role")
-//         .eq("id", session.user.id)
-//         .single();
-//       currentUserRole = profile?.role || "viewer";
-//       document.querySelector(
-//         "#render-mode span"
-//       ).textContent = `User Role: ${currentUserRole}`;
-//     } catch (e) {
-//       console.error("Could not fetch user role", e);
-//     }
-
-//     // Step 2: Load all necessary master options
-
-//     try {
-//       console.log("Loading initial data sequentially to avoid rate limits...");
-
-//       // หน่วงเวลาเล็กน้อยก่อนเริ่ม
-//       await new Promise((resolve) => setTimeout(resolve, 100));
-//       await loadAllMasterOptions();
-
-//       // หน่วงเวลา 250ms ก่อนเรียก API ตัวต่อไป
-//       await new Promise((resolve) => setTimeout(resolve, 250));
-//       await loadPresentationDates();
-
-//       console.log("Initial data loaded successfully.");
-//     } catch (e) {
-//       console.error("A critical error occurred during initial data load:", e);
-//       apiStatus.textContent = `Error: ${e.message}`;
-//       apiStatus.className = "text-red-400";
-//       // หยุดการทำงานส่วนที่เหลือถ้าข้อมูลพื้นฐานโหลดไม่ได้
-//       return;
-//     }
-
-//     // Step 3: Fetch main TOR data
-//     try {
-//       // หน่วงเวลาอีกครั้งก่อนโหลดข้อมูลหลัก
-//       await new Promise((resolve) => setTimeout(resolve, 250));
-//       apiStatus.textContent = "Fetching from API...";
-//       apiStatus.className = "text-yellow-400";
-
-//       // ✅ แก้ไขตรงนี้ให้รับ rawData จาก apiFetch โดยตรง
-//       //const rawData = await apiFetch("https://pcsdata.onrender.com/api/tors");
-
-//       const rawData = await apiFetch(`${API_BASE_URL}/api/tors`);
-
-//       allTorsData = rawData.map((item) => ({
-//         ...item,
-//         tor_status_label: item.tor_status?.option_label || "N/A",
-//         tor_fixing_label: item.tor_fixing?.option_label || "",
-//       }));
-
-//       apiStatus.textContent = `Success - Fetched ${allTorsData.length} records.`;
-//       apiStatus.className = "text-green-400";
-
-//       // Step 4: Populate UI
-//       allTorsData.sort((a, b) => a.tor_id.localeCompare(b.tor_id));
-//       populateFilters(allTorsData);
-//       applyFilters();
-//       loadLatestUpdateDate();
-//       populatePresenterDropdown();
-//       restorePageState();
-//     } catch (error) {
-//       apiStatus.textContent = `Error: ${error.message}`;
-//       apiStatus.className = "text-red-400";
-//       document.getElementById(
-//         "tor-table-body"
-//       ).innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
-//     }
-
-//     // Step 5: Setup user panel
-//     const userInfoPanel = document.getElementById("user-info-panel");
-//     userInfoPanel.classList.remove("hidden");
-//     document.getElementById("user-display").textContent = session.user.email;
-//     document.getElementById("logout-btn").onclick = async () =>
-//       await _supabase.auth.signOut();
-//   } finally {
-//     // 2. ซ่อน Popup ใน finally block
-//     // ✅ ไม่ว่าจะสำเร็จหรือเกิด Error บล็อกนี้จะทำงานเสมอ
-//     hideLoadingOverlay();
-//   }
-// }
-
-// ใน tors.js
-
-// ใน tors.js
-
-// async function initPage(session) {
-//   console.log("🚀 Initializing page...");
-//   showLoadingOverlay();
-//   try {
-//     const apiStatus = document.querySelector("#api-status span");
-
-//     // --- DEBUG STEP 1 (เวอร์ชันละเอียด) ---
-//     console.log(
-//       "DEBUG: 1. Attempting to fetch user role for user ID:",
-//       session.user.id
-//     );
-//     try {
-//       const { data: profile, error } = await _supabase
-//         .from("profiles")
-//         .select("role")
-//         .eq("id", session.user.id)
-//         .single();
-
-//       // ตรวจสอบ Error ที่ Supabase ส่งกลับมาโดยตรง
-//       if (error) {
-//         console.error("DEBUG: 1. FAILED - Supabase returned an error:", error);
-//         throw error; // โยน Error เพื่อให้ catch block ด้านนอกทำงาน
-//       }
-
-//       currentUserRole = profile?.role || "viewer";
-//       document.querySelector(
-//         "#render-mode span"
-//       ).textContent = `User Role: ${currentUserRole}`;
-//       console.log("DEBUG: 1. SUCCESS - Role is:", currentUserRole);
-//     } catch (e) {
-//       console.error(
-//         "DEBUG: 1. FAILED - Caught an exception while fetching profile:",
-//         e
-//       );
-//       // โยน Error ต่อไปเพื่อให้ finally ทำงานและแสดงผล Error บนหน้าจอ
-//       throw e;
-//     }
-//     // --- END DEBUG STEP 1 ---
-
-//     console.log("DEBUG: 2. Attempting to load master data...");
-//     await Promise.all([
-//       loadAllMasterOptions(),
-//       loadPresentationDates(),
-//       loadLatestUpdateDate(),
-//     ]);
-//     console.log("DEBUG: 2. SUCCESS - Master data loaded.");
-
-//     console.log("DEBUG: 3. Attempting to fetch main TORs data...");
-//     const rawData = await apiFetch("/api/tors");
-//     console.log("DEBUG: 3. SUCCESS - Fetched", rawData.length, "TORs.");
-
-//     // ... (โค้ดส่วนที่เหลือของ try block เหมือนเดิม) ...
-//     allTorsData = rawData.map((item) => ({
-//       /* ... */
-//     }));
-//     allTorsData.sort((a, b) => {
-//       /* ... */
-//     });
-//     populateFilters(allTorsData);
-//     applyFilters();
-//     restorePageState();
-//     const userInfoPanel = document.getElementById("user-info-panel");
-//     userInfoPanel.classList.remove("hidden");
-//     document.getElementById("user-display").textContent = session.user.email;
-//     document.getElementById("logout-btn").onclick = async () =>
-//       await _supabase.auth.signOut();
-//   } catch (error) {
-//     console.error("Failed to initialize page data:", error);
-//     const apiStatus = document.querySelector("#api-status span");
-//     if (apiStatus) {
-//       apiStatus.textContent = `Error: ${error.message}`;
-//       apiStatus.className = "text-red-400";
-//     }
-//     document.getElementById(
-//       "tor-table-body"
-//     ).innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
-//   } finally {
-//     hideLoadingOverlay();
-//   }
-// }
-
 // ใน tors.js
 
 async function initPage(session) {
@@ -347,26 +169,44 @@ async function initPage(session) {
   try {
     const apiStatus = document.querySelector("#api-status span");
 
-    // --- ✅ Step 1: เปลี่ยนไปใช้ "ทางด่วน" (RPC) ---
-    console.log("DEBUG: 1. Attempting to fetch user role via RPC...");
-    const { data: roleData, error: rpcError } = await _supabase.rpc(
-      "get_user_role",
-      { user_id: session.user.id }
-    );
+    // --- ✅ STEP 1: แก้ไขการดึง Role ใหม่ทั้งหมด ---
+    console.log("DEBUG: 1. Attempting to fetch user role with retries...");
+    let profile = null;
+    let attempts = 0;
+    const maxAttempts = 5; // ลองสูงสุด 5 ครั้ง
 
-    if (rpcError) {
-      console.error("DEBUG: 1. FAILED - RPC call failed:", rpcError);
-      throw rpcError;
+    while (!profile && attempts < maxAttempts) {
+      attempts++;
+      console.log(` > Attempt #${attempts}`);
+      const { data, error } = await _supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", session.user.id)
+        .single();
+
+      if (data) {
+        profile = data;
+      } else if (error && error.code !== "PGRST116") {
+        // PGRST116 คือ "Not Found", ซึ่งเป็นเรื่องปกติในการลองครั้งแรกๆ
+        throw error; // โยน Error ถ้าเป็นปัญหาอื่นที่ไม่ใช่ "Not Found"
+      } else {
+        // ถ้ายังไม่เจอ ให้รอ 1 วินาทีก่อนลองใหม่
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
     }
 
-    currentUserRole = roleData || "viewer";
+    if (!profile) {
+      throw new Error("Could not fetch user profile after several attempts.");
+    }
+
+    currentUserRole = profile.role || "viewer";
     document.querySelector(
       "#render-mode span"
     ).textContent = `User Role: ${currentUserRole}`;
     console.log("DEBUG: 1. SUCCESS - Role is:", currentUserRole);
-    // --- END Step 1 ---
+    // --- END STEP 1 ---
 
-    // --- โค้ดส่วนที่เหลือเหมือนเดิม ---
+    // --- โค้ดส่วนที่เหลือเหมือนเดิมทั้งหมด ---
     console.log("DEBUG: 2. Attempting to load master data...");
     await Promise.all([
       loadAllMasterOptions(),
