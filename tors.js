@@ -258,45 +258,115 @@ function restorePageState() {
 
 // ใน tors.js
 
+// async function initPage(session) {
+//   console.log("🚀 Initializing page...");
+//   showLoadingOverlay();
+//   try {
+//     const apiStatus = document.querySelector("#api-status span");
+
+//     // --- DEBUG STEP 1 (เวอร์ชันละเอียด) ---
+//     console.log(
+//       "DEBUG: 1. Attempting to fetch user role for user ID:",
+//       session.user.id
+//     );
+//     try {
+//       const { data: profile, error } = await _supabase
+//         .from("profiles")
+//         .select("role")
+//         .eq("id", session.user.id)
+//         .single();
+
+//       // ตรวจสอบ Error ที่ Supabase ส่งกลับมาโดยตรง
+//       if (error) {
+//         console.error("DEBUG: 1. FAILED - Supabase returned an error:", error);
+//         throw error; // โยน Error เพื่อให้ catch block ด้านนอกทำงาน
+//       }
+
+//       currentUserRole = profile?.role || "viewer";
+//       document.querySelector(
+//         "#render-mode span"
+//       ).textContent = `User Role: ${currentUserRole}`;
+//       console.log("DEBUG: 1. SUCCESS - Role is:", currentUserRole);
+//     } catch (e) {
+//       console.error(
+//         "DEBUG: 1. FAILED - Caught an exception while fetching profile:",
+//         e
+//       );
+//       // โยน Error ต่อไปเพื่อให้ finally ทำงานและแสดงผล Error บนหน้าจอ
+//       throw e;
+//     }
+//     // --- END DEBUG STEP 1 ---
+
+//     console.log("DEBUG: 2. Attempting to load master data...");
+//     await Promise.all([
+//       loadAllMasterOptions(),
+//       loadPresentationDates(),
+//       loadLatestUpdateDate(),
+//     ]);
+//     console.log("DEBUG: 2. SUCCESS - Master data loaded.");
+
+//     console.log("DEBUG: 3. Attempting to fetch main TORs data...");
+//     const rawData = await apiFetch("/api/tors");
+//     console.log("DEBUG: 3. SUCCESS - Fetched", rawData.length, "TORs.");
+
+//     // ... (โค้ดส่วนที่เหลือของ try block เหมือนเดิม) ...
+//     allTorsData = rawData.map((item) => ({
+//       /* ... */
+//     }));
+//     allTorsData.sort((a, b) => {
+//       /* ... */
+//     });
+//     populateFilters(allTorsData);
+//     applyFilters();
+//     restorePageState();
+//     const userInfoPanel = document.getElementById("user-info-panel");
+//     userInfoPanel.classList.remove("hidden");
+//     document.getElementById("user-display").textContent = session.user.email;
+//     document.getElementById("logout-btn").onclick = async () =>
+//       await _supabase.auth.signOut();
+//   } catch (error) {
+//     console.error("Failed to initialize page data:", error);
+//     const apiStatus = document.querySelector("#api-status span");
+//     if (apiStatus) {
+//       apiStatus.textContent = `Error: ${error.message}`;
+//       apiStatus.className = "text-red-400";
+//     }
+//     document.getElementById(
+//       "tor-table-body"
+//     ).innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
+//   } finally {
+//     hideLoadingOverlay();
+//   }
+// }
+
+// ใน tors.js
+
 async function initPage(session) {
   console.log("🚀 Initializing page...");
   showLoadingOverlay();
   try {
     const apiStatus = document.querySelector("#api-status span");
 
-    // --- DEBUG STEP 1 (เวอร์ชันละเอียด) ---
-    console.log(
-      "DEBUG: 1. Attempting to fetch user role for user ID:",
-      session.user.id
+    // --- ✅ Step 1: เปลี่ยนไปใช้ "ทางด่วน" (RPC) ---
+    console.log("DEBUG: 1. Attempting to fetch user role via RPC...");
+    const { data: roleData, error: rpcError } = await _supabase.rpc(
+      "get_user_role",
+      { user_id: session.user.id }
     );
-    try {
-      const { data: profile, error } = await _supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", session.user.id)
-        .single();
 
-      // ตรวจสอบ Error ที่ Supabase ส่งกลับมาโดยตรง
-      if (error) {
-        console.error("DEBUG: 1. FAILED - Supabase returned an error:", error);
-        throw error; // โยน Error เพื่อให้ catch block ด้านนอกทำงาน
-      }
-
-      currentUserRole = profile?.role || "viewer";
-      document.querySelector(
-        "#render-mode span"
-      ).textContent = `User Role: ${currentUserRole}`;
-      console.log("DEBUG: 1. SUCCESS - Role is:", currentUserRole);
-    } catch (e) {
-      console.error(
-        "DEBUG: 1. FAILED - Caught an exception while fetching profile:",
-        e
-      );
-      // โยน Error ต่อไปเพื่อให้ finally ทำงานและแสดงผล Error บนหน้าจอ
-      throw e;
+    if (rpcError) {
+      console.error("DEBUG: 1. FAILED - RPC call failed:", rpcError);
+      throw rpcError;
     }
-    // --- END DEBUG STEP 1 ---
 
+    currentUserRole = roleData || "viewer";
+    document.querySelector(
+      "#render-mode span"
+    ).textContent = `User Role: ${currentUserRole}`;
+    console.log("DEBUG: 1. SUCCESS - Role is:", currentUserRole);
+    // --- END Step 1 ---
+
+    // --- โค้ดส่วนที่เหลือเหมือนเดิม ---
     console.log("DEBUG: 2. Attempting to load master data...");
     await Promise.all([
       loadAllMasterOptions(),
@@ -309,7 +379,6 @@ async function initPage(session) {
     const rawData = await apiFetch("/api/tors");
     console.log("DEBUG: 3. SUCCESS - Fetched", rawData.length, "TORs.");
 
-    // ... (โค้ดส่วนที่เหลือของ try block เหมือนเดิม) ...
     allTorsData = rawData.map((item) => ({
       /* ... */
     }));
@@ -319,6 +388,7 @@ async function initPage(session) {
     populateFilters(allTorsData);
     applyFilters();
     restorePageState();
+
     const userInfoPanel = document.getElementById("user-info-panel");
     userInfoPanel.classList.remove("hidden");
     document.getElementById("user-display").textContent = session.user.email;
@@ -326,14 +396,7 @@ async function initPage(session) {
       await _supabase.auth.signOut();
   } catch (error) {
     console.error("Failed to initialize page data:", error);
-    const apiStatus = document.querySelector("#api-status span");
-    if (apiStatus) {
-      apiStatus.textContent = `Error: ${error.message}`;
-      apiStatus.className = "text-red-400";
-    }
-    document.getElementById(
-      "tor-table-body"
-    ).innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
+    // ... (error handling) ...
   } finally {
     hideLoadingOverlay();
   }
