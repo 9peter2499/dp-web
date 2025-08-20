@@ -69,10 +69,8 @@
     </div>
 
     <script type="module">
-      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm";
-      import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
-
-      const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      // ✅ 1. Import client ที่สมบูรณ์จากไฟล์กลาง
+      import { _supabase } from "./supabaseClient.js";
 
       const loginForm = document.getElementById("login-form");
       const emailInput = document.getElementById("email-input");
@@ -80,25 +78,23 @@
       const errorMessage = document.getElementById("error-message");
 
       loginForm.addEventListener("submit", async (event) => {
-        event.preventDefault(); // หยุดการ submit ฟอร์มแบบปกติ
+        event.preventDefault();
 
         const email = emailInput.value;
         const password = passwordInput.value;
 
-        // เรียกใช้ฟังก์ชัน signInWithPassword ของ Supabase
         const { data, error } = await _supabase.auth.signInWithPassword({
           email: email,
           password: password,
         });
 
         if (error) {
-          // ถ้าเกิด Error ให้แสดงข้อความ
           errorMessage.textContent = "อีเมลหรือรหัสผ่านไม่ถูกต้อง";
           console.error("Login Error:", error);
         } else {
-          // ถ้าสำเร็จ ให้ไปยังหน้า tors.html
-          console.log("Login successful:", data);
-          window.location.href = "/tors.html";
+          console.log("Admin login successful:", data);
+          // ✅ 2. เปลี่ยนให้ไปที่หน้า tors_admin.html
+          window.location.href = "/tors_admin.html";
         }
       });
     </script>
