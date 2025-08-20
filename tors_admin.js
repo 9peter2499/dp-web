@@ -1,12 +1,13 @@
+// --- IMPORTS & SETUP ---
 import { _supabase } from "./supabaseClient.js";
 import { API_BASE_URL } from "./config.js";
 
 let allTorsData = [];
-let currentUserRole = "viewer";
-let quillEditor;
-
+let currentUserRole = "viewer"; // Default role
 let masterOptions = {};
 
+// --- API FETCH HELPER ---
+// (Copy ฟังก์ชัน apiFetch ทั้งหมดมาจาก tors.js หรือ torsm.js ที่ทำงานได้ดีของคุณ)
 async function apiFetch(url, options = {}) {
   const {
     data: { session },
@@ -134,66 +135,93 @@ function restorePageState() {
   }
 }
 
+// --- MAIN PAGE INITIALIZATION ---
 async function initPage(session) {
   console.log("🚀 Initializing ADMIN page...");
   showLoadingOverlay();
   try {
-    // --- STEP 1: ตรวจสอบสิทธิ์ Admin ---
-    console.log("DEBUG: 1. Verifying admin role...");
+    // โหลดข้อมูลพื้นฐานทั้งหมด
+    await Promise.all([
+      loadAllMasterOptions(session),
+      loadPresentationDates(session),
+      loadLatestUpdateDate(session),
+    ]);
 
-    const { data: profile, error: profileError } = await _supabase
+    // โหลดข้อมูล TORs หลัก
+    const rawData = await apiFetch("/api/tors", session);
+    allTorsData = rawData.map((item) => ({
+      ...item,
+      tor_status_label: item.tor_status?.option_label || "N/A",
+      tor_fixing_label: item.tor_fixing?.option_label || "",
+    }));
+
+    // จัดเรียงข้อมูล
+    allTorsData.sort((a, b) => {
+      const moduleA = a.module_id || "";
+      const moduleB = b.module_id || "";
+      const torA = a.tor_id || "";
+      const torB = b.tor_id || "";
+      const moduleCompare = moduleA.localeCompare(moduleB);
+      if (moduleCompare !== 0) return moduleCompare;
+      return torA.localeCompare(torB);
+    });
+
+    // แสดงผล UI
+    populateFilters(allTorsData);
+    applyFilters();
+
+    // แสดง User Panel
+    const userInfoPanel = document.getElementById("user-info-panel");
+    userInfoPanel.classList.remove("hidden");
+    document.getElementById("user-display").textContent = session.user.email;
+    document.getElementById("logout-btn").onclick = async () => {
+      await _supabase.auth.signOut();
+      window.location.href = "/login_admin.html"; // กลับไปหน้า Admin Login
+    };
+  } catch (error) {
+    console.error("Failed to initialize admin page data:", error);
+    document.getElementById(
+      "tor-table-body"
+    ).innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
+  } finally {
+    hideLoadingOverlay();
+  }
+}
+
+// --- AUTHENTICATION & AUTHORIZATION ---
+_supabase.auth.onAuthStateChange(async (event, session) => {
+  if (session) {
+    // 1. เมื่อมี Session ให้ตรวจสอบ Role ก่อน
+    console.log("Session found, verifying admin role...");
+
+    const { data: profile, error } = await _supabase
       .from("profiles")
       .select("role")
       .eq("id", session.user.id)
       .single();
 
-    if (profileError) throw profileError;
-
-    // ถ้าไม่มี profile หรือ role ไม่ใช่ 'admin' ให้เตะกลับไปหน้า Login
-    if (!profile || profile.role !== "admin") {
-      alert("คุณไม่มีสิทธิ์เข้าถึงหน้านี้");
-      await _supabase.auth.signOut(); // สั่ง Logout เพื่อความปลอดภัย
+    if (error) {
+      console.error("Error fetching profile:", error);
+      alert("เกิดข้อผิดพลาดในการตรวจสอบสิทธิ์");
       window.location.href = "/login_admin.html";
       return;
     }
 
-    currentUserRole = profile.role;
-    console.log("DEBUG: 1. SUCCESS - Admin role confirmed.");
-    // --- END STEP 1 ---
-
-    // --- STEP 2 & 3: โหลดข้อมูลทั้งหมด (เหมือน tors.js) ---
-    await Promise.all([
-      loadAllMasterOptions(),
-      loadPresentationDates(),
-      loadLatestUpdateDate(),
-    ]);
-
-    const rawData = await apiFetch("/api/tors");
-
-    allTorsData = rawData.map((item) => ({
-      /* ... mapping data ... */
-    }));
-    allTorsData.sort((a, b) => {
-      /* ... sorting ... */
-    });
-
-    // --- STEP 4 & 5: แสดงผลและตั้งค่าหน้าเว็บ (เหมือน tors.js) ---
-    populateFilters(allTorsData);
-    applyFilters();
-    restorePageState();
-
-    const userInfoPanel = document.getElementById("user-info-panel");
-    userInfoPanel.classList.remove("hidden");
-    document.getElementById("user-display").textContent = session.user.email;
-    document.getElementById("logout-btn").onclick = async () =>
+    // 2. ถ้า Role คือ 'admin' ให้เริ่มโหลดหน้าเว็บ
+    if (profile && profile.role === "admin") {
+      currentUserRole = "admin"; // กำหนด Role ให้ถูกต้อง
+      await initPage(session);
+    } else {
+      // 3. ถ้าไม่ใช่ Admin ให้แจ้งเตือนและส่งกลับไปหน้า Login
+      alert("คุณไม่มีสิทธิ์เข้าถึงหน้านี้");
       await _supabase.auth.signOut();
-  } catch (error) {
-    console.error("Failed to initialize admin page data:", error);
-    // จัดการ Error ต่างๆ
-  } finally {
-    hideLoadingOverlay();
+      window.location.href = "/login_admin.html";
+    }
+  } else {
+    // ถ้าไม่มี Session เลย ให้ส่งไปหน้า Login
+    window.location.href = "/login_admin.html";
   }
-}
+});
 
 async function loadPresentationDates() {
   const dateFilter = document.getElementById("presented-date-filter");
