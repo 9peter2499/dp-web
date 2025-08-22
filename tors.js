@@ -1282,32 +1282,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //   // ใน tors.js (ท้ายไฟล์)
 
-  //   let isInitialized = false;
+  let isInitialized = false;
 
-  //   _supabase.auth.onAuthStateChange(async (event, session) => {
-  //     // ✅ ตรวจสอบธงก่อนเป็นอันดับแรกเสมอ
-  //     // เราจะสนใจแค่ event ครั้งแรกที่เจอ session เท่านั้น
-  //     if (isInitialized) {
-  //       return;
-  //     }
+  _supabase.auth.onAuthStateChange(async (event, session) => {
+    // ✅ ตรวจสอบธงก่อนเป็นอันดับแรกเสมอ
+    // เราจะสนใจแค่ event ครั้งแรกที่เจอ session เท่านั้น
+    if (isInitialized) {
+      return;
+    }
 
-  //     if (session) {
-  //       // ✅ ปักธงทันที! ก่อนที่จะเริ่มโหลดข้อมูล
-  //       isInitialized = true;
+    if (session) {
+      // ✅ ปักธงทันที! ก่อนที่จะเริ่มโหลดข้อมูล
+      isInitialized = true;
 
-  //       // เรียกใช้ initPage (ซึ่งจะใช้เวลาสักพัก)
-  //       await initPage(session);
-  //     } else {
-  //       // ถ้าไม่มี session หรือ logout ให้ reset ธง และไปหน้า login
-  //       isInitialized = false;
-  //       window.location.href = "/login.html";
-  //     }
-  //   });
-
-  _supabase.auth.onAuthStateChange((event, session) => {
-    if (event === "SIGNED_OUT") {
-      // เมื่อผู้ใช้ออกจากระบบ ให้ redirect ไปยังหน้า login
-      console.log("User signed out. Redirecting to login page.");
+      // เรียกใช้ initPage (ซึ่งจะใช้เวลาสักพัก)
+      await initPage(session);
+    } else {
+      // ถ้าไม่มี session หรือ logout ให้ reset ธง และไปหน้า login
+      isInitialized = false;
       window.location.href = "/login.html";
     }
   });
