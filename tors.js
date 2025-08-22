@@ -1,30 +1,3 @@
-// // tors.js
-// import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/+esm";
-// //import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
-// // ✅ Import ค่าใหม่ทั้งหมดจาก config.js
-// import { SUPABASE_URL, SUPABASE_ANON_KEY, API_BASE_URL } from "./config.js";
-
-// // ✅ 1. Import client ที่สร้างไว้จากไฟล์กลาง
-// import { _supabase } from "./supabaseClient.js";
-// // ✅ 2. Import แค่ API_BASE_URL ก็พอ
-// import { API_BASE_URL } from "./config.js";
-
-// //const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// // const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-// //   global: {
-// //     headers: { "x-client-info": "supabase-js/2.x" },
-// //   },
-// //   auth: {
-// //     autoRefreshToken: true,
-// //     persistSession: true,
-// //     detectSessionInUrl: true,
-// //     revalidateOnFocus: false, // ✅ ปิดการรีเฟรชเมื่อกลับมาที่ Tab
-// //   },
-// // });
-
-// ที่ส่วนบนสุดของไฟล์ tors.js
-
 import { _supabase } from "./supabaseClient.js";
 import { API_BASE_URL } from "./config.js";
 
@@ -84,11 +57,6 @@ async function apiFetch(url, options = {}) {
 // --- 1. CORE FUNCTIONS ---
 async function loadAllMasterOptions() {
   try {
-    // ✅ เรียกใช้แล้วรับข้อมูล JSON ได้เลย ง่ายกว่ามาก
-    // masterOptions = await apiFetch(
-    //   "https://pcsdata.onrender.com/api/options/all"
-    // );
-
     masterOptions = await apiFetch(`${API_BASE_URL}/api/options/all`);
 
     console.log("✅ Successfully loaded all master options in one request.");
@@ -181,19 +149,24 @@ async function initPage(session) {
     while (!profile && attempts < maxAttempts) {
       attempts++;
       console.log(` > Attempt #${attempts}`);
+
+      // --- ส่วนที่แก้ไข ---
       const { data, error } = await _supabase
         .from("profiles")
         .select("role")
         .eq("id", session.user.id)
         .single();
 
+      // เพิ่ม log เพื่อดูว่าได้อะไรกลับมา
+      console.log(`   - Attempt #${attempts} Data:`, data);
+      console.log(`   - Attempt #${attempts} Error:`, error);
+      // --- จบส่วนที่แก้ไข ---
+
       if (data) {
         profile = data;
       } else if (error && error.code !== "PGRST116") {
-        // PGRST116 คือ "Not Found", ซึ่งเป็นเรื่องปกติในการลองครั้งแรกๆ
-        throw error; // โยน Error ถ้าเป็นปัญหาอื่นที่ไม่ใช่ "Not Found"
+        throw error;
       } else {
-        // ถ้ายังไม่เจอ ให้รอ 1 วินาทีก่อนลองใหม่
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }
