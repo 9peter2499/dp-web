@@ -1137,136 +1137,136 @@ function populateTimeDropdowns() {
 
 // --- 5. INITIALIZATION AND EVENT LISTENERS ---
 
-// document.addEventListener("DOMContentLoaded", () => {
-//   // Setup Quill Editor
-//   quillEditor = new Quill("#editor-container", {
-//     modules: { toolbar: true },
-//     theme: "snow",
-//   });
+document.addEventListener("DOMContentLoaded", () => {
+  // Setup Quill Editor
+  quillEditor = new Quill("#editor-container", {
+    modules: { toolbar: true },
+    theme: "snow",
+  });
 
-//   // Setup Filter Event Listeners
-//   document
-//     .getElementById("module-filter")
-//     .addEventListener("change", applyFilters);
-//   document
-//     .getElementById("status-filter")
-//     .addEventListener("change", applyFilters);
-//   document
-//     .getElementById("presented-date-filter")
-//     .addEventListener("change", applyFilters);
-//   document.getElementById("search-box").addEventListener("input", applyFilters);
+  // Setup Filter Event Listeners
+  document
+    .getElementById("module-filter")
+    .addEventListener("change", applyFilters);
+  document
+    .getElementById("status-filter")
+    .addEventListener("change", applyFilters);
+  document
+    .getElementById("presented-date-filter")
+    .addEventListener("change", applyFilters);
+  document.getElementById("search-box").addEventListener("input", applyFilters);
 
-//   // Setup Main Popup Listeners
-//   document
-//     .getElementById("close-popup-btn")
-//     .addEventListener("click", closePopup);
-//   document
-//     .getElementById("cancel-popup-btn")
-//     .addEventListener("click", closePopup);
+  // Setup Main Popup Listeners
+  document
+    .getElementById("close-popup-btn")
+    .addEventListener("click", closePopup);
+  document
+    .getElementById("cancel-popup-btn")
+    .addEventListener("click", closePopup);
 
-//   // Setup Presentation Modal Listeners
-//   populateTimeDropdowns();
-//   //populatePresenterDropdown(); // ✅ --- เพิ่มการเรียกใช้ฟังก์ชันที่นี่ ---
-//   document
-//     .getElementById("closePresentationModalBtn")
-//     ?.addEventListener("click", closePresentationModal);
-//   document
-//     .getElementById("cancelPresentationModalBtn")
-//     ?.addEventListener("click", closePresentationModal);
-//   document
-//     .getElementById("savePresentationBtn")
-//     ?.addEventListener("click", handlePresentationSubmit);
+  // Setup Presentation Modal Listeners
+  populateTimeDropdowns();
+  //populatePresenterDropdown(); // ✅ --- เพิ่มการเรียกใช้ฟังก์ชันที่นี่ ---
+  document
+    .getElementById("closePresentationModalBtn")
+    ?.addEventListener("click", closePresentationModal);
+  document
+    .getElementById("cancelPresentationModalBtn")
+    ?.addEventListener("click", closePresentationModal);
+  document
+    .getElementById("savePresentationBtn")
+    ?.addEventListener("click", handlePresentationSubmit);
 
-//   // Setup Table-level event listener for dynamic content
-//   document
-//     .getElementById("tor-table-body")
-//     .addEventListener("click", function (event) {
-//       if (event.target.classList.contains("presentation-btn")) {
-//         const button = event.target;
-//         openPresentationModal(button.dataset.tordId, button.dataset.type);
-//       }
-//       // ... (เพิ่ม event listener สำหรับปุ่มอื่นๆ ใน detail row ที่นี่) ...
-//     });
+  // Setup Table-level event listener for dynamic content
+  document
+    .getElementById("tor-table-body")
+    .addEventListener("click", function (event) {
+      if (event.target.classList.contains("presentation-btn")) {
+        const button = event.target;
+        openPresentationModal(button.dataset.tordId, button.dataset.type);
+      }
+      // ... (เพิ่ม event listener สำหรับปุ่มอื่นๆ ใน detail row ที่นี่) ...
+    });
 
-//   document
-//     .getElementById("tor-table-body")
-//     .addEventListener("click", function (event) {
-//       // เช็คว่าสิ่งที่ถูกคลิกคือลิงก์ Edit ของเราหรือไม่
-//       if (event.target.classList.contains("edit-link")) {
-//         // หยุดการเปลี่ยนหน้าเว็บทันที
-//         event.preventDefault();
+  document
+    .getElementById("tor-table-body")
+    .addEventListener("click", function (event) {
+      // เช็คว่าสิ่งที่ถูกคลิกคือลิงก์ Edit ของเราหรือไม่
+      if (event.target.classList.contains("edit-link")) {
+        // หยุดการเปลี่ยนหน้าเว็บทันที
+        event.preventDefault();
 
-//         console.log("Edit link clicked, saving page state..."); // สำหรับ Debug
+        console.log("Edit link clicked, saving page state..."); // สำหรับ Debug
 
-//         // --- นี่คือส่วนของ Step 1 ที่เราคุยกัน ---
-//         // 1. รวบรวมสถานะปัจจุบันของหน้า
-//         const currentState = {
-//           scrollTop: window.scrollY,
-//           filters: {
-//             module: document.getElementById("module-filter").value,
-//             status: document.getElementById("status-filter").value,
-//             presentedDate: document.getElementById("presented-date-filter")
-//               .value,
-//           },
-//           searchTerm: document.getElementById("search-box").value,
-//         };
+        // --- นี่คือส่วนของ Step 1 ที่เราคุยกัน ---
+        // 1. รวบรวมสถานะปัจจุบันของหน้า
+        const currentState = {
+          scrollTop: window.scrollY,
+          filters: {
+            module: document.getElementById("module-filter").value,
+            status: document.getElementById("status-filter").value,
+            presentedDate: document.getElementById("presented-date-filter")
+              .value,
+          },
+          searchTerm: document.getElementById("search-box").value,
+        };
 
-//         // 2. บันทึกสถานะลงใน sessionStorage
-//         sessionStorage.setItem("torsPageState", JSON.stringify(currentState));
+        // 2. บันทึกสถานะลงใน sessionStorage
+        sessionStorage.setItem("torsPageState", JSON.stringify(currentState));
 
-//         // 3. สั่งให้เปลี่ยนหน้าไปยังลิงก์ของปุ่ม Edit ด้วยตนเอง
-//         window.location.href = event.target.href;
-//       }
-//     });
+        // 3. สั่งให้เปลี่ยนหน้าไปยังลิงก์ของปุ่ม Edit ด้วยตนเอง
+        window.location.href = event.target.href;
+      }
+    });
 
-//   // // Main Auth Listener - The single source of truth for starting the app
-//   // ✅ 1. สร้าง "ธง" (flag) ขึ้นมาที่ด้านนอกของ listener
-//   // let isInitialized = false;
+  //   // // Main Auth Listener - The single source of truth for starting the app
+  //   // ✅ 1. สร้าง "ธง" (flag) ขึ้นมาที่ด้านนอกของ listener
+  //   // let isInitialized = false;
 
-//   // // Main Auth Listener - The single source of truth for starting the app
-//   // _supabase.auth.onAuthStateChange(async (event, session) => {
-//   //   // ✅ 2. เพิ่มเงื่อนไขเพื่อเช็ค "ธง" เป็นอันดับแรก
-//   //   // ถ้าเคยโหลดข้อมูลแล้ว และสถานะยังเป็นล็อกอินอยู่ (SIGNED_IN) ให้ออกจากฟังก์ชันทันที
-//   //   if (isInitialized && event === "SIGNED_IN") {
-//   //     return;
-//   //   }
+  //   // // Main Auth Listener - The single source of truth for starting the app
+  //   // _supabase.auth.onAuthStateChange(async (event, session) => {
+  //   //   // ✅ 2. เพิ่มเงื่อนไขเพื่อเช็ค "ธง" เป็นอันดับแรก
+  //   //   // ถ้าเคยโหลดข้อมูลแล้ว และสถานะยังเป็นล็อกอินอยู่ (SIGNED_IN) ให้ออกจากฟังก์ชันทันที
+  //   //   if (isInitialized && event === "SIGNED_IN") {
+  //   //     return;
+  //   //   }
 
-//   //   if (session) {
-//   //     // โค้ดส่วนนี้จะทำงานแค่ครั้งแรกที่โหลดหน้าเว็บ
-//   //     await initPage(session);
+  //   //   if (session) {
+  //   //     // โค้ดส่วนนี้จะทำงานแค่ครั้งแรกที่โหลดหน้าเว็บ
+  //   //     await initPage(session);
 
-//   //     // ✅ 3. "ปักธง" ว่าได้โหลดข้อมูลเรียบร้อยแล้ว
-//   //     isInitialized = true;
-//   //   } else {
-//   //     // ถ้าไม่มี session หรือ logout ให้ reset ธง และไปหน้า login
-//   //     isInitialized = false;
-//   //     window.location.href = "/login.html";
-//   //   }
-//   // });
+  //   //     // ✅ 3. "ปักธง" ว่าได้โหลดข้อมูลเรียบร้อยแล้ว
+  //   //     isInitialized = true;
+  //   //   } else {
+  //   //     // ถ้าไม่มี session หรือ logout ให้ reset ธง และไปหน้า login
+  //   //     isInitialized = false;
+  //   //     window.location.href = "/login.html";
+  //   //   }
+  //   // });
 
-//   // ใน tors.js (ท้ายไฟล์)
+  //   // ใน tors.js (ท้ายไฟล์)
 
-//   let isInitialized = false;
+  //   let isInitialized = false;
 
-//   _supabase.auth.onAuthStateChange(async (event, session) => {
-//     // ✅ ตรวจสอบธงก่อนเป็นอันดับแรกเสมอ
-//     // เราจะสนใจแค่ event ครั้งแรกที่เจอ session เท่านั้น
-//     if (isInitialized) {
-//       return;
-//     }
+  //   _supabase.auth.onAuthStateChange(async (event, session) => {
+  //     // ✅ ตรวจสอบธงก่อนเป็นอันดับแรกเสมอ
+  //     // เราจะสนใจแค่ event ครั้งแรกที่เจอ session เท่านั้น
+  //     if (isInitialized) {
+  //       return;
+  //     }
 
-//     if (session) {
-//       // ✅ ปักธงทันที! ก่อนที่จะเริ่มโหลดข้อมูล
-//       isInitialized = true;
+  //     if (session) {
+  //       // ✅ ปักธงทันที! ก่อนที่จะเริ่มโหลดข้อมูล
+  //       isInitialized = true;
 
-//       // เรียกใช้ initPage (ซึ่งจะใช้เวลาสักพัก)
-//       await initPage(session);
-//     } else {
-//       // ถ้าไม่มี session หรือ logout ให้ reset ธง และไปหน้า login
-//       isInitialized = false;
-//       window.location.href = "/login.html";
-//     }
-//   });
-// });
+  //       // เรียกใช้ initPage (ซึ่งจะใช้เวลาสักพัก)
+  //       await initPage(session);
+  //     } else {
+  //       // ถ้าไม่มี session หรือ logout ให้ reset ธง และไปหน้า login
+  //       isInitialized = false;
+  //       window.location.href = "/login.html";
+  //     }
+  //   });
+});
 
 initializeAuthenticatedPage();
