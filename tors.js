@@ -132,36 +132,29 @@ function restorePageState() {
 // ใน tors.js
 
 async function initPage(session) {
-  console.log("🚀 Initializing page...");
+  console.log("🚀 กำลังเริ่มต้นหน้าเว็บด้วย session ที่พร้อมใช้งาน...");
   showLoadingOverlay();
   try {
-    //ตรวจสอบ User ID Login
-    console.log("✅ Current session user ID:", session.user.id);
-
+    // ตรวจสอบ User ID
+    console.log("✅ User ID ปัจจุบัน:", session.user.id);
     const apiStatus = document.querySelector("#api-status span");
 
-    // --- ✅ STEP 1: แก้ไขการดึง Role ใหม่ทั้งหมด ---
-    console.log("DEBUG: 1. Attempting to fetch user role with retries...");
+    // --- ส่วนดึง User Role (ส่วนนี้ถูกต้องแล้ว) ---
+    console.log("DEBUG: 1. พยายามดึงบทบาทของผู้ใช้ (มีระบบลองใหม่)...");
     let profile = null;
     let attempts = 0;
-    const maxAttempts = 5; // ลองสูงสุด 5 ครั้ง
+    const maxAttempts = 5;
 
     while (!profile && attempts < maxAttempts) {
       attempts++;
-      console.log(` > Attempt #${attempts}`);
-
-      // --- ส่วนที่แก้ไข ---
+      console.log(` > ความพยายามครั้งที่ #${attempts}`);
       const { data, error } = await _supabase
         .from("profiles")
         .select("role")
         .eq("id", session.user.id)
         .single();
-
-      // เพิ่ม log เพื่อดูว่าได้อะไรกลับมา
-      console.log(`   - Attempt #${attempts} Data:`, data);
-      console.log(`   - Attempt #${attempts} Error:`, error);
-      // --- จบส่วนที่แก้ไข ---
-
+      console.log(`   - ความพยายามครั้งที่ #${attempts} ข้อมูล:`, data);
+      console.log(`   - ความพยายามครั้งที่ #${attempts} Error:`, error);
       if (data) {
         profile = data;
       } else if (error && error.code !== "PGRST116") {
@@ -170,20 +163,21 @@ async function initPage(session) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }
-
     if (!profile) {
-      throw new Error("Could not fetch user profile after several attempts.");
+      throw new Error("ไม่สามารถดึงข้อมูลโปรไฟล์ได้หลังจากการลองหลายครั้ง");
     }
-
     currentUserRole = profile.role || "viewer";
     document.querySelector(
       "#render-mode span"
     ).textContent = `User Role: ${currentUserRole}`;
-    console.log("DEBUG: 1. SUCCESS - Role is:", currentUserRole);
-    // --- END STEP 1 ---
+    console.log("DEBUG: 1. สำเร็จ - บทบาทคือ:", currentUserRole);
 
-    // --- โค้ดส่วนที่เหลือเหมือนเดิมทั้งหมด ---
-    console.log("DEBUG: 2. Attempting to load master data...");
+    // --- โหลด Master Data (ส่วนนี้ต้องแก้ไขนิดหน่อย) ---
+    console.log("DEBUG: 2. พยายามโหลดข้อมูลหลัก...");
+    // ตอนนี้ฟังก์ชัน helper ของคุณต้องรับ session เป็นพารามิเตอร์ด้วย
+    // ตัวอย่างเช่น: await loadAllMasterOptions(session);
+    // แต่จากโค้ดที่คุณให้มา apiFetch จะเรียก getSession() เองอยู่แล้ว
+    // ดังนั้นคุณไม่จำเป็นต้องส่ง session ไปให้ฟังก์ชัน helper ที่เรียก apiFetch
     await Promise.all([
       loadAllMasterOptions(),
       loadPresentationDates(),
@@ -215,6 +209,27 @@ async function initPage(session) {
     // ... (error handling) ...
   } finally {
     hideLoadingOverlay();
+  }
+}
+
+async function initializeAuthenticatedPage() {
+  const {
+    data: { session },
+    error,
+  } = await _supabase.auth.getSession();
+
+  if (error) {
+    console.error("เกิดข้อผิดพลาดในการรับ session:", error);
+    alert("เกิดข้อผิดพลาดในการตรวจสอบสิทธิ์ผู้ใช้");
+    return;
+  }
+
+  if (!session) {
+    console.log("ไม่พบ session ที่ใช้งานอยู่ กำลังนำไปหน้า login");
+    window.location.href = "/login.html";
+  } else {
+    // ถ้ามี session ให้เรียกฟังก์ชันหลักของหน้าเว็บ
+    initPage(session);
   }
 }
 
@@ -1050,134 +1065,136 @@ function populateTimeDropdowns() {
 
 // --- 5. INITIALIZATION AND EVENT LISTENERS ---
 
-document.addEventListener("DOMContentLoaded", () => {
-  // Setup Quill Editor
-  quillEditor = new Quill("#editor-container", {
-    modules: { toolbar: true },
-    theme: "snow",
-  });
+// document.addEventListener("DOMContentLoaded", () => {
+//   // Setup Quill Editor
+//   quillEditor = new Quill("#editor-container", {
+//     modules: { toolbar: true },
+//     theme: "snow",
+//   });
 
-  // Setup Filter Event Listeners
-  document
-    .getElementById("module-filter")
-    .addEventListener("change", applyFilters);
-  document
-    .getElementById("status-filter")
-    .addEventListener("change", applyFilters);
-  document
-    .getElementById("presented-date-filter")
-    .addEventListener("change", applyFilters);
-  document.getElementById("search-box").addEventListener("input", applyFilters);
+//   // Setup Filter Event Listeners
+//   document
+//     .getElementById("module-filter")
+//     .addEventListener("change", applyFilters);
+//   document
+//     .getElementById("status-filter")
+//     .addEventListener("change", applyFilters);
+//   document
+//     .getElementById("presented-date-filter")
+//     .addEventListener("change", applyFilters);
+//   document.getElementById("search-box").addEventListener("input", applyFilters);
 
-  // Setup Main Popup Listeners
-  document
-    .getElementById("close-popup-btn")
-    .addEventListener("click", closePopup);
-  document
-    .getElementById("cancel-popup-btn")
-    .addEventListener("click", closePopup);
+//   // Setup Main Popup Listeners
+//   document
+//     .getElementById("close-popup-btn")
+//     .addEventListener("click", closePopup);
+//   document
+//     .getElementById("cancel-popup-btn")
+//     .addEventListener("click", closePopup);
 
-  // Setup Presentation Modal Listeners
-  populateTimeDropdowns();
-  //populatePresenterDropdown(); // ✅ --- เพิ่มการเรียกใช้ฟังก์ชันที่นี่ ---
-  document
-    .getElementById("closePresentationModalBtn")
-    ?.addEventListener("click", closePresentationModal);
-  document
-    .getElementById("cancelPresentationModalBtn")
-    ?.addEventListener("click", closePresentationModal);
-  document
-    .getElementById("savePresentationBtn")
-    ?.addEventListener("click", handlePresentationSubmit);
+//   // Setup Presentation Modal Listeners
+//   populateTimeDropdowns();
+//   //populatePresenterDropdown(); // ✅ --- เพิ่มการเรียกใช้ฟังก์ชันที่นี่ ---
+//   document
+//     .getElementById("closePresentationModalBtn")
+//     ?.addEventListener("click", closePresentationModal);
+//   document
+//     .getElementById("cancelPresentationModalBtn")
+//     ?.addEventListener("click", closePresentationModal);
+//   document
+//     .getElementById("savePresentationBtn")
+//     ?.addEventListener("click", handlePresentationSubmit);
 
-  // Setup Table-level event listener for dynamic content
-  document
-    .getElementById("tor-table-body")
-    .addEventListener("click", function (event) {
-      if (event.target.classList.contains("presentation-btn")) {
-        const button = event.target;
-        openPresentationModal(button.dataset.tordId, button.dataset.type);
-      }
-      // ... (เพิ่ม event listener สำหรับปุ่มอื่นๆ ใน detail row ที่นี่) ...
-    });
+//   // Setup Table-level event listener for dynamic content
+//   document
+//     .getElementById("tor-table-body")
+//     .addEventListener("click", function (event) {
+//       if (event.target.classList.contains("presentation-btn")) {
+//         const button = event.target;
+//         openPresentationModal(button.dataset.tordId, button.dataset.type);
+//       }
+//       // ... (เพิ่ม event listener สำหรับปุ่มอื่นๆ ใน detail row ที่นี่) ...
+//     });
 
-  document
-    .getElementById("tor-table-body")
-    .addEventListener("click", function (event) {
-      // เช็คว่าสิ่งที่ถูกคลิกคือลิงก์ Edit ของเราหรือไม่
-      if (event.target.classList.contains("edit-link")) {
-        // หยุดการเปลี่ยนหน้าเว็บทันที
-        event.preventDefault();
+//   document
+//     .getElementById("tor-table-body")
+//     .addEventListener("click", function (event) {
+//       // เช็คว่าสิ่งที่ถูกคลิกคือลิงก์ Edit ของเราหรือไม่
+//       if (event.target.classList.contains("edit-link")) {
+//         // หยุดการเปลี่ยนหน้าเว็บทันที
+//         event.preventDefault();
 
-        console.log("Edit link clicked, saving page state..."); // สำหรับ Debug
+//         console.log("Edit link clicked, saving page state..."); // สำหรับ Debug
 
-        // --- นี่คือส่วนของ Step 1 ที่เราคุยกัน ---
-        // 1. รวบรวมสถานะปัจจุบันของหน้า
-        const currentState = {
-          scrollTop: window.scrollY,
-          filters: {
-            module: document.getElementById("module-filter").value,
-            status: document.getElementById("status-filter").value,
-            presentedDate: document.getElementById("presented-date-filter")
-              .value,
-          },
-          searchTerm: document.getElementById("search-box").value,
-        };
+//         // --- นี่คือส่วนของ Step 1 ที่เราคุยกัน ---
+//         // 1. รวบรวมสถานะปัจจุบันของหน้า
+//         const currentState = {
+//           scrollTop: window.scrollY,
+//           filters: {
+//             module: document.getElementById("module-filter").value,
+//             status: document.getElementById("status-filter").value,
+//             presentedDate: document.getElementById("presented-date-filter")
+//               .value,
+//           },
+//           searchTerm: document.getElementById("search-box").value,
+//         };
 
-        // 2. บันทึกสถานะลงใน sessionStorage
-        sessionStorage.setItem("torsPageState", JSON.stringify(currentState));
+//         // 2. บันทึกสถานะลงใน sessionStorage
+//         sessionStorage.setItem("torsPageState", JSON.stringify(currentState));
 
-        // 3. สั่งให้เปลี่ยนหน้าไปยังลิงก์ของปุ่ม Edit ด้วยตนเอง
-        window.location.href = event.target.href;
-      }
-    });
+//         // 3. สั่งให้เปลี่ยนหน้าไปยังลิงก์ของปุ่ม Edit ด้วยตนเอง
+//         window.location.href = event.target.href;
+//       }
+//     });
 
-  // // Main Auth Listener - The single source of truth for starting the app
-  // ✅ 1. สร้าง "ธง" (flag) ขึ้นมาที่ด้านนอกของ listener
-  // let isInitialized = false;
+//   // // Main Auth Listener - The single source of truth for starting the app
+//   // ✅ 1. สร้าง "ธง" (flag) ขึ้นมาที่ด้านนอกของ listener
+//   // let isInitialized = false;
 
-  // // Main Auth Listener - The single source of truth for starting the app
-  // _supabase.auth.onAuthStateChange(async (event, session) => {
-  //   // ✅ 2. เพิ่มเงื่อนไขเพื่อเช็ค "ธง" เป็นอันดับแรก
-  //   // ถ้าเคยโหลดข้อมูลแล้ว และสถานะยังเป็นล็อกอินอยู่ (SIGNED_IN) ให้ออกจากฟังก์ชันทันที
-  //   if (isInitialized && event === "SIGNED_IN") {
-  //     return;
-  //   }
+//   // // Main Auth Listener - The single source of truth for starting the app
+//   // _supabase.auth.onAuthStateChange(async (event, session) => {
+//   //   // ✅ 2. เพิ่มเงื่อนไขเพื่อเช็ค "ธง" เป็นอันดับแรก
+//   //   // ถ้าเคยโหลดข้อมูลแล้ว และสถานะยังเป็นล็อกอินอยู่ (SIGNED_IN) ให้ออกจากฟังก์ชันทันที
+//   //   if (isInitialized && event === "SIGNED_IN") {
+//   //     return;
+//   //   }
 
-  //   if (session) {
-  //     // โค้ดส่วนนี้จะทำงานแค่ครั้งแรกที่โหลดหน้าเว็บ
-  //     await initPage(session);
+//   //   if (session) {
+//   //     // โค้ดส่วนนี้จะทำงานแค่ครั้งแรกที่โหลดหน้าเว็บ
+//   //     await initPage(session);
 
-  //     // ✅ 3. "ปักธง" ว่าได้โหลดข้อมูลเรียบร้อยแล้ว
-  //     isInitialized = true;
-  //   } else {
-  //     // ถ้าไม่มี session หรือ logout ให้ reset ธง และไปหน้า login
-  //     isInitialized = false;
-  //     window.location.href = "/login.html";
-  //   }
-  // });
+//   //     // ✅ 3. "ปักธง" ว่าได้โหลดข้อมูลเรียบร้อยแล้ว
+//   //     isInitialized = true;
+//   //   } else {
+//   //     // ถ้าไม่มี session หรือ logout ให้ reset ธง และไปหน้า login
+//   //     isInitialized = false;
+//   //     window.location.href = "/login.html";
+//   //   }
+//   // });
 
-  // ใน tors.js (ท้ายไฟล์)
+//   // ใน tors.js (ท้ายไฟล์)
 
-  let isInitialized = false;
+//   let isInitialized = false;
 
-  _supabase.auth.onAuthStateChange(async (event, session) => {
-    // ✅ ตรวจสอบธงก่อนเป็นอันดับแรกเสมอ
-    // เราจะสนใจแค่ event ครั้งแรกที่เจอ session เท่านั้น
-    if (isInitialized) {
-      return;
-    }
+//   _supabase.auth.onAuthStateChange(async (event, session) => {
+//     // ✅ ตรวจสอบธงก่อนเป็นอันดับแรกเสมอ
+//     // เราจะสนใจแค่ event ครั้งแรกที่เจอ session เท่านั้น
+//     if (isInitialized) {
+//       return;
+//     }
 
-    if (session) {
-      // ✅ ปักธงทันที! ก่อนที่จะเริ่มโหลดข้อมูล
-      isInitialized = true;
+//     if (session) {
+//       // ✅ ปักธงทันที! ก่อนที่จะเริ่มโหลดข้อมูล
+//       isInitialized = true;
 
-      // เรียกใช้ initPage (ซึ่งจะใช้เวลาสักพัก)
-      await initPage(session);
-    } else {
-      // ถ้าไม่มี session หรือ logout ให้ reset ธง และไปหน้า login
-      isInitialized = false;
-      window.location.href = "/login.html";
-    }
-  });
-});
+//       // เรียกใช้ initPage (ซึ่งจะใช้เวลาสักพัก)
+//       await initPage(session);
+//     } else {
+//       // ถ้าไม่มี session หรือ logout ให้ reset ธง และไปหน้า login
+//       isInitialized = false;
+//       window.location.href = "/login.html";
+//     }
+//   });
+// });
+
+initializeAuthenticatedPage();
