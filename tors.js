@@ -8,10 +8,6 @@ let quillEditor;
 let masterOptions = {};
 
 async function apiFetch(url, session, options = {}) {
-  // const {
-  //   data: { session },
-  // } = await _supabase.auth.getSession();
-
   if (!session) {
     alert("Session หมดอายุ กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
     window.location.href = "/login.html";
@@ -115,13 +111,13 @@ function restorePageState() {
       row.scrollIntoView({ behavior: "smooth", block: "center" });
       // เพิ่ม class เพื่อให้เกิด animation
       row.classList.add("highlight-fade");
-      // ลบ class ออกหลังจาก animation จบ (เผื่อมีการไฮไลท์ซ้ำ)
+      // ลบ class ออกหลังจาก animation จบ
       setTimeout(() => {
         row.classList.remove("highlight-fade");
       }, 2500);
     }
 
-    // 7. ล้าง parameter ออกจาก URL เพื่อให้ URL สวยงามและไม่ไฮไลท์ซ้ำเมื่อผู้ใช้รีเฟรชเอง
+    // 7. ล้าง parameter ออกจาก URL เพื่อให้ URL สวยงาม
     history.replaceState(null, "", window.location.pathname);
   }
 }
@@ -134,7 +130,7 @@ async function initPage(session) {
     //console.log("✅ User ID ปัจจุบัน:", session.user.id);
     const apiStatus = document.querySelector("#api-status span");
 
-    // --- ส่วนดึง User Role (ส่วนนี้ถูกต้องแล้ว) ---
+    // --- ส่วนดึง User Role  ---
     console.log("DEBUG: 1. พยายามดึงบทบาทของผู้ใช้ (มีระบบลองใหม่)...");
     let profile = null;
     let attempts = 0;
@@ -241,11 +237,6 @@ async function loadPresentationDates(session) {
   if (!dateFilter) return;
 
   try {
-    // ✅ รับข้อมูล dates ที่พร้อมใช้งานได้เลย
-    // const dates = await apiFetch(
-    //   "https://pcsdata.onrender.com/api/presentation/dates"
-    // );
-
     const dates = await apiFetch(
       `${API_BASE_URL}/api/presentation/dates`,
       session
@@ -274,11 +265,6 @@ async function loadLatestUpdateDate(session) {
   try {
     // หน่วงเวลาเล็กน้อย
     await new Promise((resolve) => setTimeout(resolve, 250));
-
-    // ✅ รับข้อมูล data ที่พร้อมใช้งานจาก apiFetch ได้เลย
-    // const data = await apiFetch(
-    //   "https://pcsdata.onrender.com/api/presentation/last-updated"
-    // );
 
     const data = await apiFetch(
       `${API_BASE_URL}/api/presentation/last-updated`,
@@ -377,8 +363,6 @@ function applyFilters() {
       item.tor_fixing_label || "" // ✅ ใช้ _label
     }`.toLowerCase();
 
-    //const searchMatch = !searchValue || searchString.includes(searchString);
-
     const searchMatch = !searchValue || searchString.includes(searchValue);
 
     return moduleMatch && statusMatch && searchMatch && dateMatch;
@@ -438,81 +422,13 @@ function renderTable(data) {
              }</td>
          `;
 
-    //if (isAdmin) {
-    //  mainRowHTML += `<td class="p-4 border-b border-gray-200 text-center"><a href="/torsedit.html?id=${tor.tor_id}" class="text-indigo-600 hover:text-indigo-900 font-semibold">[Edit]</a></td>`;
-    // }
-
     if (isAdmin) {
-      // ✅ เพิ่ม class="... edit-link" เข้าไป
+      // ✅ เพิ่ม class="... edit-link"
       mainRowHTML += `<td class="p-4 border-b border-gray-200 text-center"><a href="/torsedit.html?id=${tor.tor_id}" class="text-indigo-600 hover:text-indigo-900 font-semibold edit-link">[Edit]</a></td>`;
     }
 
     mainRow.innerHTML = mainRowHTML;
     tableBody.appendChild(mainRow);
-
-    // const tableBody = document.getElementById("tor-table-body");
-    // const isAdmin = currentUserRole === "admin";
-
-    // tableBody.innerHTML = "";
-    // if (data.length === 0) {
-    //   tableBody.innerHTML = `<tr><td colspan="${
-    //     isAdmin ? 5 : 4
-    //   }" class="p-4 text-center text-gray-500">ไม่พบข้อมูลที่ตรงกับเงื่อนไข</td></tr>`;
-    //   return;
-    // }
-
-    // const headerRow = document.querySelector("thead tr");
-    // headerRow.innerHTML = `<th class="p-4 text-center text-base font-bold text-gray-600 w-16">ลำดับ</th><th class="p-4 text-left text-base font-bold text-gray-600 w-2/5">ข้อกำหนด(TOR)</th><th class="p-4 text-center text-base font-bold text-gray-600 w-32">สถานะ</th><th class="p-4 text-center text-base font-bold text-gray-600 w-48">การแก้ไข</th>`;
-    // if (isAdmin) {
-    //   const actionHeader = document.createElement("th");
-    //   actionHeader.className =
-    //     "p-4 text-left text-base font-bold text-gray-600 w-20";
-    //   actionHeader.innerText = "จัดการ";
-    //   headerRow.appendChild(actionHeader);
-    // }
-
-    // data.forEach((tor, index) => {
-    //   // ✅ โค้ดส่วนนี้ถูกต้องแล้ว
-    //   const statusLabel = tor.tor_status_label;
-    //   const statusColor =
-    //     statusLabel === "ผ่าน"
-    //       ? "bg-green-100 text-green-800"
-    //       : "bg-red-100 text-red-800";
-
-    //   const mainRow = document.createElement("tr");
-    //   mainRow.className =
-    //     "main-row hover:bg-yellow-50 transition-colors duration-150";
-    //   mainRow.dataset.torId = tor.tor_id;
-
-    //   let mainRowHTML = `
-    //           <td class="p-4 text-center border-b border-gray-200">${
-    //             index + 1
-    //           }</td>
-    //           <td class="p-4 border-b border-gray-200">
-    //               <a class="tor-link cursor-pointer text-blue-600 hover:underline">${
-    //                 // ✅ แก้ไข: ใช้ tor_id ที่ถูกต้อง
-    //                 tor.tor_id || "undefined"
-    //               } - ${
-    //     // ✅ แก้ไข: ใช้ tor_name ที่ถูกต้อง
-    //     tor.tor_name || "undefined"
-    //   }</a>
-    //           </td>
-    //           <td class="p-4 border-b border-gray-200 text-center">
-    //               <span class="px-3 py-1 text-sm font-semibold rounded-full ${statusColor}">${statusLabel}</span>
-    //           </td>
-    //           <td class="p-4 border-b border-gray-200 text-center text-gray-600">${
-    //             // ✅ แก้ไข: ใช้ tor_fixing_label ที่สร้างไว้แล้ว
-    //             tor.tor_fixing_label || "undefined"
-    //           }</td>
-    //       `;
-
-    //   // โค้ดสำหรับปุ่ม Edit
-    //   if (isAdmin) {
-    //     mainRowHTML += `<td class="p-4 border-b border-gray-200 text-center"><a href="/torsedit.html?id=${tor.tor_id}" class="text-indigo-600 hover:text-indigo-900 font-semibold edit-link">[Edit]</a></td>`;
-    //   }
-
-    //   mainRow.innerHTML = mainRowHTML;
-    //   tableBody.appendChild(mainRow);
 
     const detailsRow = document.createElement("tr");
     detailsRow.className = "details-row";
@@ -556,38 +472,6 @@ function scrollToTorFromHash() {
 
 // --- 3. DETAIL VIEW FUNCTIONS ---
 
-// ในฟังก์ชัน toggleDetails
-/* async function toggleDetails(detailsRow, mainRow, torId) {
-  const isOpen = detailsRow.classList.toggle("is-open");
-  mainRow.classList.toggle("is-active");
-
-  document.querySelectorAll(".details-row").forEach((row) => {
-    if (row !== detailsRow) {
-      row.classList.remove("is-open");
-      if (row.previousElementSibling)
-        row.previousElementSibling.classList.remove("is-active");
-    }
-  });
-
-  if (isOpen) {
-    const detailCell = detailsRow.querySelector("td > div");
-    detailCell.innerHTML = `<div class="bg-yellow-50/70 p-6">กำลังโหลด...</div>`;
-    try {
-      // ✅ แก้ไขให้เรียกใช้ apiFetch และรับข้อมูล details ได้เลย
-      // const details = await apiFetch(
-      //   `https://pcsdata.onrender.com/api/tors/${torId}`
-      // );
-
-      const details = await apiFetch(`${API_BASE_URL}/api/tors/${torId}`);
-
-      detailCell.innerHTML = `${createDetailContent(details)}`;
-      addDetailEventListeners(details);
-    } catch (e) {
-      detailCell.innerHTML = `<div class="bg-red-100 text-red-800 p-4">เกิดข้อผิดพลาดในการโหลดรายละเอียด: ${e.message}</div>`;
-    }
-  }
-} */
-
 async function toggleDetails(detailsRow, mainRow, torId) {
   const isOpen = detailsRow.classList.toggle("is-open");
   mainRow.classList.toggle("is-active");
@@ -604,7 +488,7 @@ async function toggleDetails(detailsRow, mainRow, torId) {
     const detailCell = detailsRow.querySelector("td > div");
     detailCell.innerHTML = `<div class="bg-yellow-50/70 p-6">กำลังโหลด...</div>`;
     try {
-      // ✅ เพิ่มการดึง session เข้ามาที่นี่
+      // ✅ เพิ่มการดึง session
       const {
         data: { session },
       } = await _supabase.auth.getSession();
@@ -635,10 +519,6 @@ function createDetailContent(details) {
   // --- แก้ไขในฟังก์ชัน createDetailContent ---
   const createItemList = (items, type) => {
     if (!items || items.length === 0) return "<li>ไม่มีข้อมูล</li>";
-
-    // let itemsToDisplay = isAdmin
-    //   ? items
-    //   : items.filter((item) => item.status === 1);
 
     let itemsToDisplay = isAdmin
       ? items
@@ -678,9 +558,6 @@ function createDetailContent(details) {
           (opt) => opt.option_id === statusId
         );
         const statusLabel = statusObj?.option_label || `(ID: ${statusId})`;
-
-        // const statusColor =
-        //   item.status === 1 ? "text-green-600" : "text-yellow-600";
 
         const statusColor =
           statusId === "REPORT" ? "text-green-600" : "text-yellow-600";
@@ -730,7 +607,6 @@ function createDetailContent(details) {
           day: "numeric",
         });
 
-        // --- ส่วนที่แก้ไข: ค้นหาชื่อผู้นำเสนอ ---
         const presenterId = p.ptt_presenter_id;
         const presenterOptions = masterOptions["presenter"] || [];
         const presenterObject = presenterOptions.find(
@@ -739,7 +615,6 @@ function createDetailContent(details) {
         const presenterName = presenterObject
           ? presenterObject.option_label
           : "-"; // ถ้าหาไม่เจอให้แสดง "-"
-        // --- สิ้นสุดส่วนที่แก้ไข ---
 
         return `
                 <tr class="border-b">
@@ -1088,7 +963,7 @@ async function handlePresentationSubmit() {
     ptt_timerange: `${modal.querySelector("#startTime").value} - ${
       modal.querySelector("#endTime").value
     }`,
-    ptt_presenter_id: document.getElementById("presenterSelect").value, // ✅ เพิ่มบรรทัดนี้
+    ptt_presenter_id: document.getElementById("presenterSelect").value,
     ptt_remark: modal.querySelector("#presentationRemark").value,
     selected_tors: [modal.querySelector("#modal_tord_id").value],
   };
@@ -1221,20 +1096,18 @@ document.addEventListener("DOMContentLoaded", () => {
         const button = event.target;
         openPresentationModal(button.dataset.tordId, button.dataset.type);
       }
-      // ... (เพิ่ม event listener สำหรับปุ่มอื่นๆ ใน detail row ที่นี่) ...
     });
 
   document
     .getElementById("tor-table-body")
     .addEventListener("click", function (event) {
-      // เช็คว่าสิ่งที่ถูกคลิกคือลิงก์ Edit ของเราหรือไม่
+      // เช็คว่าสิ่งที่ถูกคลิกคือลิงก์ Edit หรือไม่
       if (event.target.classList.contains("edit-link")) {
         // หยุดการเปลี่ยนหน้าเว็บทันที
         event.preventDefault();
 
         console.log("Edit link clicked, saving page state..."); // สำหรับ Debug
 
-        // --- นี่คือส่วนของ Step 1 ที่เราคุยกัน ---
         // 1. รวบรวมสถานะปัจจุบันของหน้า
         const currentState = {
           scrollTop: window.scrollY,
@@ -1254,55 +1127,6 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = event.target.href;
       }
     });
-
-  //   // // Main Auth Listener - The single source of truth for starting the app
-  //   // ✅ 1. สร้าง "ธง" (flag) ขึ้นมาที่ด้านนอกของ listener
-  //   // let isInitialized = false;
-
-  //   // // Main Auth Listener - The single source of truth for starting the app
-  //   // _supabase.auth.onAuthStateChange(async (event, session) => {
-  //   //   // ✅ 2. เพิ่มเงื่อนไขเพื่อเช็ค "ธง" เป็นอันดับแรก
-  //   //   // ถ้าเคยโหลดข้อมูลแล้ว และสถานะยังเป็นล็อกอินอยู่ (SIGNED_IN) ให้ออกจากฟังก์ชันทันที
-  //   //   if (isInitialized && event === "SIGNED_IN") {
-  //   //     return;
-  //   //   }
-
-  //   //   if (session) {
-  //   //     // โค้ดส่วนนี้จะทำงานแค่ครั้งแรกที่โหลดหน้าเว็บ
-  //   //     await initPage(session);
-
-  //   //     // ✅ 3. "ปักธง" ว่าได้โหลดข้อมูลเรียบร้อยแล้ว
-  //   //     isInitialized = true;
-  //   //   } else {
-  //   //     // ถ้าไม่มี session หรือ logout ให้ reset ธง และไปหน้า login
-  //   //     isInitialized = false;
-  //   //     window.location.href = "/login.html";
-  //   //   }
-  //   // });
-
-  //   // ใน tors.js (ท้ายไฟล์)
-
-  /* let isInitialized = false;
-
-  _supabase.auth.onAuthStateChange(async (event, session) => {
-    // ✅ ตรวจสอบธงก่อนเป็นอันดับแรกเสมอ
-    // เราจะสนใจแค่ event ครั้งแรกที่เจอ session เท่านั้น
-    if (isInitialized) {
-      return;
-    }
-
-    if (session) {
-      // ✅ ปักธงทันที! ก่อนที่จะเริ่มโหลดข้อมูล
-      isInitialized = true;
-
-      // เรียกใช้ initPage (ซึ่งจะใช้เวลาสักพัก)
-      await initPage(session);
-    } else {
-      // ถ้าไม่มี session หรือ logout ให้ reset ธง และไปหน้า login
-      isInitialized = false;
-      window.location.href = "/login.html";
-    }
-  }); */
 });
 
 _supabase.auth.onAuthStateChange((event, session) => {
