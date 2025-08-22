@@ -377,6 +377,68 @@ function applyFilters() {
 }
 
 function renderTable(data) {
+  // const tableBody = document.getElementById("tor-table-body");
+  // const isAdmin = currentUserRole === "admin";
+
+  // tableBody.innerHTML = "";
+  // if (data.length === 0) {
+  //   tableBody.innerHTML = `<tr><td colspan="${
+  //     isAdmin ? 5 : 4
+  //   }" class="p-4 text-center text-gray-500">ไม่พบข้อมูลที่ตรงกับเงื่อนไข</td></tr>`;
+  //   return;
+  // }
+
+  // const headerRow = document.querySelector("thead tr");
+  // headerRow.innerHTML = `<th class="p-4 text-center text-base font-bold text-gray-600 w-16">ลำดับ</th><th class="p-4 text-left text-base font-bold text-gray-600 w-2/5">ข้อกำหนด(TOR)</th><th class="p-4 text-center text-base font-bold text-gray-600 w-32">สถานะ</th><th class="p-4 text-center text-base font-bold text-gray-600 w-48">การแก้ไข</th>`;
+  // if (isAdmin) {
+  //   const actionHeader = document.createElement("th");
+  //   actionHeader.className =
+  //     "p-4 text-left text-base font-bold text-gray-600 w-20";
+  //   actionHeader.innerText = "จัดการ";
+  //   headerRow.appendChild(actionHeader);
+  // }
+
+  // data.forEach((tor, index) => {
+  //   const statusLabel = tor.tor_status_label;
+  //   const statusColor =
+  //     statusLabel === "ผ่าน"
+  //       ? "bg-green-100 text-green-800"
+  //       : "bg-red-100 text-red-800";
+
+  //   const mainRow = document.createElement("tr");
+  //   mainRow.className =
+  //     "main-row hover:bg-yellow-50 transition-colors duration-150";
+  //   mainRow.dataset.torId = tor.tor_id;
+
+  //   let mainRowHTML = `
+  //           <td class="p-4 text-center border-b border-gray-200">${
+  //             index + 1
+  //           }</td>
+  //           <td class="p-4 border-b border-gray-200">
+  //               <a class="tor-link cursor-pointer text-blue-600 hover:underline">${
+  //                 tor.tor_name
+  //               }</a>
+  //           </td>
+  //           <td class="p-4 border-b border-gray-200 text-center">
+  //               <span class="px-3 py-1 text-sm font-semibold rounded-full ${statusColor}">${statusLabel}</span>
+  //           </td>
+  //           <td class="p-4 border-b border-gray-200 text-center text-gray-600">${
+  //             tor.tor_fixing_label
+  //           }</td>
+  //       `;
+
+  //   //if (isAdmin) {
+  //   //  mainRowHTML += `<td class="p-4 border-b border-gray-200 text-center"><a href="/torsedit.html?id=${tor.tor_id}" class="text-indigo-600 hover:text-indigo-900 font-semibold">[Edit]</a></td>`;
+  //   // }
+
+  //   if (isAdmin) {
+  //     // ✅ เพิ่ม class="... edit-link" เข้าไป
+  //     mainRowHTML += `<td class="p-4 border-b border-gray-200 text-center"><a href="/torsedit.html?id=${tor.tor_id}" class="text-indigo-600 hover:text-indigo-900 font-semibold edit-link">[Edit]</a></td>`;
+  //   }
+
+  //   mainRow.innerHTML = mainRowHTML;
+  //   tableBody.appendChild(mainRow);
+
   const tableBody = document.getElementById("tor-table-body");
   const isAdmin = currentUserRole === "admin";
 
@@ -399,6 +461,7 @@ function renderTable(data) {
   }
 
   data.forEach((tor, index) => {
+    // ✅ โค้ดส่วนนี้ถูกต้องแล้ว
     const statusLabel = tor.tor_status_label;
     const statusColor =
       statusLabel === "ผ่าน"
@@ -416,23 +479,24 @@ function renderTable(data) {
             }</td>
             <td class="p-4 border-b border-gray-200">
                 <a class="tor-link cursor-pointer text-blue-600 hover:underline">${
-                  tor.tor_name
-                }</a>
+                  // ✅ แก้ไข: ใช้ tor_id ที่ถูกต้อง
+                  tor.tor_id || "undefined"
+                } - ${
+      // ✅ แก้ไข: ใช้ tor_name ที่ถูกต้อง
+      tor.tor_name || "undefined"
+    }</a>
             </td>
             <td class="p-4 border-b border-gray-200 text-center">
                 <span class="px-3 py-1 text-sm font-semibold rounded-full ${statusColor}">${statusLabel}</span>
             </td>
             <td class="p-4 border-b border-gray-200 text-center text-gray-600">${
-              tor.tor_fixing_label
+              // ✅ แก้ไข: ใช้ tor_fixing_label ที่สร้างไว้แล้ว
+              tor.tor_fixing_label || "undefined"
             }</td>
         `;
 
-    //if (isAdmin) {
-    //  mainRowHTML += `<td class="p-4 border-b border-gray-200 text-center"><a href="/torsedit.html?id=${tor.tor_id}" class="text-indigo-600 hover:text-indigo-900 font-semibold">[Edit]</a></td>`;
-    // }
-
+    // โค้ดสำหรับปุ่ม Edit
     if (isAdmin) {
-      // ✅ เพิ่ม class="... edit-link" เข้าไป
       mainRowHTML += `<td class="p-4 border-b border-gray-200 text-center"><a href="/torsedit.html?id=${tor.tor_id}" class="text-indigo-600 hover:text-indigo-900 font-semibold edit-link">[Edit]</a></td>`;
     }
 
