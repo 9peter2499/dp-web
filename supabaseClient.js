@@ -20,3 +20,6 @@ export const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     flowType: "pkce",
   },
 });
+
+// ✅ เพิ่มบรรทัดนี้เพื่อการทดสอบใน Console
+window.supabase = _supabase;
