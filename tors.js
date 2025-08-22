@@ -1303,6 +1303,14 @@ document.addEventListener("DOMContentLoaded", () => {
   //       window.location.href = "/login.html";
   //     }
   //   });
+
+  _supabase.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_OUT") {
+      // เมื่อผู้ใช้ออกจากระบบ ให้ redirect ไปยังหน้า login
+      console.log("User signed out. Redirecting to login page.");
+      window.location.href = "/login.html";
+    }
+  });
 });
 
 initializeAuthenticatedPage();
