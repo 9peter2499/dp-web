@@ -183,11 +183,21 @@ async function initPage(session) {
     console.log("DEBUG: 3. SUCCESS - Fetched", rawData.length, "TORs.");
 
     allTorsData = rawData.map((item) => ({
-      /* ... */
+      ...item,
+      tor_status_label: item.tor_status?.option_label || "N/A",
+      tor_fixing_label: item.tor_fixing?.option_label || "",
     }));
+
     allTorsData.sort((a, b) => {
-      /* ... */
+      const moduleA = a.module_id || "";
+      const moduleB = b.module_id || "";
+      const torA = a.tor_id || "";
+      const torB = b.tor_id || "";
+      const moduleCompare = moduleA.localeCompare(moduleB);
+      if (moduleCompare !== 0) return moduleCompare;
+      return torA.localeCompare(torB);
     });
+
     populateFilters(allTorsData);
     applyFilters();
     restorePageState();
