@@ -167,6 +167,9 @@ async function initPage(session) {
   console.log("🚀 Initializing page...");
   showLoadingOverlay();
   try {
+    //ตรวจสอบ User ID Login
+    console.log("✅ Current session user ID:", session.user.id);
+
     const apiStatus = document.querySelector("#api-status span");
 
     // --- ✅ STEP 1: แก้ไขการดึง Role ใหม่ทั้งหมด ---
