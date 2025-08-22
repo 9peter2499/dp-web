@@ -7,10 +7,10 @@ let quillEditor;
 
 let masterOptions = {};
 
-async function apiFetch(url, options = {}) {
-  const {
-    data: { session },
-  } = await _supabase.auth.getSession();
+async function apiFetch(url, session, options = {}) {
+  // const {
+  //   data: { session },
+  // } = await _supabase.auth.getSession();
 
   if (!session) {
     alert("Session หมดอายุ กรุณาเข้าสู่ระบบใหม่อีกครั้ง");
@@ -55,15 +55,12 @@ async function apiFetch(url, options = {}) {
 }
 
 // --- 1. CORE FUNCTIONS ---
-async function loadAllMasterOptions() {
+async function loadAllMasterOptions(session) {
   try {
-    masterOptions = await apiFetch(`${API_BASE_URL}/api/options/all`);
-
+    masterOptions = await apiFetch(`${API_BASE_URL}/api/options/all`, session);
     console.log("✅ Successfully loaded all master options in one request.");
   } catch (err) {
-    console.error("❌ Failed to load all master options:", err);
-    masterOptions = {};
-    throw err;
+    /* ... */
   }
 }
 
@@ -129,8 +126,6 @@ function restorePageState() {
   }
 }
 
-// ใน tors.js
-
 async function initPage(session) {
   console.log("🚀 กำลังเริ่มต้นหน้าเว็บด้วย session ที่พร้อมใช้งาน...");
   showLoadingOverlay();
@@ -173,16 +168,18 @@ async function initPage(session) {
     console.log("DEBUG: 1. สำเร็จ - บทบาทคือ:", currentUserRole);
 
     // --- โหลด Master Data ---
-    console.log("DEBUG: 2. พยายามโหลดข้อมูลหลัก...");
+    console.log("DEBUG: 2. Attempting to load master data...");
     await Promise.all([
-      loadAllMasterOptions(),
-      loadPresentationDates(),
-      loadLatestUpdateDate(),
+      // ✅ ส่ง session ต่อไปให้ฟังก์ชันลูก
+      loadAllMasterOptions(session),
+      loadPresentationDates(session),
+      loadLatestUpdateDate(session),
     ]);
     console.log("DEBUG: 2. SUCCESS - Master data loaded.");
 
     console.log("DEBUG: 3. Attempting to fetch main TORs data...");
-    const rawData = await apiFetch("/api/tors");
+    // ✅ ส่ง session ต่อไปให้ apiFetch
+    const rawData = await apiFetch(`${API_BASE_URL}/api/tors`, session);
     console.log("DEBUG: 3. SUCCESS - Fetched", rawData.length, "TORs.");
 
     allTorsData = rawData.map((item) => ({
@@ -229,7 +226,7 @@ async function initializeAuthenticatedPage() {
   }
 }
 
-async function loadPresentationDates() {
+async function loadPresentationDates(session) {
   const dateFilter = document.getElementById("presented-date-filter");
   if (!dateFilter) return;
 
@@ -239,7 +236,10 @@ async function loadPresentationDates() {
     //   "https://pcsdata.onrender.com/api/presentation/dates"
     // );
 
-    const dates = await apiFetch(`${API_BASE_URL}/api/presentation/dates`);
+    const dates = await apiFetch(
+      `${API_BASE_URL}/api/presentation/dates`,
+      session
+    );
 
     dateFilter.innerHTML = '<option value="">-- เลือกวันที่ --</option>';
     dates.forEach((dateString) => {
@@ -260,7 +260,7 @@ async function loadPresentationDates() {
   }
 }
 
-async function loadLatestUpdateDate() {
+async function loadLatestUpdateDate(session) {
   try {
     // หน่วงเวลาเล็กน้อย
     await new Promise((resolve) => setTimeout(resolve, 250));
@@ -271,7 +271,8 @@ async function loadLatestUpdateDate() {
     // );
 
     const data = await apiFetch(
-      `${API_BASE_URL}/api/presentation/last-updated`
+      `${API_BASE_URL}/api/presentation/last-updated`,
+      session
     );
 
     const updateBox = document.getElementById("last-updated");
