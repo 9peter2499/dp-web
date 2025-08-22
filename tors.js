@@ -136,7 +136,7 @@ async function initPage(session) {
   showLoadingOverlay();
   try {
     // ตรวจสอบ User ID
-    console.log("✅ User ID ปัจจุบัน:", session.user.id);
+    //console.log("✅ User ID ปัจจุบัน:", session.user.id);
     const apiStatus = document.querySelector("#api-status span");
 
     // --- ส่วนดึง User Role (ส่วนนี้ถูกต้องแล้ว) ---
@@ -172,12 +172,8 @@ async function initPage(session) {
     ).textContent = `User Role: ${currentUserRole}`;
     console.log("DEBUG: 1. สำเร็จ - บทบาทคือ:", currentUserRole);
 
-    // --- โหลด Master Data (ส่วนนี้ต้องแก้ไขนิดหน่อย) ---
+    // --- โหลด Master Data ---
     console.log("DEBUG: 2. พยายามโหลดข้อมูลหลัก...");
-    // ตอนนี้ฟังก์ชัน helper ของคุณต้องรับ session เป็นพารามิเตอร์ด้วย
-    // ตัวอย่างเช่น: await loadAllMasterOptions(session);
-    // แต่จากโค้ดที่คุณให้มา apiFetch จะเรียก getSession() เองอยู่แล้ว
-    // ดังนั้นคุณไม่จำเป็นต้องส่ง session ไปให้ฟังก์ชัน helper ที่เรียก apiFetch
     await Promise.all([
       loadAllMasterOptions(),
       loadPresentationDates(),
