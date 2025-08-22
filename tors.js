@@ -557,7 +557,7 @@ function scrollToTorFromHash() {
 // --- 3. DETAIL VIEW FUNCTIONS ---
 
 // ในฟังก์ชัน toggleDetails
-async function toggleDetails(detailsRow, mainRow, torId) {
+/* async function toggleDetails(detailsRow, mainRow, torId) {
   const isOpen = detailsRow.classList.toggle("is-open");
   mainRow.classList.toggle("is-active");
 
@@ -579,6 +579,42 @@ async function toggleDetails(detailsRow, mainRow, torId) {
       // );
 
       const details = await apiFetch(`${API_BASE_URL}/api/tors/${torId}`);
+
+      detailCell.innerHTML = `${createDetailContent(details)}`;
+      addDetailEventListeners(details);
+    } catch (e) {
+      detailCell.innerHTML = `<div class="bg-red-100 text-red-800 p-4">เกิดข้อผิดพลาดในการโหลดรายละเอียด: ${e.message}</div>`;
+    }
+  }
+} */
+
+async function toggleDetails(detailsRow, mainRow, torId) {
+  const isOpen = detailsRow.classList.toggle("is-open");
+  mainRow.classList.toggle("is-active");
+
+  document.querySelectorAll(".details-row").forEach((row) => {
+    if (row !== detailsRow) {
+      row.classList.remove("is-open");
+      if (row.previousElementSibling)
+        row.previousElementSibling.classList.remove("is-active");
+    }
+  });
+
+  if (isOpen) {
+    const detailCell = detailsRow.querySelector("td > div");
+    detailCell.innerHTML = `<div class="bg-yellow-50/70 p-6">กำลังโหลด...</div>`;
+    try {
+      // ✅ เพิ่มการดึง session เข้ามาที่นี่
+      const {
+        data: { session },
+      } = await _supabase.auth.getSession();
+      if (!session) throw new Error("Session not found."); // ตรวจสอบ session อีกครั้ง
+
+      // ✅ ส่ง session ที่เพิ่งดึงมาไปให้ apiFetch
+      const details = await apiFetch(
+        `${API_BASE_URL}/api/tors/${torId}`,
+        session
+      );
 
       detailCell.innerHTML = `${createDetailContent(details)}`;
       addDetailEventListeners(details);
