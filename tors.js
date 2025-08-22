@@ -1282,7 +1282,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //   // ใน tors.js (ท้ายไฟล์)
 
-  let isInitialized = false;
+  /* let isInitialized = false;
 
   _supabase.auth.onAuthStateChange(async (event, session) => {
     // ✅ ตรวจสอบธงก่อนเป็นอันดับแรกเสมอ
@@ -1302,7 +1302,16 @@ document.addEventListener("DOMContentLoaded", () => {
       isInitialized = false;
       window.location.href = "/login.html";
     }
-  });
+  }); */
+});
+
+_supabase.auth.onAuthStateChange((event, session) => {
+  // ตรวจสอบว่า event ที่เกิดขึ้นคือการ 'ออกจากระบบ' หรือไม่
+  if (event === "SIGNED_OUT") {
+    console.log("ตรวจพบสถานะ SIGNED_OUT, กำลัง redirect ไปยังหน้า login...");
+    // สั่งให้เบราว์เซอร์เปลี่ยนหน้าไปที่ login.html
+    window.location.href = "/login.html";
+  }
 });
 
 initializeAuthenticatedPage();
